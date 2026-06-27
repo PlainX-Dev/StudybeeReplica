@@ -38,13 +38,13 @@ class AppDrawer extends StatelessWidget {
             ),
             _item(
               context,
-              icon: Icons.chat_bubble_outline,
+              icon: Icons.forum_outlined,
               label: 'Communication',
               onTap: () => _fail(context, 'Communication'),
             ),
             _item(
               context,
-              icon: Icons.collections_bookmark_outlined,
+              icon: Icons.dynamic_feed_outlined,
               label: 'Bulletin Board',
               onTap: () => _fail(context, 'Bulletin Board'),
             ),

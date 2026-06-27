@@ -98,56 +98,64 @@ class _CoursesScreenState extends State<CoursesScreen> {
     return Scaffold(
       backgroundColor: AppColors.scaffold,
       drawer: const AppDrawer(),
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            _header(),
-            Expanded(child: _body()),
-          ],
-        ),
+      body: Column(
+        children: [
+          _header(),
+          Expanded(child: _body()),
+        ],
       ),
     );
   }
 
   Widget _header() {
+    final topInset = MediaQuery.of(context).padding.top;
     return Container(
       color: AppColors.yellow,
-      padding: const EdgeInsets.fromLTRB(8, 4, 16, 18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Builder(
-            builder: (ctx) => IconButton(
-              icon: const Icon(Icons.menu, color: AppColors.dark, size: 30),
-              onPressed: () => Scaffold.of(ctx).openDrawer(),
+      padding: EdgeInsets.only(top: topInset),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 6, 16, 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Builder(
+              builder: (ctx) => InkResponse(
+                radius: 26,
+                onTap: () => Scaffold.of(ctx).openDrawer(),
+                child: const Padding(
+                  padding: EdgeInsets.all(12),
+                  child: Icon(Icons.menu, color: AppColors.dark, size: 28),
+                ),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Hidden gesture: long-press the "Courses" title to add a course.
-                Expanded(
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onLongPress: _addCourse,
-                    child: const Text(
-                      'Courses',
-                      style: TextStyle(
-                        color: AppColors.dark,
-                        fontSize: 38,
-                        fontWeight: FontWeight.w800,
+            const SizedBox(height: 14),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Hidden gesture: long-press the "Courses" title to add a course.
+                  Expanded(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onLongPress: _addCourse,
+                      child: const Text(
+                        'Courses',
+                        style: TextStyle(
+                          color: AppColors.dark,
+                          fontSize: 40,
+                          fontWeight: FontWeight.w800,
+                          height: 1.0,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                _filterButton(),
-              ],
+                  _filterButton(),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -155,23 +163,23 @@ class _CoursesScreenState extends State<CoursesScreen> {
   Widget _filterButton() {
     return Material(
       color: AppColors.dark,
-      borderRadius: BorderRadius.circular(28),
+      borderRadius: BorderRadius.circular(30),
       child: InkWell(
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(30),
         onTap: () => openConnectionFailed(context, 'Filter'),
         child: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 15),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.tune, color: Colors.white, size: 22),
+              Icon(Icons.filter_list, color: Colors.white, size: 24),
               SizedBox(width: 10),
               Text(
                 'Filter',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 21,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ],
@@ -194,13 +202,13 @@ class _CoursesScreenState extends State<CoursesScreen> {
           onLongPress: _addCourse,
           child: Container(
             color: AppColors.sectionBar,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
             child: const Text(
               'Current courses',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF333333),
+                color: AppColors.sectionText,
               ),
             ),
           ),
@@ -212,7 +220,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
                   padding: EdgeInsets.zero,
                   itemCount: _courses.length,
                   separatorBuilder: (_, __) =>
-                      const Divider(height: 1, color: Color(0xFFE6E6E6)),
+                      const Divider(height: 1, thickness: 1, color: AppColors.divider),
                   itemBuilder: (_, i) => _courseRow(_courses[i]),
                 ),
         ),
@@ -227,17 +235,17 @@ class _CoursesScreenState extends State<CoursesScreen> {
         onTap: () => openConnectionFailed(context, course.name),
         onLongPress: () => _editCourse(course),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+          padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
           child: Row(
             children: [
               CircleAvatar(
-                radius: 28,
+                radius: 29,
                 backgroundColor: AppColors.avatarGold,
                 child: Text(
                   course.abbreviation,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 19,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -253,15 +261,16 @@ class _CoursesScreenState extends State<CoursesScreen> {
                         fontSize: 22,
                         fontWeight: FontWeight.w800,
                         color: AppColors.dark,
+                        height: 1.15,
                       ),
                     ),
                     if (course.subtitle.isNotEmpty) ...[
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 3),
                       Text(
                         course.subtitle,
                         style: const TextStyle(
                           fontSize: 15,
-                          color: Color(0xFF6B6B6B),
+                          color: AppColors.subtitle,
                         ),
                       ),
                     ],

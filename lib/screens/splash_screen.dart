@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme.dart';
 import 'courses_screen.dart';
@@ -63,10 +64,10 @@ class _SplashScreenState extends State<SplashScreen>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset(
-                  'assets/images/logo.png',
-                  width: 180,
-                  height: 180,
+                SvgPicture.asset(
+                  'assets/logo_bee.svg',
+                  width: 190,
+                  height: 190,
                 ),
                 const SizedBox(height: 12),
                 const Text(
