@@ -1,0 +1,27 @@
+workflows:
+  android-release:
+    name: Study Bee Android APK
+    max_build_duration: 60
+    instance_type: linux_x2
+    environment:
+      flutter: stable
+    scripts:
+      - name: Scaffold Android platform
+        script: |
+          # The repo only tracks the Flutter source; generate the native
+          # Android project for the build (idempotent, leaves lib/ untouched).
+          flutter create --platforms=android --org com.studybeereplica .
+          # Set the visible app name to "Study Bee" (portable sed).
+          sed -i.bak 's/android:label="[^"]*"/android:label="Study Bee"/' \
+            android/app/src/main/AndroidManifest.xml
+          rm -f android/app/src/main/AndroidManifest.xml.bak
+      - name: Get packages
+        script: flutter pub get
+      - name: Generate launcher icon and splash
+        script: |
+          dart run flutter_launcher_icons
+          dart run flutter_native_splash:create
+      - name: Build release APK
+        script: flutter build apk --release
+    artifacts:
+      - build/**/outputs/**/*.apk
