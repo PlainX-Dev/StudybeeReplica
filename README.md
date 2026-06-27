@@ -22,8 +22,9 @@ gesture. Every other action behaves as if the device cannot reach the server.
 
 ## Project layout
 
-The repository tracks only the Flutter source. The native `android/` project is
-generated during CI by `flutter create`, so it is intentionally git-ignored.
+The complete native `android/` project (launcher icons, adaptive icon and
+native splash included) is committed, so the build only needs `pub get` +
+`build apk` — nothing is generated at build time.
 
 ```
 lib/
@@ -33,32 +34,28 @@ lib/
   services/course_store.dart    SharedPreferences storage
   screens/                      splash, courses, connection-failed
   widgets/                      drawer, grade badge, add-course dialog
-assets/
-  images/logo.png               in-app splash logo
-  icon/                         launcher icon + adaptive foreground + splash
-tool/generate_assets.py         regenerates the bee artwork
+android/                        full Android project (named "Study Bee")
+  app/src/main/res/mipmap-*     committed launcher icons + adaptive foreground
+  app/src/main/res/drawable-*   committed native splash logo
+assets/images/logo.png          in-app Flutter splash logo
+tool/generate_assets.py         regenerates the Flutter bee artwork
+tool/generate_android_res.py    regenerates the Android mipmaps / splash
 ```
 
 ## Building the APK with Codemagic
 
-`codemagic.yaml` defines an **android-release** workflow that:
+`codemagic.yaml` defines an **android-release** workflow that simply runs
+`flutter pub get` then `flutter build apk --release`. The installable APK is
+published as a build artifact (`build/**/outputs/**/*.apk`).
 
-1. runs `flutter create --platforms=android` to scaffold the native project,
-2. sets the app label to *Study Bee*,
-3. generates the launcher icon (`flutter_launcher_icons`) and the native
-   splash (`flutter_native_splash`),
-4. builds `flutter build apk --release`.
-
-The installable APK is published as a build artifact
-(`build/**/outputs/**/*.apk`). Point a new Codemagic app at this repository,
-select the `android-release` workflow and start a build.
+Point a new Codemagic app at this repository, choose **Use codemagic.yaml**,
+select the `android-release` workflow and start a build. The finished APK is at
+`build/app/outputs/flutter-apk/app-release.apk`. It is signed with the debug
+key so it installs directly; swap in a real keystore for store distribution.
 
 ## Building locally (optional)
 
 ```bash
-flutter create --platforms=android --org com.studybeereplica .
 flutter pub get
-dart run flutter_launcher_icons
-dart run flutter_native_splash:create
 flutter build apk --release
 ```
