@@ -113,22 +113,22 @@ class _CoursesScreenState extends State<CoursesScreen> {
       color: AppColors.yellow,
       padding: EdgeInsets.only(top: topInset),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(8, 6, 16, 20),
+        padding: const EdgeInsets.fromLTRB(8, 2, 16, 14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             Builder(
               builder: (ctx) => InkResponse(
-                radius: 26,
+                radius: 22,
                 onTap: () => Scaffold.of(ctx).openDrawer(),
                 child: const Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Icon(Icons.menu, color: AppColors.dark, size: 28),
+                  padding: EdgeInsets.all(10),
+                  child: Icon(Icons.menu, color: AppColors.dark, size: 22),
                 ),
               ),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 6),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
@@ -143,7 +143,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
                         'Courses',
                         style: TextStyle(
                           color: AppColors.dark,
-                          fontSize: 40,
+                          fontSize: 23,
                           fontWeight: FontWeight.w800,
                           height: 1.0,
                         ),
@@ -168,17 +168,17 @@ class _CoursesScreenState extends State<CoursesScreen> {
         borderRadius: BorderRadius.circular(30),
         onTap: () => openConnectionFailed(context, 'Filter'),
         child: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 15),
+          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 11),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.filter_list, color: Colors.white, size: 24),
-              SizedBox(width: 10),
+              Icon(Icons.filter_list, color: Colors.white, size: 18),
+              SizedBox(width: 8),
               Text(
                 'Filter',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 21,
+                  fontSize: 17,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -202,11 +202,11 @@ class _CoursesScreenState extends State<CoursesScreen> {
           onLongPress: _addCourse,
           child: Container(
             color: AppColors.sectionBar,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
             child: const Text(
               'Current courses',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: AppColors.sectionText,
               ),
@@ -235,22 +235,22 @@ class _CoursesScreenState extends State<CoursesScreen> {
         onTap: () => openConnectionFailed(context, course.name),
         onLongPress: () => _editCourse(course),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
+          padding: const EdgeInsets.fromLTRB(16, 13, 14, 13),
           child: Row(
             children: [
               CircleAvatar(
-                radius: 29,
+                radius: 19,
                 backgroundColor: AppColors.avatarGold,
                 child: Text(
                   course.abbreviation,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 19,
+                    fontSize: 13,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 13),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -258,18 +258,18 @@ class _CoursesScreenState extends State<CoursesScreen> {
                     Text(
                       course.name,
                       style: const TextStyle(
-                        fontSize: 22,
+                        fontSize: 16,
                         fontWeight: FontWeight.w800,
                         color: AppColors.dark,
                         height: 1.15,
                       ),
                     ),
                     if (course.subtitle.isNotEmpty) ...[
-                      const SizedBox(height: 3),
+                      const SizedBox(height: 2),
                       Text(
                         course.subtitle,
                         style: const TextStyle(
-                          fontSize: 15,
+                          fontSize: 12.5,
                           color: AppColors.subtitle,
                         ),
                       ),
@@ -277,7 +277,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
                   ],
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
               GradeBadge(grade: course.grade, status: course.status),
             ],
           ),

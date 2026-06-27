@@ -55,7 +55,7 @@ class AppDrawer extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: Text(
                   'v1.2.0',
-                  style: TextStyle(color: Color(0x88000000), fontSize: 14),
+                  style: TextStyle(color: Color(0x88000000), fontSize: 12),
                 ),
               ),
             ),
@@ -84,18 +84,18 @@ class AppDrawer extends StatelessWidget {
       child: Row(
         children: [
           const CircleAvatar(
-            radius: 30,
+            radius: 25,
             backgroundColor: AppColors.avatarPurple,
             child: Text(
               'M',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 26,
+                fontSize: 22,
                 fontWeight: FontWeight.w700,
               ),
             ),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: 13),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,7 +104,7 @@ class AppDrawer extends StatelessWidget {
                   _displayName,
                   style: const TextStyle(
                     color: AppColors.dark,
-                    fontSize: 19,
+                    fontSize: 17,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -115,7 +115,7 @@ class AppDrawer extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Color(0xCC000000),
-                    fontSize: 14,
+                    fontSize: 13.5,
                   ),
                 ),
               ],
@@ -138,7 +138,7 @@ class AppDrawer extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           decoration: const BoxDecoration(
             border: Border(
               bottom: BorderSide(color: Color(0x22000000), width: 1),
@@ -146,13 +146,13 @@ class AppDrawer extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(icon, color: AppColors.dark, size: 28),
-              const SizedBox(width: 22),
+              Icon(icon, color: AppColors.dark, size: 23),
+              const SizedBox(width: 20),
               Text(
                 label,
                 style: const TextStyle(
                   color: AppColors.dark,
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
                 ),
               ),
