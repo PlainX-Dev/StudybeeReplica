@@ -6,6 +6,41 @@
 /// mismatched tracings.
 library;
 
+import 'dart:math' as math;
+
+/// Builds a polygon path with each corner rounded off by [r], the way real
+/// pressed-aluminium signs are — vertices are trimmed back along both edges
+/// and joined with a curve through the original corner point.
+String _roundedPolygon(List<List<double>> pts, double r) {
+  final n = pts.length;
+  List<double> toward(List<double> from, List<double> to, double d) {
+    final dx = to[0] - from[0], dy = to[1] - from[1];
+    final len = math.sqrt(dx * dx + dy * dy);
+    final t = d / len;
+    return [from[0] + dx * t, from[1] + dy * t];
+  }
+
+  final entries = <List<double>>[];
+  final exits = <List<double>>[];
+  for (var i = 0; i < n; i++) {
+    final prev = pts[(i - 1 + n) % n];
+    final cur = pts[i];
+    final next = pts[(i + 1) % n];
+    entries.add(toward(cur, prev, r));
+    exits.add(toward(cur, next, r));
+  }
+
+  String p(List<double> pt) => '${pt[0].toStringAsFixed(2)} ${pt[1].toStringAsFixed(2)}';
+
+  final b = StringBuffer('M ${p(entries[0])} ');
+  for (var i = 0; i < n; i++) {
+    b.write('Q ${p(pts[i])} ${p(exits[i])} ');
+    b.write('L ${p(entries[(i + 1) % n])} ');
+  }
+  b.write('Z');
+  return b.toString();
+}
+
 // ── Official colours ───────────────────────────────────────────────────────
 
 const kYellow = '#FFCC00';
@@ -29,16 +64,30 @@ String place(String art, {double scale = 0.5, double dx = 0, double dy = 0}) {
 
 // ── Frames ─────────────────────────────────────────────────────────────────
 
-/// A — warning. Yellow triangle, red border, black pictogram.
+const _warnTriangle = [
+  [50.0, 4.0],
+  [97.0, 89.0],
+  [3.0, 89.0],
+];
+
+const _giveWayTriangle = [
+  [3.0, 11.0],
+  [97.0, 11.0],
+  [50.0, 94.0],
+];
+
+/// A — warning. Yellow triangle, red border, black pictogram. Corners are
+/// rounded like the real pressed-metal plate, not sharp vector points.
 String warn(String art, {double scale = 0.44, double dx = 0, double dy = 8}) => _doc(
-      '<path d="M50 5 L97 88 H3 Z" fill="$kYellow" stroke="$kRed" stroke-width="8" '
-      'stroke-linejoin="round"/>${place(art, scale: scale, dx: dx, dy: dy)}',
+      '<path d="${_roundedPolygon(_warnTriangle, 9)}" fill="$kYellow" stroke="$kRed" '
+      'stroke-width="8" stroke-linejoin="round"/>${place(art, scale: scale, dx: dx, dy: dy)}',
     );
 
-/// B1 — give way. Inverted triangle, no pictogram.
+/// B1 — give way. Inverted triangle, no pictogram. Official Swedish B1 signs
+/// (Transportstyrelsen) use the same yellow field as warning signs.
 String giveWay() => _doc(
-      '<path d="M3 12 H97 L50 93 Z" fill="$kYellow" stroke="$kRed" stroke-width="8" '
-      'stroke-linejoin="round"/>',
+      '<path d="${_roundedPolygon(_giveWayTriangle, 9)}" fill="$kYellow" stroke="$kRed" '
+      'stroke-width="8" stroke-linejoin="round"/>',
     );
 
 /// B2 — stop. Red octagon; the word STOP is drawn as an overlay.
@@ -337,10 +386,11 @@ const roundaboutArrows = '<g fill="none" stroke="$kBlack" stroke-width="10">'
     '<path d="M50 12 a38 38 0 1 1 -26 66" stroke-linecap="round"/></g>'
     '<path d="M62 4 l-16 8 16 10 z" fill="$kBlack"/>';
 
-const roundaboutWhite = '<g fill="none" stroke="$kWhite" stroke-width="9">'
-    '<path d="M28 26 a30 30 0 1 0 44 0"/></g>'
-    '<g fill="$kWhite"><path d="M22 12 l14 16 -20 6 z"/>'
-    '<path d="M78 12 l-14 16 20 6 z" transform="translate(0,0)"/></g>';
+/// A single continuous arrow sweeping most of the way around, one
+/// arrowhead — the real D3 roundabout pictogram, not two facing arrows.
+const roundaboutWhite = '<g fill="none" stroke="$kWhite" stroke-width="9" '
+    'stroke-linecap="round"><path d="M50 12 a38 38 0 1 1 -26 66"/></g>'
+    '<path d="M60 4 l-17 8 16 10 z" fill="$kWhite"/>';
 
 const exclamation = '<g fill="$kBlack"><rect x="42" y="10" width="16" height="52" rx="7"/>'
     '<circle cx="50" cy="80" r="10"/></g>';
