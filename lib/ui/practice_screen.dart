@@ -86,7 +86,7 @@ class PracticeScreen extends StatelessWidget {
               icon: Icons.style_rounded,
               color: Acc.mint,
               badge: due > 0 ? '$due' : null,
-              onTap: () => Navigator.of(context)
+              onTap: () => Navigator.of(context, rootNavigator: true)
                   .push(MaterialPageRoute(builder: (_) => const FlashcardsScreen())),
             ),
             Heading(S.byChapter),

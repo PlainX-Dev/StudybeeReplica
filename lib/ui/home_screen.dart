@@ -73,7 +73,7 @@ class HomeScreen extends StatelessWidget {
         ),
         IconButton(
           icon: Icon(Icons.settings_rounded, color: p.inkSoft),
-          onPressed: () => Navigator.of(context)
+          onPressed: () => Navigator.of(context, rootNavigator: true)
               .push(MaterialPageRoute(builder: (_) => const SettingsScreen())),
         ),
       ],
@@ -100,7 +100,7 @@ class HomeScreen extends StatelessWidget {
           icon: Icons.style_rounded,
           color: Acc.mint,
           badge: due > 0 ? '$due' : null,
-          onTap: () => Navigator.of(context)
+          onTap: () => Navigator.of(context, rootNavigator: true)
               .push(MaterialPageRoute(builder: (_) => const FlashcardsScreen())),
         ),
         _QuickTile(
@@ -414,7 +414,7 @@ class _PlanList extends StatelessWidget {
           Icons.style_rounded,
           Acc.mint,
           false,
-          () => Navigator.of(context)
+          () => Navigator.of(context, rootNavigator: true)
               .push(MaterialPageRoute(builder: (_) => const FlashcardsScreen())),
         ),
       if (weak >= 5)

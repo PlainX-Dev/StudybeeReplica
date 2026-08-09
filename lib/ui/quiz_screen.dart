@@ -81,7 +81,9 @@ Future<void> openQuiz(
   }
 
   if (!context.mounted) return;
-  await Navigator.of(context).push(MaterialPageRoute(
+  // Root navigator: a quiz owns the whole screen, including the space the
+  // bottom nav bar would otherwise occupy — the Check button lives there.
+  await Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
     builder: (_) => QuizScreen(
       questions: qs,
       mode: mode,
