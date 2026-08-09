@@ -3,6 +3,7 @@ import 'q01_04.dart';
 import 'q05_09.dart';
 import 'q10_14.dart';
 import 'q15_20.dart';
+import 'q_extra.dart';
 
 /// Everything written by hand. Sign-recognition questions are generated from
 /// the sign library on top of these — see `Curriculum.questions`.
@@ -11,4 +12,5 @@ final handWrittenQuestions = <Question>[
   ...questions05to09,
   ...questions10to14,
   ...questions15to20,
+  ...questionsExtra,
 ];
