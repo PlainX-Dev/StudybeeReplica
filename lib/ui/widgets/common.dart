@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/l10n.dart';
 import '../../core/store.dart';
 import '../../core/theme.dart';
+import '../../data/signs/real_art.dart';
 import '../../models/content.dart';
 
 /// Reads the palette that matches the current setting.
@@ -76,13 +77,14 @@ class SignView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final real = kRealSignArt[sign.id];
     return SizedBox(
       width: size,
       height: size,
       child: Stack(
         children: [
-          SvgPicture.string(sign.svg, width: size, height: size),
-          if (sign.overlay != null)
+          SvgPicture.string(real ?? sign.svg, width: size, height: size),
+          if (sign.overlay != null && real == null)
             Positioned.fill(
               child: Align(
                 alignment: Alignment(0, sign.overlayDy * 2),
