@@ -1,0 +1,21 @@
+/* Svenska: ordetiketter under bilderna i lektionerna */
+SV.labels = {
+  'Warning': 'Varningsmärke',
+  'Prohibition': 'Förbudsmärke',
+  'Mandatory': 'Påbudsmärke',
+  'Information': 'Upplysningsmärke',
+  'Give way': 'Väjningsplikt',
+  'Stop': 'Stopplikt',
+  'Priority road': 'Huvudled',
+  'End of priority road': 'Huvudled upphör',
+  'You give way': 'Du väjer',
+  'You have priority': 'Du har företräde',
+  'No entry': 'Förbud mot infart',
+  'No vehicles': 'Förbud mot trafik',
+  'No parking': 'Parkeringsförbud',
+  'No stopping': 'Stoppförbud',
+  'Walking-pace zone': 'Gångfartsområde',
+  'Passing place': 'Mötesplats',
+  'Pedestrian crossing': 'Övergångsställe',
+  'Cycle crossing': 'Cykelöverfart',
+};

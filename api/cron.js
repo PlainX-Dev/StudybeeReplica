@@ -16,8 +16,8 @@ export default async function handler(req, res) {
     const raw = await store.get(`state:${id}`);
     const state = raw ? JSON.parse(raw) : null;
     for (const [ep, v] of entries) {
-      const { subscription, tz } = JSON.parse(v);
-      const msg = reminderFor(state, tz);
+      const { subscription, tz, lang } = JSON.parse(v);
+      const msg = reminderFor(state, tz, lang);
       if (!msg) { skipped++; continue; }
       try { await wp.sendNotification(subscription, JSON.stringify({ ...msg, url: '/#today', tag: 'daily' }), { TTL: 6 * 3600 }); sent++; }
       catch (e) { if (e.statusCode === 404 || e.statusCode === 410) { await store.hdel(`subs:${id}`, ep); removed++; } }

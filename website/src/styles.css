@@ -205,6 +205,8 @@ a.rowlink:hover { text-decoration: none; background: var(--fill); }
 @media (max-width: 980px) { .welcome-art { position: relative; top: 0; width: 280px; height: 280px; margin: 0 auto -10px; } }
 .start { flex-direction: row; flex-wrap: wrap; align-items: end; gap: 16px; max-width: 46rem; }
 .start .field { flex: 1 1 200px; }
+.welcome-lang { gap: 6px; margin-bottom: -6px; position: relative; z-index: 1; }
+#langSwitch { gap: 6px; padding: 12px 8px 0; margin-top: auto; }
 .facts-strip { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 28px; }
 .facts-strip li { display: flex; flex-direction: column; }
 .facts-strip b { font-family: var(--font-display); font-size: 34px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
@@ -493,4 +495,74 @@ input.text { font: inherit; font-size: 16px; padding: 0 14px; min-height: 44px; 
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+/* ---------------------------------------------------------------- phones
+   Tighter spacing, smaller art and a quiz that fits one screen: picture, question and answers
+   are visible together, and the Continue bar has its own backdrop instead of floating over text. */
+@media (max-width: 640px) {
+  #main { gap: 18px; }
+  main { padding-top: calc(12px + env(safe-area-inset-top, 0px)); }
+  .large-title { font-size: 28px; }
+  .lede { font-size: 16px; }
+  .card { padding: 16px; }
+  .grid-2, .stack { gap: 14px; }
+
+  /* welcome: art shrinks so the start form is on the first screen */
+  .welcome { padding-top: 0; gap: 16px; }
+  .welcome-art { width: 168px; height: 168px; margin: 0 auto -6px; }
+  .welcome-art .rings { width: 132px; height: 132px; }
+  .welcome-art .float .sign { width: 44px; height: 44px; }
+  .display { font-size: 38px; max-width: none; }
+  .start .btn { width: 100%; }
+  .facts-strip { gap: 10px 22px; }
+  .facts-strip b { font-size: 26px; }
+
+  /* today hero: rings beside the text instead of a tall stacked card */
+  .hero { grid-template-columns: auto minmax(0, 1fr); justify-items: stretch; text-align: left; padding: 18px 16px; gap: 14px; align-items: start; }
+  .hero-rings .rings { width: 92px; height: 92px; }
+  .hero-body { align-items: stretch; gap: 6px; }
+  .hero-title { font-size: 22px; line-height: 1.2; }
+  .hero-focus { font-size: 14.5px; }
+  .legend { justify-content: flex-start; gap: 4px 18px; margin: 4px 0 2px; }
+  .legend b { font-size: 19px; }
+  .legend span { font-size: 10.5px; }
+  .btn.hero-cta { align-self: stretch; width: 100%; margin-top: 4px; }
+  .journey { padding-top: 12px; }
+  .jtrack { gap: 3px; }
+  .tasks .task { padding: 10px 14px; min-height: 56px; }
+
+  /* plan + practice: denser two-column grids */
+  .days { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .day { min-height: 104px; padding: 12px; }
+  .dnum { font-size: 24px; }
+  .hub { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .hubcard { min-height: 108px; padding: 14px; }
+  .hubcard > span { width: 32px; height: 32px; border-radius: 10px; }
+  .hubcard b { font-size: 17px; margin-top: 10px; }
+  .hubcard em { font-size: 12px; }
+  .hubcard:last-child:nth-child(odd) { grid-column: 1 / -1; min-height: 84px; }
+
+  /* lessons */
+  .lesson { gap: 24px; }
+  .lsec .prose { font-size: 16px; line-height: 1.55; }
+  .pics { grid-template-columns: minmax(0, 1fr); }
+
+  /* quiz */
+  .quiz { gap: 12px; }
+  .qgrid { gap: 12px; }
+  .qpic { padding: 6px; border-radius: var(--r); display: flex; justify-content: center; }
+  .qpic svg.scene { width: auto; max-width: 100%; max-height: 34svh; border-radius: 10px; }
+  .qpic .scene-sign { padding: 8px; }
+  .qpic .scene-sign .sign { width: min(120px, 22svh); height: auto; }
+  .qpic .scene-signs { padding: 6px; gap: 14px; }
+  .qpic .scene-signs .sign { width: 84px; height: auto; }
+  .qside { gap: 10px; }
+  .qtext { font-size: 19px; line-height: 1.3; }
+  .opts { gap: 8px; }
+  .opt { font-size: 15.5px; line-height: 1.35; padding: 10px 12px; min-height: 50px; gap: 12px; border-radius: 12px; }
+  .letter { width: 26px; height: 26px; font-size: 13px; }
+  .feedback { padding: 12px 14px; font-size: 15px; }
+  .qnav { position: sticky; bottom: 0; z-index: 5; margin: 0 -16px; padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(to bottom, transparent, var(--bg) 30%); }
+  body.focus main { padding-bottom: 0; }
 }

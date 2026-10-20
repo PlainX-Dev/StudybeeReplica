@@ -1,8 +1,14 @@
 /* Körkort 30 — app logic. Plain JS, no build step, works from file:// and when hosted. */
 (function () {
   'use strict';
+  I18N.apply(); // swap content to the chosen language before anything reads TOPICS/QB/LESSONS/PLAN
+  { // static shell text (shell.html ships the Swedish default)
+    const sub = document.querySelector('.brand small'); if (sub) sub.textContent = T('brand.sub');
+    const md = document.querySelector('meta[name=description]'); if (md) md.content = T('meta.description');
+    document.querySelectorAll('#nav, #tabs').forEach((n) => n.setAttribute('aria-label', T('nav.sections')));
+  }
 
-  const $ = (s, el = document) => el.querySelector(s);
+  const $ =(s, el = document) => el.querySelector(s);
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const TOPIC = Object.fromEntries(TOPICS.map((t) => [t.id, t]));
   const LETTERS = ['A', 'B', 'C', 'D'];
@@ -25,15 +31,15 @@
   const today = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
   const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const parse = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
-  const fmt = (d) => d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
-  const fmtLong = (d) => d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+  const fmt = (d) => d.toLocaleDateString(I18N.locale, { weekday: 'short', day: 'numeric', month: 'short' });
+  const fmtLong = (d) => d.toLocaleDateString(I18N.locale, { weekday: 'long', day: 'numeric', month: 'long' });
   function planDay() {
     if (!S.start) return 1;
     const n = Math.floor((today() - parse(S.start)) / DAY_MS) + 1;
     return Math.max(1, Math.min(30, n));
   }
   const dateOfDay = (n) => new Date(parse(S.start || iso(today())).getTime() + (n - 1) * DAY_MS);
-  const greeting = () => { const h = new Date().getHours(); return h < 5 ? 'Late-night study' : h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening'; };
+  const greeting = () => { const h = new Date().getHours(); return T(h < 5 ? 'greet.late' : h < 12 ? 'greet.morning' : h < 18 ? 'greet.afternoon' : 'greet.evening'); };
 
   // ------------------------------------------------------------- icons (SF Symbols-style line icons)
   const ICON = {
@@ -77,6 +83,8 @@
 
   // ------------------------------------------------------ question pool
   // Sign drill questions are generated from the sign library.
+  // Signs.group() returns English group names; they are data keys here and get translated for display.
+  const GROUP_KEY = { 'Warning signs': 'warning', 'Prohibition signs': 'prohibition', 'Priority signs': 'priority', 'Mandatory signs': 'mandatory', 'Information signs': 'information' };
   const SIGN_Q = Signs.list().map((name) => {
     const group = Signs.group(name);
     const pool = Signs.list().filter((n) => n !== name);
@@ -86,20 +94,12 @@
     const wrong = pick(same.length >= 3 ? same : pool, 3, seed).map((n) => Signs.name(n));
     return {
       id: `sign-${name}`, topic: 'signs', generated: true,
-      q: 'What does this sign mean?', img: { sign: name },
+      q: T('sign.q'), img: { sign: name },
       options: [Signs.name(name)].concat(wrong), answer: 0,
-      explain: `This is the sign "${Signs.name(name)}". ${group} ${groupHint(group)}`,
+      explain: T('sign.explain', { name: Signs.name(name), hint: groupHint(group) }),
     };
   });
-  function groupHint(g) {
-    return {
-      'Warning signs': 'are red-bordered triangles with a yellow face: they warn you about something ahead.',
-      'Prohibition signs': 'are round with a red border: they tell you what you may not do.',
-      'Priority signs': 'tell you who gives way at the next junction or narrow section.',
-      'Mandatory signs': 'are blue discs: they tell you what you must do.',
-      'Information signs': 'are blue rectangles: they give information or mark special road types.',
-    }[g] || '';
-  }
+  function groupHint(g) { return GROUP_KEY[g] ? T(`signs.hint.${GROUP_KEY[g]}`) : ''; }
   const ALL = QB.concat(SIGN_Q);
   const REAL = QB; // written questions (used for practice + mocks)
 
@@ -146,33 +146,31 @@
     while (activeOn(iso(d))) { n++; d = new Date(d.getTime() - DAY_MS); }
     return { n, todayDone: activeOn(iso(today())) };
   }
-  const LEVELS = [
-    [0, 'L-plate'], [150, 'Car park'], [400, 'Gravel road'], [800, 'Village street'], [1300, 'Country road'], [2000, 'Main road'],
-    [2900, 'Expressway'], [4000, 'Motorway'], [5300, 'Night driver'], [6800, 'Winter pro'], [8500, 'Moose spotter'], [10500, 'Licence ready'],
-  ];
+  const LEVELS = [0, 150, 400, 800, 1300, 2000, 2900, 4000, 5300, 6800, 8500, 10500].map((xp, i) => [xp, T(`level.${i}`)]);
   function level() {
     let i = 0; while (i + 1 < LEVELS.length && S.xp >= LEVELS[i + 1][0]) i++;
     const cur = LEVELS[i][0], nxt = LEVELS[i + 1] ? LEVELS[i + 1][0] : cur;
     return { n: i + 1, name: LEVELS[i][1], next: LEVELS[i + 1] ? LEVELS[i + 1][1] : null, frac: nxt > cur ? (S.xp - cur) / (nxt - cur) : 1, toNext: nxt - S.xp };
   }
   const BADGES = [
-    { id: 'first', name: 'First kilometre', desc: 'Finish your first quiz.', test: () => S.log.length >= 1 },
-    { id: 'day1', name: 'Day one done', desc: 'Complete every task on a plan day.', test: () => PLAN.some((d) => dayDone(d.day)) },
-    { id: 's3', name: 'Warming up', desc: 'Study 3 days in a row.', test: () => S.best >= 3 },
-    { id: 's7', name: 'One-week streak', desc: 'Study 7 days in a row.', test: () => S.best >= 7 },
-    { id: 's14', name: 'Two-week streak', desc: 'Study 14 days in a row.', test: () => S.best >= 14 },
-    { id: 's30', name: 'Unbroken', desc: 'Study 30 days in a row.', test: () => S.best >= 30 },
-    { id: 'q100', name: 'Hundred club', desc: 'Answer 100 questions.', test: () => totalAnswered() >= 100 },
-    { id: 'q500', name: 'High mileage', desc: 'Answer 500 questions.', test: () => totalAnswered() >= 500 },
-    { id: 'perfect', name: 'Clean run', desc: 'Score 100% on a quiz of 15+ questions.', test: () => S.log.some((l) => l.total >= 15 && l.right === l.total) },
-    { id: 'combo10', name: 'On a roll', desc: 'Get 10 right in a row.', test: () => (S.maxCombo || 0) >= 10 },
-    { id: 'mock1', name: 'Exam nerves', desc: 'Sit your first mock exam.', test: () => S.mocks.length >= 1 },
-    { id: 'pass', name: 'Passed', desc: 'Pass a mock exam.', test: () => S.mocks.some((m) => m.passed) },
-    { id: 'm60', name: 'Test ready', desc: 'Score 60/65 or more on a mock.', test: () => S.mocks.some((m) => m.score / m.total >= 60 / 65) },
-    { id: 'signs', name: 'Sign reader', desc: 'Master every sign in the drill.', test: () => SIGN_Q.every((q) => (S.q[q.id] || {}).box >= 2) },
-    { id: 'junction', name: 'Junction ace', desc: 'Master 80% of the right-of-way questions.', test: () => topicStats('priority').mastery >= 0.8 },
-    { id: 'lessons', name: 'Bookworm', desc: 'Read all 12 lessons.', test: () => Object.keys(S.lessons).length >= 12 },
+    { id: 'first', test: () => S.log.length >= 1 },
+    { id: 'day1', test: () => PLAN.some((d) => dayDone(d.day)) },
+    { id: 's3', test: () => S.best >= 3 },
+    { id: 's7', test: () => S.best >= 7 },
+    { id: 's14', test: () => S.best >= 14 },
+    { id: 's30', test: () => S.best >= 30 },
+    { id: 'q100', test: () => totalAnswered() >= 100 },
+    { id: 'q500', test: () => totalAnswered() >= 500 },
+    { id: 'perfect', test: () => S.log.some((l) => l.total >= 15 && l.right === l.total) },
+    { id: 'combo10', test: () => (S.maxCombo || 0) >= 10 },
+    { id: 'mock1', test: () => S.mocks.length >= 1 },
+    { id: 'pass', test: () => S.mocks.some((m) => m.passed) },
+    { id: 'm60', test: () => S.mocks.some((m) => m.score / m.total >= 60 / 65) },
+    { id: 'signs', test: () => SIGN_Q.every((q) => (S.q[q.id] || {}).box >= 2) },
+    { id: 'junction', test: () => topicStats('priority').mastery >= 0.8 },
+    { id: 'lessons', test: () => Object.keys(S.lessons).length >= 12 },
   ];
+  for (const b of BADGES) { b.name = T(`badge.${b.id}.name`); b.desc = T(`badge.${b.id}.desc`); }
   const totalAnswered = () => Object.values(S.q).reduce((a, s) => a + s.seen, 0);
   let newBadges = [];
   function checkBadges() {
@@ -228,7 +226,7 @@
     if (on && !was) {
       dayRec().t++; addXP(40);
       const n = +key.split('-')[0];
-      if (dayDone(n)) { addXP(100); celebrate = { title: `Day ${n} complete`, body: n < 30 ? `Tomorrow: ${PLAN[n].title}.` : 'The whole plan is done. Go pass that test.' }; }
+      if (dayDone(n)) { addXP(100); celebrate = { title: T('celebrate.title', { n }), body: n < 30 ? T('celebrate.tomorrow', { title: PLAN[n].title }) : T('celebrate.planDone') }; }
     }
   }
   let celebrate = null;
@@ -238,7 +236,7 @@
   let timer = null;
   let pendingTask = null;
   function startSession(opts) {
-    if (!opts.items.length) { toast('No questions available for that choice yet.'); return; }
+    if (!opts.items.length) { toast(T('session.none')); return; }
     const items = opts.items.map((q) => ({ q, order: shuffle(q.options.map((_, i) => i)), pick: null }));
     session = { mode: opts.mode, title: opts.title, items, i: 0, taskKey: opts.taskKey || null, started: Date.now(), revealed: false, finished: false,
       deadline: opts.mode === 'mock' ? Date.now() + MOCK.minutes * 60000 : null, combo: 0, xp: 0, xpBefore: S.xp, levelBefore: level().n };
@@ -251,15 +249,15 @@
     if (t.type === 'todo') { markDone(key, !S.done[key]); checkBadges(); save(); render(); return; }
     if (t.type === 'practice') {
       const topics = resolveTopics(t.topics);
-      startSession({ mode: 'practice', title: t.label || `${topics.map((x) => TOPIC[x].short).join(' + ')} practice`, items: pickPractice(t.topics, t.n), taskKey: key });
+      startSession({ mode: 'practice', title: t.label || T('session.practiceTopics', { topics: topics.map((x) => TOPIC[x].short).join(' + ') }), items: pickPractice(t.topics, t.n), taskKey: key });
     }
-    if (t.type === 'signs') startSession({ mode: 'practice', title: t.n ? `Sign drill` : 'Every sign', items: pickSigns(t.n), taskKey: key });
+    if (t.type === 'signs') startSession({ mode: 'practice', title: t.n ? T('session.signDrill') : T('session.everySign'), items: pickSigns(t.n), taskKey: key });
     if (t.type === 'review') {
       const list = mistakes();
-      if (!list.length) { markDone(key); checkBadges(); save(); toast('No mistakes to review. Task ticked off.'); render(); return; }
-      startSession({ mode: 'practice', title: 'Mistakes review', items: shuffle(list).slice(0, 40), taskKey: key });
+      if (!list.length) { markDone(key); checkBadges(); save(); toast(T('session.noMistakesTicked')); render(); return; }
+      startSession({ mode: 'practice', title: T('session.mistakesReview'), items: shuffle(list).slice(0, 40), taskKey: key });
     }
-    if (t.type === 'mock') startSession({ mode: 'mock', title: 'Mock exam', items: pickMock(), taskKey: key });
+    if (t.type === 'mock') startSession({ mode: 'mock', title: T('session.mock'), items: pickMock(), taskKey: key });
   }
   function nextTask() {
     const n = planDay(); const i = PLAN[n - 1].tasks.findIndex((_, k) => !S.done[`${n}-${k}`]);
@@ -314,10 +312,7 @@
   function go(r) { route = r; if (location.hash.slice(1) !== r) history.replaceState(null, '', '#' + r); render(); window.scrollTo({ top: 0 }); }
   window.addEventListener('hashchange', () => { route = location.hash.slice(1) || 'today'; render(); window.scrollTo({ top: 0 }); });
 
-  const NAV = [
-    ['today', 'Today', 'today'], ['plan', 'Plan', 'plan'], ['lessons', 'Learn', 'lessons'], ['practice', 'Practice', 'practice'],
-    ['mock', 'Mock exam', 'mock'], ['mistakes', 'Mistakes', 'mistakes'], ['signs', 'Signs', 'signs'], ['progress', 'Progress', 'progress'],
-  ];
+  const NAV = ['today', 'plan', 'lessons', 'practice', 'mock', 'mistakes', 'signs', 'progress'].map((id) => [id, T(`nav.${id}`), id]);
   const TABS = ['today', 'plan', 'lessons', 'practice', 'progress'];
   function activeSection() {
     if (route.startsWith('lesson-') || route === 'facts') return 'lessons';
@@ -334,7 +329,10 @@
     $('#nav').innerHTML = NAV.map(([id, label, ic]) => `<a href="#${id}" class="${active === id ? 'on' : ''}" ${active === id ? 'aria-current="page"' : ''}>${icon(ic)}<span>${label}</span>${id === 'mistakes' && mc ? `<span class="pill">${mc}</span>` : ''}</a>`).join('');
     $('#tabs').innerHTML = TABS.map((id) => { const n = NAV.find((x) => x[0] === id); const on = active === id || (id === 'practice' && ['mock', 'mistakes', 'signs'].includes(active)); return `<a href="#${id}" class="${on ? 'on' : ''}" ${on ? 'aria-current="page"' : ''}>${icon(n[2])}<span>${n[1]}</span></a>`; }).join('');
     $('#me').innerHTML = S.start ? `<div class="me-row"><span class="chip flame ${st.todayDone ? 'lit' : ''}">${icon('flame')}${st.n}</span><span class="chip">${icon('star')}${S.xp} XP</span></div>
-      <div class="me-level"><span>Level ${lv.n} · ${esc(lv.name)}</span><span class="lbar"><i style="width:${Math.round(lv.frac * 100)}%"></i></span></div>` : '';
+      <div class="me-level"><span>${T('level.label', { n: lv.n, name: esc(lv.name) })}</span><span class="lbar"><i style="width:${Math.round(lv.frac * 100)}%"></i></span></div>` : '';
+    let ls = $('#langSwitch');
+    if (!ls) { ls = document.createElement('div'); ls.id = 'langSwitch'; ls.className = 'actions'; $('.sidebar').appendChild(ls); }
+    ls.innerHTML = langButtons('small');
     document.body.classList.toggle('focus', route === 'quiz' && !!session && !session.finished);
     const main = $('#main');
     let html;
@@ -356,10 +354,14 @@
     main.classList.remove('enter'); void main.offsetWidth; main.classList.add('enter');
     if (route === 'quiz' && session && session.mode === 'mock' && !session.finished) tickTimer();
     if (celebrate && route !== 'quiz') showCelebrate();
-    if (newBadges.length && !(route === 'quiz' && session && session.finished)) { for (const b of newBadges) toast(`Badge unlocked: ${b.name}`, 'trophy'); newBadges = []; }
+    if (newBadges.length && !(route === 'quiz' && session && session.finished)) { for (const b of newBadges) toast(T('badge.unlocked', { name: b.name }), 'trophy'); newBadges = []; }
   }
 
   // ------------------------------------------------------------- shared bits
+  /** Svenska / English switch. Labels stay in their own language so either is findable. */
+  function langButtons(size = '') {
+    return `<span class="muted small">${T('lang.label')}</span>` + ['sv', 'en'].map((l) => `<button class="btn ${LANG === l ? 'filled' : 'plain'} ${size}" data-act="lang" data-lang="${l}" lang="${l}" aria-pressed="${LANG === l}">${T(`lang.${l}`)}</button>`).join('');
+  }
   function rings(vals, size = 168) {
     // vals: [{v: 0..1+, color, track}]
     const c = size / 2; const w = size * 0.115; const gap = w * 0.22;
@@ -380,35 +382,35 @@
     const out = []; const t = today();
     for (let i = 6; i >= 0; i--) {
       const d = new Date(t.getTime() - i * DAY_MS); const k = iso(d); const on = activeOn(k);
-      out.push(`<li class="${on ? 'on' : ''} ${i === 0 ? 'now' : ''}"><span>${d.toLocaleDateString('en-GB', { weekday: 'narrow' })}</span><i>${on ? icon('check') : ''}</i></li>`);
+      out.push(`<li class="${on ? 'on' : ''} ${i === 0 ? 'now' : ''}"><span>${d.toLocaleDateString(I18N.locale, { weekday: 'narrow' })}</span><i>${on ? icon('check') : ''}</i></li>`);
     }
-    return `<ol class="week-strip" aria-label="Last 7 days">${out.join('')}</ol>`;
+    return `<ol class="week-strip" aria-label="${T('today.last7')}">${out.join('')}</ol>`;
   }
 
   function taskLabel(t, dayN) {
     switch (t.type) {
-      case 'lesson': return t.topic === 'weak' ? `Reread your weakest topic${dayN && planDay() >= dayN ? `: ${TOPIC[weakTopics(1)[0]].name}` : ''}` : TOPIC[t.topic].name;
+      case 'lesson': return t.topic === 'weak' ? `${T('task.rereadWeak')}${dayN && planDay() >= dayN ? `: ${TOPIC[weakTopics(1)[0]].name}` : ''}` : TOPIC[t.topic].name;
       case 'practice': {
-        const names = t.topics.includes('all') ? 'All topics' : t.topics.includes('weak') ? 'Your weakest topics' : t.topics.map((x) => TOPIC[x].short).join(', ');
+        const names = t.topics.includes('all') ? T('task.allTopics') : t.topics.includes('weak') ? T('task.yourWeakest') : t.topics.map((x) => TOPIC[x].short).join(', ');
         return `${t.label || names}`;
       }
-      case 'signs': return t.n ? `${t.n} signs` : `Every sign (${SIGN_Q.length})`;
-      case 'review': return 'Review your mistakes';
-      case 'mock': return `${MOCK.questions} questions, ${MOCK.minutes} minutes`;
-      case 'facts': return 'Key-facts sheet';
+      case 'signs': return t.n ? T('task.nSigns', { n: t.n }) : T('task.everySign', { n: SIGN_Q.length });
+      case 'review': return T('task.reviewMistakes');
+      case 'mock': return T('task.mockLabel', { q: MOCK.questions, m: MOCK.minutes });
+      case 'facts': return T('task.factsSheet');
       case 'todo': return t.text;
       default: return '';
     }
   }
   function taskSub(t) {
     switch (t.type) {
-      case 'lesson': return 'Lesson';
-      case 'practice': return `${t.n} questions${t.label ? ` · ${t.topics.includes('all') ? 'all topics' : t.topics.includes('weak') ? 'weakest topics' : t.topics.map((x) => TOPIC[x].short).join(', ')}` : ''}`;
-      case 'signs': return 'Sign drill';
-      case 'review': return `${mistakes().length} on the list`;
-      case 'mock': return 'Mock exam';
-      case 'facts': return 'Read';
-      case 'todo': return 'To do';
+      case 'lesson': return T('task.sub.lesson');
+      case 'practice': return `${T('common.questions', { n: t.n })}${t.label ? ` · ${t.topics.includes('all') ? T('task.sub.allTopics') : t.topics.includes('weak') ? T('task.sub.weakest') : t.topics.map((x) => TOPIC[x].short).join(', ')}` : ''}`;
+      case 'signs': return T('task.sub.signs');
+      case 'review': return T('task.sub.onList', { n: mistakes().length });
+      case 'mock': return T('task.sub.mock');
+      case 'facts': return T('task.sub.read');
+      case 'todo': return T('task.sub.todo');
       default: return '';
     }
   }
@@ -420,9 +422,9 @@
     return `<ol class="group tasks">${day.tasks.map((t, i) => {
       const key = `${dayN}-${i}`; const done = !!S.done[key];
       const [ic, color] = TASK_ICON[t.type];
-      const action = t.type === 'todo' ? (done ? 'Undo' : 'Done') : done ? 'Again' : 'Start';
+      const action = t.type === 'todo' ? (done ? T('task.undo') : T('task.done')) : done ? T('task.again') : T('common.start');
       return `<li class="row task ${done ? 'done' : ''}">
-        <button class="check" data-act="toggle" data-key="${key}" aria-pressed="${done}" aria-label="${done ? 'Mark not done' : 'Mark done'}">${icon('check')}</button>
+        <button class="check" data-act="toggle" data-key="${key}" aria-pressed="${done}" aria-label="${done ? T('task.markNotDone') : T('task.markDone')}">${icon('check')}</button>
         <span class="tile small" style="--tile:${color};--s:30px"><span style="color:#fff">${icon(ic)}</span></span>
         <div class="tbody"><span class="tlabel">${esc(taskLabel(t, dayN))}</span><span class="tsub">${esc(taskSub(t))} · ${taskMins(t)} min</span></div>
         <button class="btn ${done ? 'tinted' : 'filled'} small" data-act="task" data-day="${dayN}" data-i="${i}">${action}</button>
@@ -445,7 +447,7 @@
   async function api(path, opts = {}) {
     const r = await fetch(`/api/${path}`, { headers: { 'content-type': 'application/json' }, ...opts });
     const j = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(j.error || `Server error ${r.status}`);
+    if (!r.ok) throw new Error(j.error || T('error.server', { status: r.status }));
     return j;
   }
   /** Merge two progress states. Every field merges so that no device's work is lost. */
@@ -495,10 +497,10 @@
   function scheduleSync() { if (!syncId) return; dirty = true; clearTimeout(pushT); pushT = setTimeout(() => syncNow({ quiet: true }), 2500); }
   function paintSync() { const el = $('#syncStatus'); if (el) el.innerHTML = syncLine(); const dot = $('#syncDot'); if (dot) dot.className = `syncdot ${cloud.status}`; }
   function syncLine() {
-    if (cloud.status === 'syncing') return 'Syncing…';
-    if (cloud.status === 'error') return `Not synced: ${esc(cloud.error)}`;
-    if (cloud.last) return `Synced ${new Date(cloud.last).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`;
-    return 'Waiting to sync';
+    if (cloud.status === 'syncing') return T('sync.syncing');
+    if (cloud.status === 'error') return T('sync.notSynced', { error: esc(cloud.error) });
+    if (cloud.last) return T('sync.syncedAt', { time: new Date(cloud.last).toLocaleTimeString(I18N.locale, { hour: '2-digit', minute: '2-digit' }) });
+    return T('sync.waiting');
   }
   async function linkDevice(code, { fresh: isNew = false } = {}) {
     syncId = code;
@@ -529,12 +531,12 @@
   async function enableReminders() {
     if (!syncId) await linkDevice(newCode(), { fresh: true });
     const perm = await Notification.requestPermission();
-    if (perm !== 'granted') throw new Error(perm === 'denied' ? 'Notifications are blocked for this site. Allow them in your browser or phone settings, then try again.' : 'Notifications were not allowed.');
+    if (perm !== 'granted') throw new Error(perm === 'denied' ? T('rem.blocked') : T('rem.notAllowed'));
     const reg = swReg || (await registerSW());
-    if (!reg) throw new Error('This browser cannot run the reminder service.');
+    if (!reg) throw new Error(T('rem.noService'));
     await navigator.serviceWorker.ready;
     const sub = (await reg.pushManager.getSubscription()) || (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(cloud.vapid) }));
-    await api('push', { method: 'POST', body: JSON.stringify({ action: 'subscribe', id: syncId, subscription: sub.toJSON(), tz: Intl.DateTimeFormat().resolvedOptions().timeZone }) });
+    await api('push', { method: 'POST', body: JSON.stringify({ action: 'subscribe', id: syncId, subscription: sub.toJSON(), tz: Intl.DateTimeFormat().resolvedOptions().timeZone, lang: LANG }) });
     cloud.subscribed = true;
   }
   async function disableReminders() {
@@ -552,7 +554,7 @@
     if (m && cloud.sync) {
       const code = cleanCode(m[1]);
       history.replaceState(null, '', '#today'); route = 'today';
-      if (code.length === 20) { try { await linkDevice(code); toast('This device is now linked. Progress is shared.'); } catch (e) { toast(`Could not link: ${e.message}`, 'close'); } }
+      if (code.length === 20) { try { await linkDevice(code); toast(T('sync.linkedHere')); } catch (e) { toast(T('sync.couldNotLink', { error: e.message }), 'close'); } }
     } else if (syncId && cloud.sync) await syncNow({ quiet: true });
     render();
   }
@@ -563,32 +565,32 @@
   });
 
   function cloudCard() {
-    if (!hosted) return `<section class="card"><h2>Sync and reminders</h2><p class="muted">These work on the hosted site. This copy was opened from a file on your computer, so progress stays in this browser.</p></section>`;
-    if (!cloud.checked) return `<section class="card"><h2>Sync and reminders</h2><p class="muted">Checking the server…</p></section>`;
-    if (!cloud.sync) return `<section class="card"><h2>Sync and reminders</h2><p class="muted">The server for sync isn't set up yet. Connect an Upstash Redis database to this project in Vercel (see the README), then redeploy.</p></section>`;
+    if (!hosted) return `<section class="card"><h2>${T('sync.cardTitle')}</h2><p class="muted">${T('sync.fileOnly')}</p></section>`;
+    if (!cloud.checked) return `<section class="card"><h2>${T('sync.cardTitle')}</h2><p class="muted">${T('sync.checking')}</p></section>`;
+    if (!cloud.sync) return `<section class="card"><h2>${T('sync.cardTitle')}</h2><p class="muted">${esc(T('sync.notSetUp'))}</p></section>`;
     const sync = syncId
-      ? `<div class="row-between"><h2>Sync between devices</h2><span class="syncdot ${cloud.status}" id="syncDot" aria-hidden="true"></span></div>
+      ? `<div class="row-between"><h2>${T('sync.title')}</h2><span class="syncdot ${cloud.status}" id="syncDot" aria-hidden="true"></span></div>
          <p class="muted small" id="syncStatus">${syncLine()}</p>
-         <p>Open this link on your phone (or any device) once. After that, both share the same progress automatically.</p>
+         <p>${T('sync.openLink')}</p>
          <div class="codebox"><span class="code">${prettyCode(syncId)}</span></div>
-         <div class="actions"><button class="btn filled" data-act="copyLink">Copy link for your phone</button><button class="btn tinted" data-act="syncNow">Sync now</button><button class="btn plain" data-act="unlinkAsk">Unlink this device</button></div>
-         <p class="muted small">Keep the code private: anyone with it can see and change this progress.</p>`
-      : `<h2>Sync between devices</h2>
-         <p>Share one set of progress between your PC and phone: streak, plan, mistakes and mock results.</p>
-         <div class="actions"><button class="btn filled" data-act="syncOn">Turn on sync</button></div>
-         <form id="linkForm" class="row-form"><div class="field"><label for="linkCode">Already set up on another device? Enter its code</label><input id="linkCode" class="text" autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX"></div><button class="btn tinted" type="submit">Link</button></form>`;
+         <div class="actions"><button class="btn filled" data-act="copyLink">${T('sync.copyLink')}</button><button class="btn tinted" data-act="syncNow">${T('sync.now')}</button><button class="btn plain" data-act="unlinkAsk">${T('sync.unlink')}</button></div>
+         <p class="muted small">${T('sync.keepPrivate')}</p>`
+      : `<h2>${T('sync.title')}</h2>
+         <p>${T('sync.intro')}</p>
+         <div class="actions"><button class="btn filled" data-act="syncOn">${T('sync.turnOn')}</button></div>
+         <form id="linkForm" class="row-form"><div class="field"><label for="linkCode">${T('sync.enterCode')}</label><input id="linkCode" class="text" autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX"></div><button class="btn tinted" type="submit">${T('sync.link')}</button></form>`;
     let rem;
-    if (!cloud.push) rem = `<p class="muted">Reminders need VAPID keys on the server. See the README.</p>`;
-    else if (isIOS() && !standalone()) rem = `<p>On iPhone, reminders work from the Home Screen app:</p><ol class="steps"><li>Tap the <b>Share</b> button in Safari.</li><li>Choose <b>Add to Home Screen</b>.</li><li>Open Körkort 30 from the new icon and come back here.</li></ol>`;
-    else if (!pushSupported()) rem = `<p class="muted">This browser can't receive notifications. Try Chrome on Android, or the Home Screen app on iPhone.</p>`;
-    else if (cloud.subscribed) rem = `<p><b class="okc">On.</b> You get one reminder each evening, around 18:00 Swedish time, only on days you haven't studied yet.</p><div class="actions"><button class="btn tinted" data-act="pushTest">Send a test now</button><button class="btn plain" data-act="pushOff">Turn off on this device</button></div>`;
-    else rem = `<p>One reminder each evening, around 18:00 Swedish time, only on days you haven't studied yet. It tells you your plan day and your streak.</p><div class="actions"><button class="btn filled" data-act="pushOn">Turn on daily reminder</button></div>${!syncId ? '<p class="muted small">This also turns on sync, so the reminder knows when you have already studied on another device.</p>' : ''}`;
-    return `<section class="card" id="cloud">${sync}</section><section class="card"><h2>Daily reminder</h2>${rem}</section>`;
+    if (!cloud.push) rem = `<p class="muted">${T('rem.noVapid')}</p>`;
+    else if (isIOS() && !standalone()) rem = `<p>${T('rem.iosIntro')}</p><ol class="steps"><li>${T('rem.iosStep1Html')}</li><li>${T('rem.iosStep2Html')}</li><li>${T('rem.iosStep3')}</li></ol>`;
+    else if (!pushSupported()) rem = `<p class="muted">${esc(T('rem.unsupported'))}</p>`;
+    else if (cloud.subscribed) rem = `<p><b class="okc">${T('rem.onLabel')}</b> ${esc(T('rem.onBody'))}</p><div class="actions"><button class="btn tinted" data-act="pushTest">${T('rem.sendTest')}</button><button class="btn plain" data-act="pushOff">${T('rem.turnOffHere')}</button></div>`;
+    else rem = `<p>${esc(T('rem.offBody'))}</p><div class="actions"><button class="btn filled" data-act="pushOn">${T('rem.turnOn')}</button></div>${!syncId ? `<p class="muted small">${T('rem.alsoSync')}</p>` : ''}`;
+    return `<section class="card" id="cloud">${sync}</section><section class="card"><h2>${T('rem.title')}</h2>${rem}</section>`;
   }
   function reminderPromo() {
     if (!hosted || !cloud.push || cloud.subscribed || !pushSupported() && !isIOS()) return '';
     try { if (localStorage.getItem('korkort30.nopromo')) return ''; } catch (e) { /* ignore */ }
-    return `<section class="card promo"><span class="tile" style="--tile:#ff3b30;--s:40px"><span style="color:#fff">${icon('bell')}</span></span><div class="grow"><b>Never miss a day</b><span class="muted small">Get a short evening reminder on your phone, and share progress with your PC.</span></div><a class="btn tinted small" href="#progress">Set up</a><button class="iconbtn" data-act="noPromo" aria-label="Hide">${icon('close')}</button></section>`;
+    return `<section class="card promo"><span class="tile" style="--tile:#ff3b30;--s:40px"><span style="color:#fff">${icon('bell')}</span></span><div class="grow"><b>${T('promo.title')}</b><span class="muted small">${T('promo.body')}</span></div><a class="btn tinted small" href="#progress">${T('promo.setUp')}</a><button class="iconbtn" data-act="noPromo" aria-label="${T('common.hide')}">${icon('close')}</button></section>`;
   }
 
   // ------------------------------------------------------------- views
@@ -599,19 +601,20 @@
       <section class="welcome">
         <div class="welcome-art" aria-hidden="true">${rings([{ v: 0.82, color: RING.plan }, { v: 0.64, color: RING.q }, { v: 0.9, color: RING.acc }], 220)}
           <span class="float s1">${Signs.svg('yield', 64)}</span><span class="float s2">${Signs.svg('w-moose', 58)}</span><span class="float s3">${Signs.svg('speed-50', 54)}</span><span class="float s4">${Signs.svg('main-road', 50)}</span></div>
-        <p class="eyebrow">Swedish B-licence theory test</p>
-        <h1 class="display">Thirty days to your&nbsp;theory test.</h1>
-        <p class="lede">About an hour a day. ${REAL.length + SIGN_Q.length} questions drawn like the real thing: junctions, roundabouts, hazards and every sign. Close your rings, keep your streak and finish with full mock exams.</p>
+        <div class="actions welcome-lang">${langButtons('small')}</div>
+        <p class="eyebrow">${T('welcome.eyebrow')}</p>
+        <h1 class="display">${T('welcome.titleHtml')}</h1>
+        <p class="lede">${T('welcome.lede', { n: REAL.length + SIGN_Q.length })}</p>
         <form class="card start" id="startForm">
-          <div class="field"><label for="startDate">Day 1</label><input type="date" id="startDate" value="${t}" required></div>
-          <div class="field"><label for="testDate">Test date <span class="muted">(optional)</span></label><input type="date" id="testDate" value="${suggested}"></div>
-          <button class="btn filled large" type="submit">Start day 1</button>
+          <div class="field"><label for="startDate">${T('plan.day', { n: 1 })}</label><input type="date" id="startDate" value="${t}" required></div>
+          <div class="field"><label for="testDate">${T('welcome.testDate')} <span class="muted">${T('welcome.optional')}</span></label><input type="date" id="testDate" value="${suggested}"></div>
+          <button class="btn filled large" type="submit">${T('welcome.startDay1')}</button>
         </form>
         <ul class="facts-strip">
-          <li><b>${MOCK.questions}</b><span>scored questions</span></li>
-          <li><b>${MOCK.pass}</b><span>to pass</span></li>
-          <li><b>${MOCK.minutes}</b><span>minutes</span></li>
-          <li><b>30</b><span>days</span></li>
+          <li><b>${MOCK.questions}</b><span>${T('welcome.scored')}</span></li>
+          <li><b>${MOCK.pass}</b><span>${T('welcome.toPass')}</span></li>
+          <li><b>${MOCK.minutes}</b><span>${T('welcome.minutes')}</span></li>
+          <li><b>30</b><span>${T('welcome.days')}</span></li>
         </ul>
       </section>`;
   }
@@ -620,9 +623,9 @@
     const dots = PLAN.map((d) => {
       const p = dayProgress(d.day); const cls = p === 1 ? 'done' : d.day === n ? 'now' : d.day < n ? 'late' : '';
       const mock = d.tasks.some((t) => t.type === 'mock');
-      return `<a href="#day-${d.day}" class="jd ${cls} ${mock ? 'mock' : ''}" title="Day ${d.day}: ${esc(d.title)}" aria-label="Day ${d.day}: ${esc(d.title)}${p === 1 ? ', complete' : ''}">${d.day === n ? `<span class="jcar">${icon('car')}</span>` : ''}</a>`;
+      return `<a href="#day-${d.day}" class="jd ${cls} ${mock ? 'mock' : ''}" title="${T('plan.dayTitle', { n: d.day, title: esc(d.title) })}" aria-label="${T('plan.dayTitle', { n: d.day, title: esc(d.title) })}${p === 1 ? T('journey.complete') : ''}">${d.day === n ? `<span class="jcar">${icon('car')}</span>` : ''}</a>`;
     }).join('');
-    return `<div class="journey"><div class="jtrack">${dots}</div><div class="jlabels"><span>Day 1</span><span>Mocks start day 14</span><span>Test</span></div></div>`;
+    return `<div class="journey"><div class="jtrack">${dots}</div><div class="jlabels"><span>${T('plan.day', { n: 1 })}</span><span>${T('journey.mocksStart')}</span><span>${T('journey.test')}</span></div></div>`;
   }
 
   function viewToday() {
@@ -637,23 +640,23 @@
     const earned = BADGES.filter((b) => S.badges[b.id]).sort((a, b) => S.badges[b.id] - S.badges[a.id]);
     return `
       <header class="pagehead">
-        <p class="eyebrow">${fmtLong(today())}${testIn !== null ? ` · ${testIn > 0 ? `test in ${testIn} day${testIn === 1 ? '' : 's'}` : testIn === 0 ? 'test day' : 'test date passed'}` : ''}</p>
+        <p class="eyebrow">${fmtLong(today())}${testIn !== null ? ` · ${testIn > 0 ? T('today.testIn', { n: testIn }) : testIn === 0 ? T('today.testDay') : T('today.testPassed')}` : ''}</p>
         <h1 class="large-title">${greeting()}</h1>
       </header>
 
       <section class="hero">
         <div class="hero-rings">${rings(R.vals, 176)}</div>
         <div class="hero-body">
-          <p class="hero-eyebrow">Day ${n} of 30</p>
+          <p class="hero-eyebrow">${T('plan.dayOf30', { n })}</p>
           <h2 class="hero-title">${esc(day.title)}</h2>
           <p class="hero-focus">${esc(day.focus)}</p>
           <ul class="legend">
-            <li style="--c:${RING.plan}"><b>${R.tasksDone}/${R.tasksAll}</b><span>tasks</span></li>
-            <li style="--c:${RING.q}"><b>${R.a}/${DAILY_GOAL}</b><span>questions</span></li>
-            <li style="--c:${RING.acc}"><b>${R.a ? Math.round(R.acc * 100) + '%' : '–'}</b><span>accuracy</span></li>
+            <li style="--c:${RING.plan}"><b>${R.tasksDone}/${R.tasksAll}</b><span>${T('today.tasks')}</span></li>
+            <li style="--c:${RING.q}"><b>${R.a}/${DAILY_GOAL}</b><span>${T('today.questions')}</span></li>
+            <li style="--c:${RING.acc}"><b>${R.a ? Math.round(R.acc * 100) + '%' : '–'}</b><span>${T('today.accuracy')}</span></li>
           </ul>
-          ${nt ? `<button class="btn filled large hero-cta" data-act="task" data-day="${nt.n}" data-i="${nt.i}">${S.done[`${nt.n}-0`] || nt.i > 0 ? 'Continue' : 'Start'}: ${esc(taskSub(nt.t) === 'To do' ? 'to-do' : taskLabel(nt.t, nt.n))} ${icon('chevron')}</button>`
-            : `<div class="hero-done">${icon('check')} Today's plan is done.${tomorrow ? ` Tomorrow: <b>${esc(tomorrow.title)}</b>.` : ''} <button class="btn tinted small" data-act="quick" data-topics="all" data-n="20">Bonus round: 20 questions</button></div>`}
+          ${nt ? `<button class="btn filled large hero-cta" data-act="task" data-day="${nt.n}" data-i="${nt.i}">${T('today.cta', { verb: S.done[`${nt.n}-0`] || nt.i > 0 ? T('common.continue') : T('common.start'), label: esc(nt.t.type === 'todo' ? T('task.todoLower') : taskLabel(nt.t, nt.n)) })} ${icon('chevron')}</button>`
+            : `<div class="hero-done">${icon('check')} ${T('today.planDone')}${tomorrow ? ` ${T('today.tomorrowHtml', { title: esc(tomorrow.title) })}` : ''} <button class="btn tinted small" data-act="quick" data-topics="all" data-n="20">${T('today.bonus')}</button></div>`}
         </div>
       </section>
 
@@ -661,34 +664,34 @@
 
       <div class="grid-2">
         <section class="stack">
-          <div class="section-head"><h2>Today's tasks</h2><span class="muted">Goal: ${esc(day.goal)}</span></div>
+          <div class="section-head"><h2>${T('today.tasksTitle')}</h2><span class="muted">${T('common.goal', { goal: esc(day.goal) })}</span></div>
           ${taskList(n)}
-          ${behind.length ? `<p class="note">${icon('mistakes')} <span>Unfinished: ${behind.map((d) => `<a href="#day-${d}">day ${d}</a>`).join(', ')}. The plan builds on itself, so catch up first.</span></p>` : ''}
-          ${tomorrow ? `<a class="card teaser" href="#day-${tomorrow.day}"><span class="eyebrow">Tomorrow · Day ${tomorrow.day}</span><b>${esc(tomorrow.title)}</b><span class="muted">${esc(tomorrow.focus)}</span>${tomorrow.tasks.some((t) => t.type === 'mock') ? '<span class="tag">Mock exam</span>' : ''}</a>` : ''}
+          ${behind.length ? `<p class="note">${icon('mistakes')} <span>${T('today.unfinishedHtml', { days: behind.map((d) => `<a href="#day-${d}">${T('plan.dayLower', { n: d })}</a>`).join(', ') })}</span></p>` : ''}
+          ${tomorrow ? `<a class="card teaser" href="#day-${tomorrow.day}"><span class="eyebrow">${T('today.tomorrowDay', { n: tomorrow.day })}</span><b>${esc(tomorrow.title)}</b><span class="muted">${esc(tomorrow.focus)}</span>${tomorrow.tasks.some((t) => t.type === 'mock') ? `<span class="tag">${T('session.mock')}</span>` : ''}</a>` : ''}
         </section>
         <aside class="stack">
           <section class="card streak-card">
-            <div class="streak-top"><span class="flame-big ${st.todayDone ? 'lit' : ''}">${icon('flame')}</span><div><b class="big">${st.n} day${st.n === 1 ? '' : 's'}</b><span class="muted">${st.todayDone ? 'Streak safe for today.' : st.n ? 'Answer 10 questions to keep it going.' : 'Answer 10 questions to start a streak.'}</span></div></div>
+            <div class="streak-top"><span class="flame-big ${st.todayDone ? 'lit' : ''}">${icon('flame')}</span><div><b class="big">${T('streak.days', { n: st.n })}</b><span class="muted">${st.todayDone ? T('today.streakSafe') : st.n ? T('today.streakKeep') : T('today.streakStart')}</span></div></div>
             ${weekStrip()}
           </section>
           <section class="card">
-            <div class="row-between"><h3>Level ${lv.n} · ${esc(lv.name)}</h3><span class="muted small">${S.xp} XP</span></div>
+            <div class="row-between"><h3>${T('level.label', { n: lv.n, name: esc(lv.name) })}</h3><span class="muted small">${S.xp} XP</span></div>
             <div class="lbar big"><i style="width:${Math.round(lv.frac * 100)}%"></i></div>
-            <p class="muted small">${lv.next ? `${lv.toNext} XP to ${esc(lv.next)}` : 'Top level reached.'}</p>
+            <p class="muted small">${lv.next ? T('level.toNext', { n: lv.toNext, next: esc(lv.next) }) : T('level.top')}</p>
           </section>
           <section class="card">
-            <div class="row-between"><h3>Test readiness</h3><span class="big-num">${r.pct}%</span></div>
+            <div class="row-between"><h3>${T('today.readiness')}</h3><span class="big-num">${r.pct}%</span></div>
             <div class="meter"><i style="width:${r.pct}%"></i><em style="left:${(MOCK.pass / MOCK.questions) * 100}%"></em></div>
-            <p class="muted small">${r.basis === 'mocks' ? 'From your last mocks and topic mastery.' : 'From topic mastery. Your first mock on day 14 gives a real reading.'} The line marks the pass mark.</p>
-            ${last ? `<p class="small">Last mock: <b class="${last.passed ? 'okc' : 'badc'}">${last.score}/${last.total} · ${last.passed ? 'pass' : 'not yet'}</b></p>` : ''}
+            <p class="muted small">${r.basis === 'mocks' ? T('today.readyMocks') : T('today.readyTopics')} ${T('today.passLine')}</p>
+            ${last ? `<p class="small">${T('today.lastMock')} <b class="${last.passed ? 'okc' : 'badc'}">${last.score}/${last.total} · ${last.passed ? T('today.pass') : T('today.notYet')}</b></p>` : ''}
           </section>
           <section class="card">
-            <h3>Focus topics</h3>
-            <ul class="group plain">${weak.map((id) => { const s = topicStats(id); return `<li class="row"><a href="#lesson-${id}" class="rowlink">${topicTile(id, 28)}<span class="grow">${esc(TOPIC[id].name)}</span><span class="muted small">${s.acc === null ? 'new' : Math.round(s.acc * 100) + '%'}</span>${icon('chevron', 'chev')}</a></li>`; }).join('')}</ul>
-            <button class="btn tinted" data-act="quick" data-topics="weak" data-n="20">Practise these</button>
+            <h3>${T('today.focusTopics')}</h3>
+            <ul class="group plain">${weak.map((id) => { const s = topicStats(id); return `<li class="row"><a href="#lesson-${id}" class="rowlink">${topicTile(id, 28)}<span class="grow">${esc(TOPIC[id].name)}</span><span class="muted small">${s.acc === null ? T('today.new') : Math.round(s.acc * 100) + '%'}</span>${icon('chevron', 'chev')}</a></li>`; }).join('')}</ul>
+            <button class="btn tinted" data-act="quick" data-topics="weak" data-n="20">${T('today.practiseThese')}</button>
           </section>
           ${reminderPromo()}
-          <a class="card badges-mini" href="#progress"><div class="row-between"><h3>Badges</h3><span class="muted small">${earned.length}/${BADGES.length}</span></div>
+          <a class="card badges-mini" href="#progress"><div class="row-between"><h3>${T('badge.title')}</h3><span class="muted small">${earned.length}/${BADGES.length}</span></div>
             <div class="badge-row">${BADGES.slice(0, 6).map((b) => badgeIcon(b, !!S.badges[b.id], 40)).join('')}</div></a>
         </aside>
       </div>`;
@@ -702,120 +705,120 @@
     const doneDays = PLAN.filter((d) => dayDone(d.day)).length;
     const weeks = [1, 2, 3, 4].map((w) => {
       const days = PLAN.filter((d) => d.week === w);
-      const name = { 1: 'Foundations', 2: 'All the rules', 3: 'First mocks and weak spots', 4: 'Exam mode' }[w];
-      return `<section class="week"><div class="section-head"><h2>Week ${w}</h2><span class="muted">${name}</span></div><div class="days">${days.map((d) => {
+      const name = T(`plan.week${w}`);
+      return `<section class="week"><div class="section-head"><h2>${T('plan.week', { n: w })}</h2><span class="muted">${name}</span></div><div class="days">${days.map((d) => {
         const p = dayProgress(d.day); const state = p === 1 ? 'done' : d.day === n ? 'now' : d.day < n ? 'late' : d.day > n ? 'future' : '';
         return `<a class="day ${state}" href="#day-${d.day}">
           <div class="day-top"><span class="dnum">${d.day}</span>${rings([{ v: p, color: p === 1 ? '#30d158' : '#0a84ff' }], 30)}</div>
-          <span class="ddate">${S.start ? fmt(dateOfDay(d.day)) : ''}${d.day === n ? ' · today' : ''}</span>
+          <span class="ddate">${S.start ? fmt(dateOfDay(d.day)) : ''}${d.day === n ? T('plan.todaySuffix') : ''}</span>
           <span class="dtitle">${esc(d.title)}</span>
-          ${d.tasks.some((t) => t.type === 'mock') ? '<span class="tag">Mock</span>' : ''}
+          ${d.tasks.some((t) => t.type === 'mock') ? `<span class="tag">${T('plan.mockTag')}</span>` : ''}
         </a>`;
       }).join('')}</div></section>`;
     }).join('');
-    return `<header class="pagehead"><p class="eyebrow">${doneDays} of 30 days complete</p><h1 class="large-title">Your plan</h1>
-      <p class="lede">Weeks 1–3 teach every topic and drill the picture questions. From day 14 you sit a full mock every two or three days and spend the days between on your weakest topics. You are ready when you score 60/65 or more on two mocks in a row.</p></header>${weeks}`;
+    return `<header class="pagehead"><p class="eyebrow">${T('plan.daysComplete', { n: doneDays })}</p><h1 class="large-title">${T('plan.title')}</h1>
+      <p class="lede">${T('plan.lede')}</p></header>${weeks}`;
   }
 
   function viewDay(n) {
     if (!(n >= 1 && n <= 30)) return viewPlan();
     const d = PLAN[n - 1];
-    return `<header class="pagehead"><p class="eyebrow"><a href="#plan">Plan</a> · Day ${n}${S.start ? ` · ${fmt(dateOfDay(n))}` : ''}</p><h1 class="large-title">${esc(d.title)}</h1><p class="lede">${esc(d.focus)}</p></header>
-      <div class="section-head"><h2>Tasks</h2><span class="muted">Goal: ${esc(d.goal)}</span></div>${taskList(n)}
-      <nav class="pager">${n > 1 ? `<a class="btn plain" href="#day-${n - 1}">← Day ${n - 1}</a>` : '<span></span>'}${n < 30 ? `<a class="btn plain" href="#day-${n + 1}">Day ${n + 1} →</a>` : ''}</nav>`;
+    return `<header class="pagehead"><p class="eyebrow"><a href="#plan">${T('nav.plan')}</a> · ${T('plan.day', { n })}${S.start ? ` · ${fmt(dateOfDay(n))}` : ''}</p><h1 class="large-title">${esc(d.title)}</h1><p class="lede">${esc(d.focus)}</p></header>
+      <div class="section-head"><h2>${T('plan.tasks')}</h2><span class="muted">${T('common.goal', { goal: esc(d.goal) })}</span></div>${taskList(n)}
+      <nav class="pager">${n > 1 ? `<a class="btn plain" href="#day-${n - 1}">${T('plan.prevDay', { n: n - 1 })}</a>` : '<span></span>'}${n < 30 ? `<a class="btn plain" href="#day-${n + 1}">${T('plan.nextDay', { n: n + 1 })}</a>` : ''}</nav>`;
   }
 
   function viewLessons() {
     const read = Object.keys(S.lessons).length;
-    return `<header class="pagehead"><p class="eyebrow">${read} of 12 read</p><h1 class="large-title">Learn</h1><p class="lede">One lesson per topic, with pictures and a key-facts box at the end. Read one, then practise it straight away.</p></header>
-      <a class="card feature" href="#facts"><span class="tile" style="--tile:#34c759;--s:44px"><span style="color:#fff">${icon('lessons')}</span></span><div><b>Key-facts sheet</b><span class="muted">Every rule and number on one page. Read it on days 21, 24 and 30.</span></div>${icon('chevron', 'chev')}</a>
+    return `<header class="pagehead"><p class="eyebrow">${T('lessons.read', { n: read })}</p><h1 class="large-title">${T('nav.lessons')}</h1><p class="lede">${T('lessons.lede')}</p></header>
+      <a class="card feature" href="#facts"><span class="tile" style="--tile:#34c759;--s:44px"><span style="color:#fff">${icon('lessons')}</span></span><div><b>${T('task.factsSheet')}</b><span class="muted">${T('lessons.factsSub')}</span></div>${icon('chevron', 'chev')}</a>
       <ul class="group">${TOPICS.map((t) => {
         const l = LESSONS[t.id]; const st = topicStats(t.id); const done = S.lessons[t.id];
         return `<li class="row"><a class="rowlink" href="#lesson-${t.id}">${topicTile(t.id)}
-          <span class="grow"><span class="rtitle">${esc(t.name)}</span><span class="rsub">${l ? `${l.minutes || 15} min` : 'Coming soon'} · ${st.total} questions · ${Math.round(st.mastery * 100)}% mastered</span></span>
-          ${done ? `<span class="okdot" aria-label="Read">${icon('check')}</span>` : ''}${icon('chevron', 'chev')}</a></li>`;
+          <span class="grow"><span class="rtitle">${esc(t.name)}</span><span class="rsub">${l ? `${l.minutes || 15} min` : T('lessons.soon')} · ${T('common.questions', { n: st.total })} · ${T('lessons.mastered', { n: Math.round(st.mastery * 100) })}</span></span>
+          ${done ? `<span class="okdot" aria-label="${T('lessons.readAria')}">${icon('check')}</span>` : ''}${icon('chevron', 'chev')}</a></li>`;
       }).join('')}</ul>`;
   }
 
   function viewLesson(id) {
     const t = TOPIC[id]; const l = LESSONS[id];
     if (!t) return viewLessons();
-    if (!l) return `<header class="pagehead"><p class="eyebrow"><a href="#lessons">Learn</a></p><h1 class="large-title">${esc(t.name)}</h1></header><p class="lede">This lesson is not written yet. You can still practise the topic.</p><div class="actions"><button class="btn filled" data-act="quick" data-topics="${id}" data-n="15">Practise ${esc(t.short)}</button></div>`;
+    if (!l) return `<header class="pagehead"><p class="eyebrow"><a href="#lessons">${T('nav.lessons')}</a></p><h1 class="large-title">${esc(t.name)}</h1></header><p class="lede">${T('lesson.notWritten')}</p><div class="actions"><button class="btn filled" data-act="quick" data-topics="${id}" data-n="15">${T('lesson.practiseTopic', { topic: esc(t.short) })}</button></div>`;
     const idx = TOPICS.indexOf(t);
     return `<article class="lesson">
-      <header class="pagehead lesson-head">${topicTile(id, 56)}<p class="eyebrow"><a href="#lessons">Learn</a> · Topic ${idx + 1} of 12 · ${l.minutes || 15} min</p><h1 class="large-title">${esc(l.title)}</h1>${l.intro ? `<p class="lede">${esc(l.intro)}</p>` : ''}</header>
+      <header class="pagehead lesson-head">${topicTile(id, 56)}<p class="eyebrow"><a href="#lessons">${T('nav.lessons')}</a> · ${T('lesson.topicOf', { n: idx + 1 })} · ${l.minutes || 15} min</p><h1 class="large-title">${esc(l.title)}</h1>${l.intro ? `<p class="lede">${esc(l.intro)}</p>` : ''}</header>
       ${l.sections.map((s) => `<section class="lsec"><h2>${esc(s.h)}</h2><div class="prose">${s.body}</div>
         ${(s.pics || []).length ? `<div class="pics">${s.pics.map((p) => `<figure class="pic">${Scene.render(p)}${p.caption ? `<figcaption>${esc(p.caption)}</figcaption>` : ''}</figure>`).join('')}</div>` : ''}</section>`).join('')}
-      <section class="card keyfacts"><h2>Key facts</h2><ul>${l.keyFacts.map((k) => `<li>${esc(k)}</li>`).join('')}</ul></section>
+      <section class="card keyfacts"><h2>${T('lesson.keyFacts')}</h2><ul>${l.keyFacts.map((k) => `<li>${esc(k)}</li>`).join('')}</ul></section>
       <div class="actions">
-        <button class="btn filled large" data-act="lessonDone" data-topic="${id}">${S.lessons[id] ? 'Practise this topic' : 'Mark as read and practise'}</button>
-        ${TOPICS[idx + 1] ? `<a class="btn plain" href="#lesson-${TOPICS[idx + 1].id}">Next: ${esc(TOPICS[idx + 1].short)} →</a>` : ''}
+        <button class="btn filled large" data-act="lessonDone" data-topic="${id}">${S.lessons[id] ? T('lesson.practiseThis') : T('lesson.markRead')}</button>
+        ${TOPICS[idx + 1] ? `<a class="btn plain" href="#lesson-${TOPICS[idx + 1].id}">${T('lesson.next', { topic: esc(TOPICS[idx + 1].short) })}</a>` : ''}
       </div></article>`;
   }
 
   function viewFacts() {
-    return `<header class="pagehead"><p class="eyebrow"><a href="#lessons">Learn</a></p><h1 class="large-title">Key facts</h1><p class="lede">The rules and numbers from every lesson on one page.</p></header>
+    return `<header class="pagehead"><p class="eyebrow"><a href="#lessons">${T('nav.lessons')}</a></p><h1 class="large-title">${T('lesson.keyFacts')}</h1><p class="lede">${T('facts.lede')}</p></header>
       <div class="factsgrid">${TOPICS.filter((t) => LESSONS[t.id]).map((t) => `<section class="card"><a class="facts-h" href="#lesson-${t.id}">${topicTile(t.id, 30)}<h2>${esc(t.name)}</h2></a><ul>${LESSONS[t.id].keyFacts.map((k) => `<li>${esc(k)}</li>`).join('')}</ul></section>`).join('')}</div>
-      ${pendingTask && pendingTask.facts ? `<div class="actions"><button class="btn filled large" data-act="factsDone">Done reading</button></div>` : ''}`;
+      ${pendingTask && pendingTask.facts ? `<div class="actions"><button class="btn filled large" data-act="factsDone">${T('facts.done')}</button></div>` : ''}`;
   }
 
   function viewPractice() {
     const mc = mistakes().length;
-    return `<header class="pagehead"><p class="eyebrow">Train</p><h1 class="large-title">Practice</h1><p class="lede">New questions and past mistakes come up first. You see the answer and why after every question.</p></header>
+    return `<header class="pagehead"><p class="eyebrow">${T('practice.eyebrow')}</p><h1 class="large-title">${T('nav.practice')}</h1><p class="lede">${T('practice.lede')}</p></header>
       <div class="hub">
-        <button class="hubcard c-blue" data-act="quick" data-topics="all" data-n="20"><span>${icon('bolt')}</span><b>Quick 20</b><em>Mixed topics</em></button>
-        <button class="hubcard c-orange" data-act="quick" data-topics="weak" data-n="20"><span>${icon('star')}</span><b>Weak spots</b><em>${esc(weakTopics(2).map((x) => TOPIC[x].short).join(' + '))}</em></button>
-        <a class="hubcard c-indigo" href="#mock"><span>${icon('mock')}</span><b>Mock exam</b><em>${MOCK.questions} questions · ${MOCK.minutes} min</em></a>
-        <a class="hubcard c-pink" href="#mistakes"><span>${icon('mistakes')}</span><b>Mistakes</b><em>${mc} to fix</em></a>
-        <a class="hubcard c-yellow" href="#signs"><span>${icon('signs')}</span><b>Signs</b><em>${SIGN_Q.length} signs</em></a>
+        <button class="hubcard c-blue" data-act="quick" data-topics="all" data-n="20"><span>${icon('bolt')}</span><b>${T('session.quick20')}</b><em>${T('practice.mixed')}</em></button>
+        <button class="hubcard c-orange" data-act="quick" data-topics="weak" data-n="20"><span>${icon('star')}</span><b>${T('session.weakSpots')}</b><em>${esc(weakTopics(2).map((x) => TOPIC[x].short).join(' + '))}</em></button>
+        <a class="hubcard c-indigo" href="#mock"><span>${icon('mock')}</span><b>${T('nav.mock')}</b><em>${T('common.qMin', { q: MOCK.questions, m: MOCK.minutes })}</em></a>
+        <a class="hubcard c-pink" href="#mistakes"><span>${icon('mistakes')}</span><b>${T('nav.mistakes')}</b><em>${T('practice.toFix', { n: mc })}</em></a>
+        <a class="hubcard c-yellow" href="#signs"><span>${icon('signs')}</span><b>${T('nav.signs')}</b><em>${T('practice.nSigns', { n: SIGN_Q.length })}</em></a>
       </div>
       <form class="card" id="practiceForm">
-        <h2>Build your own</h2>
-        <fieldset><legend>Topics</legend><div class="chips">
+        <h2>${T('practice.build')}</h2>
+        <fieldset><legend>${T('practice.topics')}</legend><div class="chips">
           ${TOPICS.map((t) => `<label class="chip"><input type="checkbox" name="topic" value="${t.id}"><span>${esc(t.short)} <em>${topicStats(t.id).total}</em></span></label>`).join('')}
         </div></fieldset>
-        <fieldset><legend>Length</legend><div class="seg" role="radiogroup">${[10, 20, 30, 50].map((n, i) => `<label><input type="radio" name="n" value="${n}" ${i === 1 ? 'checked' : ''}><span>${n}</span></label>`).join('')}</div></fieldset>
-        <div class="actions"><button class="btn filled large" type="submit">Start</button></div>
+        <fieldset><legend>${T('practice.length')}</legend><div class="seg" role="radiogroup">${[10, 20, 30, 50].map((n, i) => `<label><input type="radio" name="n" value="${n}" ${i === 1 ? 'checked' : ''}><span>${n}</span></label>`).join('')}</div></fieldset>
+        <div class="actions"><button class="btn filled large" type="submit">${T('common.start')}</button></div>
         <p class="muted small" id="practiceMsg" role="status"></p>
       </form>`;
   }
 
   function viewMockIntro() {
     const passes = S.mocks.filter((m) => m.passed).length;
-    return `<header class="pagehead"><p class="eyebrow">Exam conditions</p><h1 class="large-title">Mock exam</h1>
-      <p class="lede">${MOCK.questions} questions in ${MOCK.minutes} minutes, spread across topics like the real test. Answers stay hidden until you hand in. You need ${MOCK.pass} correct.</p></header>
+    return `<header class="pagehead"><p class="eyebrow">${T('mock.eyebrow')}</p><h1 class="large-title">${T('nav.mock')}</h1>
+      <p class="lede">${T('mock.lede', { q: MOCK.questions, m: MOCK.minutes, p: MOCK.pass })}</p></header>
       <div class="grid-2"><section class="card mock-card">
         <div class="mock-dial">${rings([{ v: 1, color: '#5e5ce6' }], 120)}<span><b>${MOCK.minutes}</b>min</span></div>
-        <ul class="prose"><li>Sit somewhere quiet and put your phone away.</li><li>Skip and come back with the question map.</li><li>Read every option. Many wrong answers are almost right.</li><li>The real test has 70 questions: 65 scored and 5 unscored trial questions.</li></ul>
-        <button class="btn filled large" data-act="mock">Start mock exam</button>
+        <ul class="prose"><li>${T('mock.tip1')}</li><li>${T('mock.tip2')}</li><li>${T('mock.tip3')}</li><li>${T('mock.tip4')}</li></ul>
+        <button class="btn filled large" data-act="mock">${T('mock.start')}</button>
       </section>
-      <section class="card"><div class="row-between"><h2>Your mocks</h2><span class="muted">${S.mocks.length} taken · ${passes} passed</span></div>${S.mocks.length ? mockChart() + mockTable() : '<p class="muted">None yet. The plan schedules your first one on day 14.</p>'}</section></div>`;
+      <section class="card"><div class="row-between"><h2>${T('mock.yours')}</h2><span class="muted">${T('mock.takenPassed', { n: S.mocks.length, p: passes })}</span></div>${S.mocks.length ? mockChart() + mockTable() : `<p class="muted">${T('mock.none')}</p>`}</section></div>`;
   }
   function mockTable() {
-    return `<div class="tablewrap"><table class="tbl"><thead><tr><th>Date</th><th>Score</th><th>Time</th><th>Result</th></tr></thead><tbody>${S.mocks.slice().reverse().map((m) =>
-      `<tr><td>${new Date(m.date).toLocaleDateString('en-GB')}</td><td class="num">${m.score}/${m.total}</td><td class="num">${Math.floor(m.secs / 60)}:${String(m.secs % 60).padStart(2, '0')}</td><td><span class="badge ${m.passed ? 'ok' : 'bad'}">${m.passed ? 'Pass' : 'Fail'}</span></td></tr>`).join('')}</tbody></table></div>`;
+    return `<div class="tablewrap"><table class="tbl"><thead><tr><th>${T('mock.thDate')}</th><th>${T('mock.thScore')}</th><th>${T('mock.thTime')}</th><th>${T('mock.thResult')}</th></tr></thead><tbody>${S.mocks.slice().reverse().map((m) =>
+      `<tr><td>${new Date(m.date).toLocaleDateString(I18N.locale)}</td><td class="num">${m.score}/${m.total}</td><td class="num">${Math.floor(m.secs / 60)}:${String(m.secs % 60).padStart(2, '0')}</td><td><span class="badge ${m.passed ? 'ok' : 'bad'}">${m.passed ? T('mock.pass') : T('mock.fail')}</span></td></tr>`).join('')}</tbody></table></div>`;
   }
 
   function viewMistakes() {
     const list = mistakes();
-    return `<header class="pagehead"><p class="eyebrow">Learn from every miss</p><h1 class="large-title">Mistakes</h1>
-      <p class="lede">Every wrong answer lands here. It leaves after you get it right twice in a row.</p></header>
-      ${list.length ? `<div class="actions"><button class="btn filled large" data-act="review">Review ${Math.min(40, list.length)} now</button></div>
+    return `<header class="pagehead"><p class="eyebrow">${T('mistakes.eyebrow')}</p><h1 class="large-title">${T('nav.mistakes')}</h1>
+      <p class="lede">${T('mistakes.lede')}</p></header>
+      ${list.length ? `<div class="actions"><button class="btn filled large" data-act="review">${T('mistakes.reviewN', { n: Math.min(40, list.length) })}</button></div>
       <div class="mlist">${list.map((q) => `<details class="card mitem"><summary>${topicTile(q.topic, 28)}<span class="grow">${esc(q.q)}</span>${icon('chevron', 'chev')}</summary>
-        ${q.img ? `<div class="pic">${Scene.render(q.img)}</div>` : ''}<p><b class="okc">Correct:</b> ${esc(q.options[q.answer])}</p><p class="prose muted">${esc(q.explain)}</p></details>`).join('')}</div>`
-      : `<section class="card empty"><span class="tile" style="--tile:#30d158;--s:56px"><span style="color:#fff">${icon('check')}</span></span><h2>All clear</h2><p class="muted">Nothing to fix right now. Anything you get wrong will show up here.</p><a class="btn tinted" href="#practice">Practise</a></section>`}`;
+        ${q.img ? `<div class="pic">${Scene.render(q.img)}</div>` : ''}<p><b class="okc">${T('mistakes.correct')}</b> ${esc(q.options[q.answer])}</p><p class="prose muted">${esc(q.explain)}</p></details>`).join('')}</div>`
+      : `<section class="card empty"><span class="tile" style="--tile:#30d158;--s:56px"><span style="color:#fff">${icon('check')}</span></span><h2>${T('mistakes.clear')}</h2><p class="muted">${T('mistakes.clearBody')}</p><a class="btn tinted" href="#practice">${T('common.practise')}</a></section>`}`;
   }
 
   function viewSigns() {
     const groups = {};
     for (const n of Signs.list()) (groups[Signs.group(n)] = groups[Signs.group(n)] || []).push(n);
     const order = ['Warning signs', 'Priority signs', 'Prohibition signs', 'Mandatory signs', 'Information signs'];
-    return `<header class="pagehead"><p class="eyebrow">${Signs.list().length} Swedish signs</p><h1 class="large-title">Signs</h1>
-      <p class="lede">Swedish signs have a yellow face where most of Europe uses white. Tap a sign to reveal its name.</p>
-      <div class="actions"><button class="btn filled" data-act="signdrill" data-n="20">Drill 20 signs</button><button class="btn tinted" data-act="signdrill" data-n="0">Every sign</button><button class="btn plain" data-act="revealAll">Show all names</button></div></header>
-      ${order.filter((g) => groups[g]).map((g) => `<section class="signgroup"><div class="section-head"><h2>${g}</h2><span class="muted">${esc(groupHint(g).replace(/^are /, '').replace(/^tell/, 'Tell').replace(/^./, (c) => c.toUpperCase()))}</span></div><div class="signs">${groups[g].map((n) => {
+    return `<header class="pagehead"><p class="eyebrow">${T('signs.count', { n: Signs.list().length })}</p><h1 class="large-title">${T('nav.signs')}</h1>
+      <p class="lede">${T('signs.lede')}</p>
+      <div class="actions"><button class="btn filled" data-act="signdrill" data-n="20">${T('signs.drill20')}</button><button class="btn tinted" data-act="signdrill" data-n="0">${T('session.everySign')}</button><button class="btn plain" data-act="revealAll">${T('signs.showAll')}</button></div></header>
+      ${order.filter((g) => groups[g]).map((g) => `<section class="signgroup"><div class="section-head"><h2>${T(`signs.group.${GROUP_KEY[g]}`)}</h2><span class="muted">${esc(T(`signs.sub.${GROUP_KEY[g]}`))}</span></div><div class="signs">${groups[g].map((n) => {
         const s = S.q[`sign-${n}`]; const m = s && s.box >= 2;
-        return `<button class="signcard ${m ? 'mastered' : ''}" data-act="flip" aria-expanded="false">${Signs.svg(n, 84)}<span class="sname">${esc(Signs.name(n))}</span>${m ? `<span class="okdot" aria-label="Mastered">${icon('check')}</span>` : ''}</button>`;
+        return `<button class="signcard ${m ? 'mastered' : ''}" data-act="flip" aria-expanded="false">${Signs.svg(n, 84)}<span class="sname">${esc(Signs.name(n))}</span>${m ? `<span class="okdot" aria-label="${T('signs.mastered')}">${icon('check')}</span>` : ''}</button>`;
       }).join('')}</div></section>`).join('')}`;
   }
 
@@ -825,28 +828,29 @@
     const right = Object.values(S.q).reduce((a, s) => a + s.right, 0);
     const daysDone = PLAN.filter((d) => dayDone(d.day)).length;
     const lv = level(); const st = streak();
-    return `<header class="pagehead"><p class="eyebrow">Level ${lv.n} · ${esc(lv.name)} · ${S.xp} XP</p><h1 class="large-title">Progress</h1></header>
+    return `<header class="pagehead"><p class="eyebrow">${T('level.label', { n: lv.n, name: esc(lv.name) })} · ${S.xp} XP</p><h1 class="large-title">${T('nav.progress')}</h1></header>
       <ul class="stats">
-        <li style="--c:#ff375f"><b>${daysDone}<small>/30</small></b><span>plan days complete</span></li>
-        <li style="--c:#ff9f0a"><b>${st.n}</b><span>day streak · best ${S.best || st.n}</span></li>
-        <li style="--c:#30d158"><b>${answered ? Math.round((right / answered) * 100) : 0}%</b><span>of ${answered} answers right</span></li>
-        <li style="--c:#0a84ff"><b>${totalSeen}<small>/${ALL.length}</small></b><span>questions seen</span></li>
+        <li style="--c:#ff375f"><b>${daysDone}<small>/30</small></b><span>${T('progress.planDays')}</span></li>
+        <li style="--c:#ff9f0a"><b>${st.n}</b><span>${T('progress.streak', { n: S.best || st.n })}</span></li>
+        <li style="--c:#30d158"><b>${answered ? Math.round((right / answered) * 100) : 0}%</b><span>${T('progress.answersRight', { n: answered })}</span></li>
+        <li style="--c:#0a84ff"><b>${totalSeen}<small>/${ALL.length}</small></b><span>${T('progress.seen')}</span></li>
       </ul>
       <div class="grid-2 even">${cloudCard()}</div>
-      <section class="card"><div class="row-between"><h2>Badges</h2><span class="muted">${Object.keys(S.badges).length} of ${BADGES.length}</span></div>
+      <section class="card"><div class="row-between"><h2>${T('badge.title')}</h2><span class="muted">${T('common.ofN', { n: Object.keys(S.badges).length, m: BADGES.length })}</span></div>
         <div class="badges">${BADGES.map((b) => `<div class="badge-item ${S.badges[b.id] ? 'on' : ''}">${badgeIcon(b, !!S.badges[b.id])}<b>${esc(b.name)}</b><span>${esc(b.desc)}</span></div>`).join('')}</div></section>
-      <section class="card"><h2>Topics</h2><ul class="group plain">
+      <section class="card"><h2>${T('progress.topics')}</h2><ul class="group plain">
         ${TOPICS.map((t) => { const s = topicStats(t.id); return `<li class="row"><a class="rowlink" href="#lesson-${t.id}">${topicTile(t.id, 30)}<span class="grow"><span class="rtitle">${esc(t.name)}</span><span class="mbar"><i style="width:${s.mastery * 100}%"></i></span></span><span class="muted small num">${s.acc === null ? '–' : Math.round(s.acc * 100) + '%'}</span></a></li>`; }).join('')}
-      </ul><p class="muted small">Bars show mastery: a question is mastered after two right answers in a row. The percentage is your accuracy.</p></section>
-      ${S.mocks.length ? `<section class="card"><h2>Mock exams</h2>${mockChart()}${mockTable()}</section>` : ''}
-      <section class="card"><h2>Settings</h2>
+      </ul><p class="muted small">${T('progress.barsNote')}</p></section>
+      ${S.mocks.length ? `<section class="card"><h2>${T('mock.chartTitle')}</h2>${mockChart()}${mockTable()}</section>` : ''}
+      <section class="card"><h2>${T('settings.title')}</h2>
+        <div class="actions">${langButtons()}</div>
         <form id="settingsForm" class="row-form">
-          <div class="field"><label for="setStart">Day 1 of the plan</label><input type="date" id="setStart" value="${S.start || iso(today())}"></div>
-          <div class="field"><label for="setTest">Test date</label><input type="date" id="setTest" value="${S.testDate || ''}"></div>
-          <button class="btn filled" type="submit">Save dates</button>
+          <div class="field"><label for="setStart">${T('settings.day1')}</label><input type="date" id="setStart" value="${S.start || iso(today())}"></div>
+          <div class="field"><label for="setTest">${T('welcome.testDate')}</label><input type="date" id="setTest" value="${S.testDate || ''}"></div>
+          <button class="btn filled" type="submit">${T('settings.save')}</button>
         </form>
-        <p class="muted small">${storageOk ? 'Progress is saved in this browser. Copy a backup code to move it to another device.' : 'This browser is blocking storage, so progress will be lost when you close the page. Copy a backup code.'}</p>
-        <div class="actions"><button class="btn tinted" data-act="export">Copy backup code</button><button class="btn tinted" data-act="importOpen">Restore from code</button><button class="btn danger" data-act="resetAsk">Reset everything</button></div>
+        <p class="muted small">${storageOk ? T('settings.storageOk') : T('settings.storageBlocked')}</p>
+        <div class="actions"><button class="btn tinted" data-act="export">${T('settings.copyBackup')}</button><button class="btn tinted" data-act="importOpen">${T('settings.restoreFrom')}</button><button class="btn danger" data-act="resetAsk">${T('settings.reset')}</button></div>
         <div id="backupArea"></div>
       </section>`;
   }
@@ -857,9 +861,9 @@
     const passY = y(MOCK.pass / MOCK.questions);
     const line = m.map((r, i) => `${i ? 'L' : 'M'}${x(i)} ${y(r.score / r.total)}`).join(' ');
     const area = m.length > 1 ? `${line} L${x(m.length - 1)} ${y(0)} L${x(0)} ${y(0)} Z` : '';
-    return `<div class="tablewrap"><svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Mock exam scores">
+    return `<div class="tablewrap"><svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${T('mock.chartAria')}">
       ${[0, 0.5, 1].map((v) => `<line x1="${P}" x2="${W - P}" y1="${y(v)}" y2="${y(v)}" class="grid"/><text x="${P - 8}" y="${y(v) + 4}" text-anchor="end" class="axis">${Math.round(v * MOCK.questions)}</text>`).join('')}
-      <line x1="${P}" x2="${W - P}" y1="${passY}" y2="${passY}" class="pass"/><text x="${W - P}" y="${passY - 6}" text-anchor="end" class="axis">pass ${MOCK.pass}</text>
+      <line x1="${P}" x2="${W - P}" y1="${passY}" y2="${passY}" class="pass"/><text x="${W - P}" y="${passY - 6}" text-anchor="end" class="axis">${T('mock.chartPass', { n: MOCK.pass })}</text>
       ${area ? `<path d="${area}" class="area"/>` : ''}<path d="${line}" class="line"/>${m.map((r, i) => `<circle cx="${x(i)}" cy="${y(r.score / r.total)}" r="${i === m.length - 1 ? 5.5 : 3.5}" class="${r.passed ? 'dot ok' : 'dot bad'}"/>`).join('')}
     </svg></div>`;
   }
@@ -881,25 +885,25 @@
     const pct = ((mock ? answered : s.i + (s.revealed ? 1 : 0)) / s.items.length) * 100;
     return `<div class="quiz">
       <div class="qbar">
-        <button class="iconbtn" data-act="quit" aria-label="${mock ? 'Hand in' : 'End session'}">${icon('close')}</button>
+        <button class="iconbtn" data-act="quit" aria-label="${mock ? T('quiz.handIn') : T('quiz.end')}">${icon('close')}</button>
         <div class="qprog" role="progressbar" aria-valuemin="0" aria-valuemax="${s.items.length}" aria-valuenow="${mock ? answered : s.i}"><i style="width:${pct}%"></i></div>
         ${mock ? `<div class="timer" id="timer"></div>` : `<div class="combo ${s.combo >= 3 ? 'hot' : ''}" aria-live="polite">${icon('flame')}<b>${s.combo}</b></div>`}
       </div>
       <div class="qgrid ${q.img ? '' : 'noimg'}">
         ${q.img ? `<figure class="pic qpic">${Scene.render(q.img)}</figure>` : ''}
         <div class="qside">
-          <p class="eyebrow">${esc(s.title)} · ${esc(TOPIC[q.topic].short)} · ${s.i + 1} of ${s.items.length}</p>
+          <p class="eyebrow">${esc(s.title)} · ${esc(TOPIC[q.topic].short)} · ${T('common.ofN', { n: s.i + 1, m: s.items.length })}</p>
           <h1 class="qtext">${esc(q.q)}</h1>
-          <div class="opts" role="group" aria-label="Answers">${opts}</div>
-          ${!mock && s.revealed ? `<div class="feedback ${ok ? 'ok' : 'bad'}" role="status"><b>${ok ? (s.combo >= 3 ? `Correct · ${s.combo} in a row` : 'Correct') : 'Not quite'}</b><p>${esc(q.explain)}</p></div>` : ''}
+          <div class="opts" role="group" aria-label="${T('quiz.answers')}">${opts}</div>
+          ${!mock && s.revealed ? `<div class="feedback ${ok ? 'ok' : 'bad'}" role="status"><b>${ok ? (s.combo >= 3 ? T('quiz.correctStreak', { n: s.combo }) : T('quiz.correct')) : T('quiz.notQuite')}</b><p>${esc(q.explain)}</p></div>` : ''}
           <div class="qnav">
-            ${mock ? `<button class="btn plain" data-act="prev" ${s.i === 0 ? 'disabled' : ''}>← Back</button>` : ''}
-            <button class="btn filled large" data-act="next" ${!mock && !s.revealed ? 'disabled' : ''}>${s.i === s.items.length - 1 ? (mock ? 'Hand in' : 'Finish') : mock && it.pick === null ? 'Skip' : 'Continue'}</button>
+            ${mock ? `<button class="btn plain" data-act="prev" ${s.i === 0 ? 'disabled' : ''}>${T('quiz.back')}</button>` : ''}
+            <button class="btn filled large" data-act="next" ${!mock && !s.revealed ? 'disabled' : ''}>${s.i === s.items.length - 1 ? (mock ? T('quiz.handIn') : T('quiz.finish')) : mock && it.pick === null ? T('quiz.skip') : T('common.continue')}</button>
           </div>
-          <p class="muted small keys">Keyboard: 1–4 to answer, Enter to continue.</p>
+          <p class="muted small keys">${T('quiz.keys')}</p>
         </div>
       </div>
-      ${mock ? `<div class="qmap" aria-label="Question map">${s.items.map((x, i) => `<button class="${i === s.i ? 'cur' : ''} ${x.pick !== null ? 'ans' : ''}" data-act="jump" data-i="${i}" aria-label="Question ${i + 1}${x.pick !== null ? ', answered' : ''}">${i + 1}</button>`).join('')}</div>` : ''}
+      ${mock ? `<div class="qmap" aria-label="${T('quiz.map')}">${s.items.map((x, i) => `<button class="${i === s.i ? 'cur' : ''} ${x.pick !== null ? 'ans' : ''}" data-act="jump" data-i="${i}" aria-label="${T('quiz.qN', { n: i + 1 })}${x.pick !== null ? T('quiz.answered') : ''}">${i + 1}</button>`).join('')}</div>` : ''}
     </div>`;
   }
   function tickTimer() {
@@ -908,7 +912,7 @@
       const el = $('#timer'); if (!session || session.finished) { clearInterval(timer); return; }
       const left = Math.max(0, session.deadline - Date.now());
       if (el) { el.textContent = `${Math.floor(left / 60000)}:${String(Math.floor(left / 1000) % 60).padStart(2, '0')}`; el.classList.toggle('low', left < 5 * 60000); }
-      if (left <= 0) { toast('Time is up. Your exam was handed in.'); finish(); }
+      if (left <= 0) { toast(T('mock.timeUp')); finish(); }
     };
     upd(); timer = setInterval(upd, 1000);
   }
@@ -921,9 +925,9 @@
     for (const it of s.items) { const b = byTopic[it.q.topic] || (byTopic[it.q.topic] = [0, 0]); b[1]++; if (it.pick === it.q.answer) b[0]++; }
     const lv = level(); const levelUp = lv.n > s.levelBefore;
     const color = mock ? (passed ? '#30d158' : '#ff453a') : pct >= 80 ? '#30d158' : pct >= 60 ? '#ff9f0a' : '#ff453a';
-    const headline = mock ? (passed ? (pct >= 92 ? 'Test-ready form.' : 'Pass.') : 'Not a pass yet.') : pct >= 90 ? 'Excellent.' : pct >= 75 ? 'Nice work.' : pct >= 50 ? 'Getting there.' : 'Keep going.';
-    const tip = mock ? (passed ? (pct >= 92 ? 'Keep it there until test day.' : `Aim for 60/${MOCK.questions} or better so a bad day still passes.`) : `You need ${MOCK.pass}. Go through the misses below, then practise your weakest topics.`)
-      : pct >= 90 ? 'These questions are moving into your mastered pile.' : pct >= 75 ? 'The misses below are on your mistakes list now.' : 'Read the explanations below, then reread the lesson for this topic.';
+    const headline = T(mock ? (passed ? (pct >= 92 ? 'result.testReady' : 'result.pass') : 'result.notPass') : pct >= 90 ? 'result.excellent' : pct >= 75 ? 'result.nice' : pct >= 50 ? 'result.getting' : 'result.keepGoing');
+    const tip = mock ? (passed ? (pct >= 92 ? T('result.tipKeep') : T('result.tipAim', { q: MOCK.questions })) : T('result.tipNeed', { p: MOCK.pass }))
+      : pct >= 90 ? T('result.tipMastered') : pct >= 75 ? T('result.tipList') : T('result.tipReread');
     return `<section class="result">
         <div class="result-ring">${rings([{ v: right / total, color }], 200)}<span><b>${right}<small>/${total}</small></b><em>${pct}%</em></span></div>
         <p class="eyebrow">${esc(s.title)}</p>
@@ -931,20 +935,20 @@
         <p class="lede">${tip}</p>
         <div class="rewards">
           <span class="reward">${icon('star')}<b>+${s.xp} XP</b></span>
-          ${levelUp ? `<span class="reward lvl">${icon('trophy')}<b>Level ${lv.n}: ${esc(lv.name)}</b></span>` : ''}
+          ${levelUp ? `<span class="reward lvl">${icon('trophy')}<b>${T('level.up', { n: lv.n, name: esc(lv.name) })}</b></span>` : ''}
           ${s.badges.map((b) => `<span class="reward badge-new">${icon('trophy')}<b>${esc(b.name)}</b></span>`).join('')}
           ${celebrate ? `<span class="reward day">${icon('check')}<b>${esc(celebrate.title)}</b></span>` : ''}
         </div>
         <div class="actions center">
-          ${s.taskKey ? `<a class="btn filled large" href="#today">Back to today</a>` : ''}
-          ${wrong.length ? `<button class="btn ${s.taskKey ? 'tinted' : 'filled'} large" data-act="retryWrong">Retry ${wrong.length} missed</button>` : ''}
-          <a class="btn plain large" href="#practice">More practice</a>
+          ${s.taskKey ? `<a class="btn filled large" href="#today">${T('result.backToday')}</a>` : ''}
+          ${wrong.length ? `<button class="btn ${s.taskKey ? 'tinted' : 'filled'} large" data-act="retryWrong">${T('result.retry', { n: wrong.length })}</button>` : ''}
+          <a class="btn plain large" href="#practice">${T('result.more')}</a>
         </div>
       </section>
-      <section class="card"><h2>By topic</h2><ul class="group plain">${Object.entries(byTopic).map(([t, [r, n]]) => `<li class="row"><span class="rowlink">${topicTile(t, 28)}<span class="grow">${esc(TOPIC[t].name)}</span><span class="num ${r === n ? 'okc' : ''}">${r}/${n}</span></span></li>`).join('')}</ul></section>
-      ${wrong.length ? `<div class="section-head"><h2>Review</h2><span class="muted">${wrong.length} missed</span></div><div class="mlist">${wrong.map((it) => `<article class="card mitem open">
+      <section class="card"><h2>${T('result.byTopic')}</h2><ul class="group plain">${Object.entries(byTopic).map(([t, [r, n]]) => `<li class="row"><span class="rowlink">${topicTile(t, 28)}<span class="grow">${esc(TOPIC[t].name)}</span><span class="num ${r === n ? 'okc' : ''}">${r}/${n}</span></span></li>`).join('')}</ul></section>
+      ${wrong.length ? `<div class="section-head"><h2>${T('result.review')}</h2><span class="muted">${T('result.nMissed', { n: wrong.length })}</span></div><div class="mlist">${wrong.map((it) => `<article class="card mitem open">
         <p class="eyebrow">${esc(TOPIC[it.q.topic].short)}</p><h3>${esc(it.q.q)}</h3>${it.q.img ? `<div class="pic">${Scene.render(it.q.img)}</div>` : ''}
-        ${it.pick !== null ? `<p class="ans bad">${icon('close')} ${esc(it.q.options[it.pick])}</p>` : '<p class="ans bad">Not answered</p>'}
+        ${it.pick !== null ? `<p class="ans bad">${icon('close')} ${esc(it.q.options[it.pick])}</p>` : `<p class="ans bad">${T('result.notAnswered')}</p>`}
         <p class="ans ok">${icon('check')} ${esc(it.q.options[it.q.answer])}</p><p class="prose muted">${esc(it.q.explain)}</p></article>`).join('')}</div>` : ''}`;
   }
 
@@ -958,7 +962,7 @@
     const c = celebrate; celebrate = null;
     const el = $('#celebrate');
     el.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="celeT">${rings([{ v: 1, color: RING.plan }, { v: 1, color: RING.q }, { v: 1, color: RING.acc }], 150)}
-      <h2 id="celeT">${esc(c.title)}</h2><p>${esc(c.body)}</p><p class="muted small">+100 XP for finishing the day.</p><button class="btn filled large" data-act="closeCele">Nice</button></div>`;
+      <h2 id="celeT">${esc(c.title)}</h2><p>${esc(c.body)}</p><p class="muted small">${T('celebrate.xp')}</p><button class="btn filled large" data-act="closeCele">${T('celebrate.ok')}</button></div>`;
     el.hidden = false; confetti();
     $('#celebrate .btn').focus();
   }
@@ -990,22 +994,22 @@
     else if (act === 'quit') {
       if (session.mode === 'mock') {
         const left = session.items.filter((x) => x.pick === null).length;
-        if (left && b.dataset.sure !== '1') { b.dataset.sure = '1'; toast(`${left} unanswered. Tap × again to hand in anyway.`, 'mock'); return; }
+        if (left && b.dataset.sure !== '1') { b.dataset.sure = '1'; toast(T('mock.unanswered', { n: left }), 'mock'); return; }
         finish();
       } else if (session.items.some((x) => x.pick !== null)) { session.items = session.items.filter((x) => x.pick !== null); finish(); }
       else { session = null; go('practice'); }
     }
-    else if (act === 'quick') { const topics = b.dataset.topics.split(','); startSession({ mode: 'practice', title: topics[0] === 'weak' ? 'Weak spots' : topics[0] === 'all' ? 'Quick 20' : `${TOPIC[topics[0]].short} practice`, items: pickPractice(topics, +b.dataset.n) }); }
-    else if (act === 'mock') startSession({ mode: 'mock', title: 'Mock exam', items: pickMock(), taskKey: findTask('mock') });
-    else if (act === 'review') startSession({ mode: 'practice', title: 'Mistakes review', items: shuffle(mistakes()).slice(0, 40), taskKey: findTask('review') });
-    else if (act === 'signdrill') startSession({ mode: 'practice', title: +b.dataset.n ? 'Sign drill' : 'Every sign', items: pickSigns(+b.dataset.n) });
-    else if (act === 'retryWrong') { const w = session.items.filter((x) => x.pick !== x.q.answer).map((x) => x.q); startSession({ mode: 'practice', title: 'Retry missed', items: w }); }
+    else if (act === 'quick') { const topics = b.dataset.topics.split(','); startSession({ mode: 'practice', title: topics[0] === 'weak' ? T('session.weakSpots') : topics[0] === 'all' ? T('session.quick20') : T('session.practiceTopics', { topics: TOPIC[topics[0]].short }), items: pickPractice(topics, +b.dataset.n) }); }
+    else if (act === 'mock') startSession({ mode: 'mock', title: T('session.mock'), items: pickMock(), taskKey: findTask('mock') });
+    else if (act === 'review') startSession({ mode: 'practice', title: T('session.mistakesReview'), items: shuffle(mistakes()).slice(0, 40), taskKey: findTask('review') });
+    else if (act === 'signdrill') startSession({ mode: 'practice', title: +b.dataset.n ? T('session.signDrill') : T('session.everySign'), items: pickSigns(+b.dataset.n) });
+    else if (act === 'retryWrong') { const w = session.items.filter((x) => x.pick !== x.q.answer).map((x) => x.q); startSession({ mode: 'practice', title: T('session.retryMissed'), items: w }); }
     else if (act === 'lessonDone') {
       const topic = b.dataset.topic; const first = !S.lessons[topic]; S.lessons[topic] = Date.now(); if (first) addXP(30);
       if (pendingTask && pendingTask.topic === topic) { markDone(pendingTask.key); pendingTask = null; }
       else { const k = findTask('lesson', topic); if (k) markDone(k); }
       newBadges = []; checkBadges(); save();
-      startSession({ mode: 'practice', title: `${TOPIC[topic].short} practice`, items: pickPractice([topic], 10) });
+      startSession({ mode: 'practice', title: T('session.practiceTopics', { topics: TOPIC[topic].short }), items: pickPractice([topic], 10) });
     }
     else if (act === 'factsDone') { if (pendingTask && pendingTask.facts) { markDone(pendingTask.key); pendingTask = null; checkBadges(); save(); } go('today'); }
     else if (act === 'flip') { const on = b.classList.toggle('on'); b.setAttribute('aria-expanded', on); }
@@ -1013,25 +1017,26 @@
     else if (act === 'closeCele') { $('#celebrate').hidden = true; }
     else if (act === 'export') {
       const code = btoa(unescape(encodeURIComponent(JSON.stringify(S))));
-      $('#backupArea').innerHTML = `<label for="bk" class="muted small">Your backup code. Keep it somewhere safe.</label><textarea id="bk" rows="4" readonly>${code}</textarea>`;
+      $('#backupArea').innerHTML = `<label for="bk" class="muted small">${T('backup.yours')}</label><textarea id="bk" rows="4" readonly>${code}</textarea>`;
       $('#bk').select();
-      (navigator.clipboard ? navigator.clipboard.writeText(code) : Promise.reject()).then(() => toast('Backup code copied.'), () => toast('Select the code and copy it.'));
+      (navigator.clipboard ? navigator.clipboard.writeText(code) : Promise.reject()).then(() => toast(T('backup.copied')), () => toast(T('backup.selectCopy')));
     }
-    else if (act === 'importOpen') $('#backupArea').innerHTML = `<label for="imp" class="muted small">Paste a backup code</label><textarea id="imp" rows="4"></textarea><div class="actions"><button class="btn filled" data-act="importDo">Restore</button></div>`;
+    else if (act === 'importOpen') $('#backupArea').innerHTML = `<label for="imp" class="muted small">${T('backup.paste')}</label><textarea id="imp" rows="4"></textarea><div class="actions"><button class="btn filled" data-act="importDo">${T('backup.restore')}</button></div>`;
     else if (act === 'importDo') {
-      try { const data = JSON.parse(decodeURIComponent(escape(atob($('#imp').value.trim())))); if (!data || typeof data.q !== 'object') throw new Error(); S = Object.assign(fresh(), data); save(); toast('Progress restored.'); render(); }
-      catch (err) { toast('That code could not be read. Copy the whole code and try again.', 'close'); }
+      try { const data = JSON.parse(decodeURIComponent(escape(atob($('#imp').value.trim())))); if (!data || typeof data.q !== 'object') throw new Error(); S = Object.assign(fresh(), data); save(); toast(T('backup.restored')); render(); }
+      catch (err) { toast(T('backup.bad'), 'close'); }
     }
-    else if (act === 'resetAsk') { $('#backupArea').innerHTML = `<p class="note">${icon('signs')}<span>This deletes all progress, streaks, badges and mock results in this browser.</span></p><div class="actions"><button class="btn danger" data-act="resetDo">Delete everything</button></div>`; }
-    else if (act === 'resetDo') { S = fresh(); S.epochAt = Date.now(); saveLocal(); syncNow({ overwrite: true }); session = null; go('today'); toast('Progress deleted.'); }
-    else if (act === 'syncOn') { cloudAction(() => linkDevice(newCode(), { fresh: true }), 'Sync is on. Copy the link to your phone.'); }
-    else if (act === 'syncNow') { cloudAction(() => syncNow(), 'Synced.'); }
-    else if (act === 'copyLink') { const u = linkUrl(); (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(() => toast('Link copied. Open it on your phone.'), () => { const b2 = $('.codebox'); if (b2) b2.insertAdjacentHTML('beforeend', `<input class="text" readonly value="${esc(u)}" onfocus="this.select()">`); }); }
-    else if (act === 'unlinkAsk') { b.dataset.act = 'unlinkDo'; b.textContent = 'Tap again to unlink'; b.classList.add('danger'); }
-    else if (act === 'unlinkDo') { unlink(); render(); toast('This device is unlinked. Its progress stays here.'); }
-    else if (act === 'pushOn') { cloudAction(enableReminders, 'Daily reminder is on.'); }
-    else if (act === 'pushOff') { cloudAction(disableReminders, 'Reminder turned off on this device.'); }
-    else if (act === 'pushTest') { cloudAction(async () => { const r = await api('push', { method: 'POST', body: JSON.stringify({ action: 'test', id: syncId }) }); if (!r.sent) throw new Error('No device received it. Turn the reminder off and on again.'); }, 'Test sent. It should arrive in a few seconds.'); }
+    else if (act === 'resetAsk') { $('#backupArea').innerHTML = `<p class="note">${icon('signs')}<span>${T('reset.warn')}</span></p><div class="actions"><button class="btn danger" data-act="resetDo">${T('reset.do')}</button></div>`; }
+    else if (act === 'resetDo') { S = fresh(); S.epochAt = Date.now(); saveLocal(); syncNow({ overwrite: true }); session = null; go('today'); toast(T('reset.done')); }
+    else if (act === 'syncOn') { cloudAction(() => linkDevice(newCode(), { fresh: true }), T('sync.on')); }
+    else if (act === 'syncNow') { cloudAction(() => syncNow(), T('sync.synced')); }
+    else if (act === 'copyLink') { const u = linkUrl(); (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(() => toast(T('sync.linkCopied')), () => { const b2 = $('.codebox'); if (b2) b2.insertAdjacentHTML('beforeend', `<input class="text" readonly value="${esc(u)}" onfocus="this.select()">`); }); }
+    else if (act === 'unlinkAsk') { b.dataset.act = 'unlinkDo'; b.textContent = T('sync.tapAgain'); b.classList.add('danger'); }
+    else if (act === 'unlinkDo') { unlink(); render(); toast(T('sync.unlinked')); }
+    else if (act === 'pushOn') { cloudAction(enableReminders, T('rem.isOn')); }
+    else if (act === 'pushOff') { cloudAction(disableReminders, T('rem.turnedOff')); }
+    else if (act === 'pushTest') { cloudAction(async () => { const r = await api('push', { method: 'POST', body: JSON.stringify({ action: 'test', id: syncId, lang: LANG }) }); if (!r.sent) throw new Error(T('rem.noDevice')); }, T('rem.testSent')); }
+    else if (act === 'lang') I18N.set(b.dataset.lang);
     else if (act === 'noPromo') { try { localStorage.setItem('korkort30.nopromo', '1'); } catch (e2) { /* ignore */ } render(); }
   });
   document.addEventListener('keydown', (e) => {
@@ -1058,14 +1063,14 @@
     } else if (e.target.id === 'practiceForm') {
       const topics = [...e.target.querySelectorAll('input[name=topic]:checked')].map((x) => x.value);
       const n = +(e.target.querySelector('input[name=n]:checked') || {}).value || 20;
-      if (!topics.length) { $('#practiceMsg').textContent = 'Pick at least one topic.'; return; }
-      startSession({ mode: 'practice', title: topics.length === 1 ? `${TOPIC[topics[0]].short} practice` : 'Custom practice', items: pickPractice(topics, n) });
+      if (!topics.length) { $('#practiceMsg').textContent = T('practice.pickTopic'); return; }
+      startSession({ mode: 'practice', title: topics.length === 1 ? T('session.practiceTopics', { topics: TOPIC[topics[0]].short }) : T('session.custom'), items: pickPractice(topics, n) });
     } else if (e.target.id === 'settingsForm') {
-      S.start = $('#setStart').value || S.start; S.testDate = $('#setTest').value || null; S.setAt = Date.now(); save(); toast('Dates saved.'); render();
+      S.start = $('#setStart').value || S.start; S.testDate = $('#setTest').value || null; S.setAt = Date.now(); save(); toast(T('settings.saved')); render();
     } else if (e.target.id === 'linkForm') {
       const code = cleanCode($('#linkCode').value);
-      if (code.length !== 20) { toast('A sync code has 20 letters and digits.', 'close'); return; }
-      cloudAction(() => linkDevice(code), 'Linked. Progress is now shared.');
+      if (code.length !== 20) { toast(T('sync.codeLength'), 'close'); return; }
+      cloudAction(() => linkDevice(code), T('sync.linked'));
     }
   });
 

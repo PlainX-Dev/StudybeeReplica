@@ -370,7 +370,7 @@
 
   function youTag(x, y) {
     return `<g transform="translate(${f(x)} ${f(y)})"><rect x="-17" y="-10" width="34" height="20" rx="10" fill="${COLORS.you}" stroke="#fff" stroke-width="2"/>` +
-      `<text y="4.5" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="11.5" fill="#fff">YOU</text></g>`;
+      `<text y="4.5" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="11.5" fill="#fff">${window.I18N ? I18N.you : 'YOU'}</text></g>`;
   }
   function curve(p0, c, p1, n = 10) {
     const out = [];
