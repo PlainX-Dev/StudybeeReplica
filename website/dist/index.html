@@ -2409,11 +2409,11 @@ QB.push(
     options: [
       'Yes, as long as you put the hazard lights on',
       'Yes, if you park on the right side',
-      'No, parking on a priority road outside built-up areas is not allowed; use a lay-by or a side road',
+      'No, parking on a priority road is not allowed; use a lay-by or a side road',
       'Only during daylight',
     ],
     answer: 2,
-    explain: 'The yellow diamond shows a priority road (huvudled). Outside built-up areas you may not park on a priority road. Stopping briefly, for example to let a passenger out, is still allowed if it is safe.',
+    explain: 'The yellow diamond shows a priority road (huvudled). You may never park on a priority road, inside or outside built-up areas. Stopping briefly, for example to let a passenger out, is still allowed if it is safe.',
   },
   {
     id: 'parking-08',
@@ -5250,6 +5250,88 @@ LESSONS.environment = {
 };
 
 </script>
+<script>/* lessons\parking.js */
+LESSONS.parking = {
+  title: 'Stopping & parking',
+  minutes: 20,
+  intro: 'A car standing in the wrong place can hide a child from other drivers, block a bus or force cyclists out into traffic. The law separates stopping from parking, and some places ban one or both.',
+  sections: [
+    {
+      h: 'Stopping or parking?',
+      body: '<p>Traffic law uses two different words, and the test checks that you know the difference.</p>' +
+        '<ul><li><strong>Parking</strong> (parkering) means leaving the vehicle standing, with or without the driver, for any reason other than: to avoid danger or because of the traffic (for example a queue), to let <strong>passengers get on or off</strong>, or to <strong>load or unload goods</strong>.</li>' +
+        '<li><strong>Stopping</strong> (stannande) is a short stop that is not parking, for example letting a friend out of the car or unloading a box at a shop.</li></ul>' +
+        '<p>It does not matter whether you sit in the car or leave the engine running. If you wait ten minutes for a friend who is shopping, you are <strong>parked</strong>.</p>',
+    },
+    {
+      h: 'Which side of the road',
+      body: '<ul><li>On a two-way road you must stop and park on the <strong>right-hand side</strong> in your direction of travel. This also applies when you only stop to let a passenger out.</li>' +
+        '<li>On a <strong>one-way road</strong> you may stop and park on <strong>both</strong> the right and the left side.</li>' +
+        '<li>Park close to the edge of the road and along it, unless markings show another way to park.</li></ul>',
+      pics: [{ road: { lanes: 'oneway2', signs: [{ name: 'one-way', y: 40, side: 'right' }], objects: [{ kind: 'car', x: 166, y: 230, dir: 'up', label: 'A', color: 'red' }, { kind: 'car', x: 234, y: 300, dir: 'up', label: 'B', color: 'green' }] } }],
+    },
+    {
+      h: 'Where you must not stop or park',
+      body: '<p>In these places you may neither stop nor park, unless the traffic forces you to or you must stop to avoid danger:</p>' +
+        '<ul><li>On a <strong>pedestrian crossing</strong> (övergångsställe) or within <strong>10 metres before</strong> it. Cars standing there hide pedestrians from other drivers.</li>' +
+        '<li>On a <strong>cycle crossing</strong> (cykelöverfart).</li>' +
+        '<li>In a <strong>junction</strong> or within <strong>10 metres</strong> of the nearest edge of the crossing carriageway.</li>' +
+        '<li>In a <strong>tunnel</strong> and on a <strong>level crossing</strong> (railway crossing).</li>' +
+        '<li>On a <strong>cycle path</strong> or in a <strong>cycle lane</strong>.</li>' +
+        '<li>On or near a <strong>hilltop</strong> or a <strong>bend</strong> where the view is limited.</li>' +
+        '<li>So close to a <strong>solid line</strong> (spärrlinje) that other vehicles would have to cross it to get past you.</li>' +
+        '<li>Where your car would hide a <strong>road sign or traffic light</strong>.</li></ul>',
+      pics: [{ road: { lanes: 2, crossing: 110, signs: [{ name: 'ped-crossing', y: 76, side: 'right' }], objects: [{ kind: 'car', x: 234, y: 160, dir: 'up', label: 'A', color: 'red' }, { kind: 'car', x: 234, y: 340, dir: 'up', label: 'B', color: 'green' }] } }],
+    },
+    {
+      h: 'Where you must not park',
+      body: '<p>In these places a short <strong>stop</strong> to let passengers out or to load goods may be allowed if it is safe, but you must not <strong>park</strong>:</p>' +
+        '<ul><li>At a <strong>bus stop</strong> (busshållplats). Buses need the space to pull in.</li>' +
+        '<li>In front of the <strong>entrance to a property</strong>, so that vehicles find it hard to drive in or out.</li>' +
+        '<li>At a <strong>passing place</strong> (mötesplats, the M sign) on a narrow road.</li>' +
+        '<li>On a <strong>priority road</strong> (huvudled), inside or outside built-up areas. Use a lay-by or a side road to rest.</li>' +
+        '<li>Within <strong>30 metres</strong> of a level crossing.</li>' +
+        '<li>In a <strong>walking-pace zone</strong> (gångfartsområde), except at places marked for parking.</li></ul>' +
+        '<p>On a <strong>motorway</strong> or an <strong>expressway</strong> (motortrafikled) you may stop or park only at places marked for it, such as rest areas. Stopping anywhere else is allowed only in an emergency, for example a breakdown.</p>',
+      pics: [{ road: { lanes: 2, busStop: 190, objects: [{ kind: 'car', x: 258, y: 190, dir: 'up', label: 'A', color: 'red' }] } }],
+    },
+    {
+      h: 'Parking signs',
+      body: '<ul><li><strong>No parking</strong> (A, förbud att parkera fordon): blue with a red border and <strong>one red bar</strong>. You may not park, but you may stop to let passengers on or off or to load and unload.</li>' +
+        '<li><strong>No stopping or parking</strong> (B, förbud att stanna och parkera fordon): blue with a red border and a <strong>red cross</strong>. You may not even stop to drop someone off. Only stopping forced by the traffic is allowed.</li>' +
+        '<li><strong>Parking</strong> (C): the blue P sign shows where parking is allowed.</li></ul>' +
+        '<p>Signs that ban stopping or parking apply only on the <strong>side of the road where they stand</strong>, and normally up to the next junction unless a plate says otherwise.</p>' +
+        '<p><strong>Plates</strong> under the signs can limit the time you may park, require a fee or a <strong>parking disc</strong> (parkeringsskiva), or reserve the space for certain vehicles. Times on plates: <strong>black</strong> numbers apply on weekdays, numbers in <strong>brackets</strong> on the day before a Sunday or public holiday, and <strong>red</strong> numbers on Sundays and public holidays. Always read every plate before you leave the car.</p>',
+      pics: [{ signs: ['no-parking', 'no-stopping', 'parking'], labels: ['A', 'B', 'C'] }],
+    },
+    {
+      h: 'Leaving the car',
+      body: '<ul><li>Before you leave the car: switch off the engine, apply the <strong>parking brake</strong>, take the key and lock the car.</li>' +
+        '<li>Parked facing <strong>downhill</strong> next to a kerb: turn the front wheels <strong>towards the kerb</strong>, so that the car rolls into it if the brake fails.</li>' +
+        '<li>If you must leave the car at the edge of an <strong>unlit road in the dark</strong>, use the <strong>parking lights</strong> (parkeringsljus, position lights) so others can see it. Do not leave full beam or fog lights on, as they dazzle oncoming drivers.</li></ul>',
+    },
+    {
+      h: 'Opening the door safely',
+      body: '<p>A door that opens suddenly can throw a passing cyclist off the bike. Before <strong>you</strong> or your passengers open a door, check the <strong>mirror</strong> and look back over your <strong>shoulder</strong> for cyclists and other traffic. Wait until they have passed.</p>' +
+        '<p>Passengers should get out on the side facing the pavement when they can.</p>',
+      pics: [{ road: { lanes: 2, you: { x: 234, y: 200 }, objects: [{ kind: 'bike', x: 206, y: 330, dir: 'up', label: 'C', color: 'green' }] } }],
+    },
+  ],
+  keyFacts: [
+    'Letting passengers on or off and loading goods is stopping, not parking. Waiting for someone is parking, even with the engine running.',
+    'On a two-way road, stop and park on the right side in your direction of travel. On a one-way road both sides are allowed.',
+    'No stopping or parking on a pedestrian crossing or within 10 m before it.',
+    'No stopping or parking in a junction or within 10 m of the crossing carriageway.',
+    'No stopping or parking in a tunnel, on a level crossing, on a cycle crossing or in a cycle lane.',
+    'No parking at a bus stop, at a passing place, in front of a property entrance, on a priority road, or within 30 m of a level crossing.',
+    'On motorways and expressways: stop or park only at marked places, such as rest areas.',
+    'One red bar = no parking. Red cross = no stopping or parking. They apply on the side of the road where the sign stands.',
+    'On unlit roads in the dark, a standing car shows parking lights.',
+    'Check the mirror and look over your shoulder for cyclists before you open the door.',
+  ],
+};
+
+</script>
 <script>/* lessons\people.js */
 LESSONS.people = {
   title: 'Alcohol, fatigue & risk',
@@ -5307,6 +5389,207 @@ LESSONS.people = {
     'Driver is responsible for belts of passengers under 15.',
     'Children under 135 cm need a child restraint; no rear-facing seat in front of an active airbag.',
     'Riskutbildning: two parts, both done before the theory test and the driving test.',
+  ],
+};
+
+</script>
+<script>/* lessons\priority.js */
+LESSONS.priority = {
+  title: 'Right of way at junctions',
+  minutes: 25,
+  intro: 'Many serious crashes happen at junctions, when two drivers both think they may go first. Learn the order: police signals, then traffic lights, then signs, then the general rules such as the right-hand rule. Right of way is never something you take: even when you have it, watch that the other driver really gives way.',
+  sections: [
+    {
+      h: 'The right-hand rule (högerregeln)',
+      body: '<p>At a junction where nothing else decides (no police, no working traffic lights, no signs), the <strong>right-hand rule</strong> applies: when two vehicles\' paths cross, the driver who has the other vehicle on their <strong>right</strong> must give way.</p>' +
+        '<ul><li>It does not matter which road looks bigger, whether it is a T-junction, or who arrives first.</li>' +
+        '<li>Going straight ahead does not give you priority over a vehicle from your right.</li>' +
+        '<li>If a vehicle comes from your <strong>left</strong>, you are on its right, so it must give way to you. Still check that it really slows down.</li>' +
+        '<li>With several vehicles, work it out pair by pair. A vehicle with nobody on its right goes first.</li></ul>',
+      pics: [
+        { junction: { you: { arm: 'S', path: 'straight' }, vehicles: [{ arm: 'E', path: 'straight', color: 'red', label: 'B' }] } },
+        { junction: { arms: ['N', 'E', 'S'], you: { arm: 'S', path: 'straight' }, vehicles: [{ arm: 'E', path: 'left', color: 'green', label: 'B' }] } },
+      ],
+    },
+    {
+      h: 'Give way and stop (väjningsplikt and stopplikt)',
+      body: '<p>The <strong>give-way sign</strong> (väjningsplikt) is a red-bordered triangle pointing down. It is often backed up by a line of white triangles across your lane (shark teeth).</p>' +
+        '<ul><li>You must give way to <strong>all</strong> traffic on the road you are entering, from <strong>both left and right</strong>. The right-hand rule no longer helps you.</li>' +
+        '<li>Show clearly and in good time that you will give way, by slowing down or stopping. Only drive on when you can do so without forcing anyone to brake or swerve.</li>' +
+        '<li>Turning right does not change this: you still enter the lane of traffic coming from your left.</li></ul>' +
+        '<p>The <strong>stop sign</strong> (stopplikt) means the same as give way, plus you must <strong>stop completely</strong>, every time, even when the road is empty. Stop at the <strong>stop line</strong>. If there is no line, stop where you can see properly into the crossing road.</p>',
+      pics: [
+        { signs: ['yield', 'stop'], labels: ['A', 'B'] },
+        { junction: { you: { arm: 'S', path: 'straight' }, vehicles: [{ arm: 'W', path: 'straight', color: 'red', label: 'B' }], signs: { S: 'yield' }, lines: { S: 'yield' } } },
+        { junction: { arms: ['E', 'S', 'W'], you: { arm: 'S', path: 'stop' }, vehicles: [{ arm: 'E', path: 'straight', color: 'green', label: 'B' }], signs: { S: 'stop' }, lines: { S: 'stop' } } },
+      ],
+    },
+    {
+      h: 'Priority road (huvudled)',
+      body: '<p>The <strong>priority road sign</strong> (huvudled) is a yellow diamond with a white border. On a priority road you have right of way over traffic coming out of the side roads: they have give-way or stop signs.</p>' +
+        '<ul><li>The right-hand rule does not apply between you and the side roads. A car from a side road on your right must wait for you.</li>' +
+        '<li>The priority road only gives you priority over the <strong>side roads</strong>. Between two vehicles on the priority road, the normal rules apply. If you turn left, you still give way to oncoming traffic on the priority road.</li>' +
+        '<li>The <strong>end of priority road</strong> sign (huvudled upphör) marks where the priority road ends. After it you no longer have priority: at the next junction the signs, or if there are none, the right-hand rule decide.</li></ul>',
+      pics: [
+        { signs: ['main-road', 'end-main-road'], labels: ['A', 'B'] },
+        { junction: { you: { arm: 'S', path: 'straight' }, vehicles: [{ arm: 'E', path: 'straight', color: 'red', label: 'B' }], signs: { S: 'main-road', E: 'yield', W: 'yield' }, lines: { E: 'yield', W: 'yield' } } },
+      ],
+    },
+    {
+      h: 'Turning left and turning across people',
+      body: '<p>When you <strong>turn left</strong> you must give way to <strong>oncoming</strong> traffic that goes straight ahead or turns right. This applies at unmarked junctions, on a priority road and at green traffic lights alike. Indicating early never gives you priority.</p>' +
+        '<ul><li>If the oncoming car turns left across <em>your</em> path while you go straight, it is the other driver who must give way.</li>' +
+        '<li>In a junction with give-way signs for two side roads facing each other, both give way to the priority road first. Between the two of them, the one turning left gives way to the one going straight.</li>' +
+        '<li>When you turn (left or right), you must give way to <strong>pedestrians</strong> crossing the road you turn into. They can have green at the same time as you.</li></ul>',
+      pics: [
+        { junction: { you: { arm: 'S', path: 'left' }, vehicles: [{ arm: 'N', path: 'straight', color: 'orange', label: 'B' }] } },
+        { junction: { you: { arm: 'S', path: 'right' }, crossings: ['E'], peds: [{ arm: 'E', x: 0.1, label: 'P' }] } },
+      ],
+    },
+    {
+      h: 'Coming out: the exit rule (utfartsregeln)',
+      body: '<p>When you drive out onto a road from a <strong>car park, petrol station, private property</strong> or a <strong>pedestrian priority zone</strong> (gångfartsområde), or out from a <strong>cycle path</strong> or off-road, you must give way to <strong>all traffic on the road</strong>, from both directions. The right-hand rule does not apply to an exit like this.</p>' +
+        '<ul><li>It works the other way too: a car coming out of a petrol station on your right must wait for you.</li>' +
+        '<li>A cyclist riding out from a cycle path onto the road must give way to traffic on the road.</li>' +
+        '<li>An exit is often recognisable by a dropped kerb or by the pavement or cycle path continuing across it.</li></ul>',
+      pics: [
+        { junction: { arms: ['E', 'S', 'W'], you: { arm: 'S', path: 'right' }, vehicles: [{ arm: 'W', path: 'straight', color: 'red', label: 'B' }] } },
+        { junction: { arms: ['N', 'E', 'S'], you: { arm: 'S', path: 'straight' }, vehicles: [{ arm: 'E', path: 'left', kind: 'bike', color: 'green', label: 'B' }] } },
+      ],
+    },
+    {
+      h: 'Roundabouts and cycle crossings',
+      body: '<p>A roundabout (cirkulationsplats) is a junction like any other: priority is decided by the signs. Almost every entry has a <strong>give-way sign</strong> and shark teeth, so you give way to the traffic already on the roundabout, and drive anticlockwise round it.</p>' +
+        '<p>Where a cycle route crosses the road there are two kinds of crossing:</p>' +
+        '<ul><li><strong>Cycle crossing</strong> (cykelöverfart), shown by the cycle crossing sign: if there are no traffic lights or police, drivers must give way to cyclists and class II moped riders who are on it or about to ride onto it. Approach at a low speed so you can stop.</li>' +
+        '<li><strong>Cycle passage</strong> (cykelpassage), without that sign: here the <strong>cyclist</strong> must give way to vehicles on the road. As a driver you must still take care and slow down if needed.</li></ul>',
+      pics: [
+        { roundabout: { you: { arm: 'S', exit: 'N' }, vehicles: [{ ring: 140, label: 'B', color: 'red', exit: 'E' }], signs: { S: 'yield', E: 'yield', N: 'yield', W: 'yield' } } },
+        { sign: 'bike-crossing' },
+      ],
+    },
+    {
+      h: 'Police, traffic lights, emergency vehicles and trams',
+      body: '<p>The order of precedence is: <strong>police signals</strong>, then <strong>traffic lights</strong>, then <strong>road signs</strong>, then the <strong>general rules</strong> such as the right-hand rule. A police officer\'s signal overrides a green light.</p>' +
+        '<ul><li>Red and yellow together means the light will soon turn green: you must still wait. Yellow after green means stop, unless you are too close to stop safely.</li>' +
+        '<li>A green arrow lets you drive in the direction it points.</li>' +
+        '<li><strong>Flashing yellow</strong> means the lights are not controlling traffic: follow the signs, and if there are none, the right-hand rule.</li>' +
+        '<li>An <strong>emergency vehicle</strong> (utryckningsfordon) using its blue lights and siren must be given a free way. Move aside or stop in a safe place, and do not block the junction.</li>' +
+        '<li>A <strong>tram</strong> (spårvagn) has a long braking distance and cannot steer away from you. Never count on a tram stopping for you.</li></ul>',
+      pics: [
+        { junction: { you: { arm: 'S', path: 'left' }, vehicles: [{ arm: 'N', path: 'straight', color: 'red', label: 'B' }], lights: { S: 'green', N: 'green', E: 'red', W: 'red' } } },
+        { junction: { you: { arm: 'S', path: 'stop' }, vehicles: [{ arm: 'E', path: 'straight', kind: 'ambulance', label: 'A' }], lights: { S: 'green', E: 'red' } } },
+      ],
+    },
+  ],
+  keyFacts: [
+    'Order of precedence: police signals, traffic lights, signs, then general rules like the right-hand rule.',
+    'Right-hand rule: with nothing signed, give way to vehicles coming from your right.',
+    'Give-way sign: give way to all traffic on the road you enter, from both sides.',
+    'Stop sign: always stop completely at the stop line, then give way to all traffic.',
+    'On a priority road, side-road traffic gives way to you; the end-of-priority-road sign ends this.',
+    'When turning left, give way to oncoming traffic going straight ahead or turning right, even at a green light.',
+    'Exit rule: coming out of a car park, petrol station, property or cycle path, give way to all traffic on the road.',
+    'At a cycle crossing (cykelöverfart) without lights or police, drivers give way to cyclists; at a cycle passage the cyclist gives way.',
+    'Flashing yellow lights: follow the signs, and with no signs the right-hand rule.',
+    'Give emergency vehicles with blue lights and siren a free way.',
+  ],
+};
+
+</script>
+<script>/* lessons\roads.js */
+LESSONS.roads = {
+  title: 'Motorways, rural roads & railways',
+  minutes: 25,
+  intro: 'Different roads have different rules. Motorways are the safest roads per kilometre, but mistakes at high speed are severe. On country roads the dangers are oncoming traffic, wild animals and railway crossings, where a train can never stop in time for you.',
+  sections: [
+    {
+      h: 'Motorways and expressways',
+      body: '<p>A <strong>motorway</strong> (motorväg) starts at the motorway sign and ends at the same sign with a red diagonal bar. An <strong>expressway</strong> (motortrafikled) has its own sign. The same basic rules apply on both.</p>' +
+        '<ul><li>Only <strong>motor vehicles built for, and allowed to drive at, at least 40 km/h</strong> may use them.</li>' +
+        '<li><strong>Pedestrians, cyclists and moped riders</strong> are not allowed. A class II moped, for example, may not drive there.</li>' +
+        '<li>Expressways often have <strong>no central barrier</strong> between the directions, so oncoming traffic can be close.</li>' +
+        '<li>Follow the speed limit on the signs. After the end-of-motorway sign, expect a lower speed limit, junctions and slower road users.</li></ul>',
+      pics: [{ signs: ['motorway', 'end-motorway', 'expressway'] }],
+    },
+    {
+      h: 'Joining and leaving the motorway',
+      body: '<p><strong>Joining:</strong> you drive onto the motorway via the <strong>acceleration lane</strong>. Use it to <strong>match your speed</strong> to the traffic on the motorway, signal, and merge into a suitable gap.</p>' +
+        '<ul><li>You must <strong>give way</strong> to traffic already on the motorway. They do not have to make room for you.</li>' +
+        '<li>Do not stop at the end of the acceleration lane unless there is truly no gap.</li></ul>' +
+        '<p><strong>Leaving:</strong> move to the right lane <strong>in good time</strong> and signal. Keep your speed until you are on the <strong>deceleration lane</strong>, then slow down there. Braking in the through lane can cause rear-end collisions.</p>' +
+        '<p>If you <strong>miss your exit</strong>, drive on to the next one.</p>',
+      pics: [
+        { road: { lanes: 4, you: { x: 316, y: 330, path: 'change-left' }, objects: [{ kind: 'car', lane: 'right', y: 300, label: 'B', color: 'red' }], signs: [{ name: 'motorway', y: 60, side: 'right' }] } },
+        { road: { lanes: 4, you: { lane: 'right', y: 330, path: 'change-right' } } },
+      ],
+    },
+    {
+      h: 'Driving on the motorway, and breakdowns',
+      body: '<ul><li>Drive in the <strong>right lane</strong>. Use the lanes to the left for <strong>overtaking</strong>, then signal and move back to the right when it is safe.</li>' +
+        '<li><strong>Never reverse or make a U-turn</strong>, and never use gaps in the central reservation.</li>' +
+        '<li><strong>Stopping is only allowed in an emergency</strong>, such as a breakdown or illness. That includes the hard shoulder. To rest or use your phone, go to a rest area or leave the motorway.</li></ul>' +
+        '<p><strong>If you break down:</strong> try to roll onto the hard shoulder, as far to the right as possible. Then:</p>' +
+        '<ul><li>Turn on the <strong>hazard lights</strong> and put on <strong>reflective vests</strong>.</li>' +
+        '<li>Get everyone out on the side <strong>away from traffic</strong> and wait <strong>behind the crash barrier</strong>. Do not stay in the car or stand behind it.</li>' +
+        '<li>Put out the <strong>warning triangle</strong> if it can be done safely, and call for help.</li></ul>',
+      pics: [{ road: { lanes: 4, you: { x: 318, y: 220 } } }],
+    },
+    {
+      h: '2+1 roads',
+      body: '<p>A <strong>2+1 road</strong> has a <strong>central barrier</strong> (mitträcke), often a cable barrier, between the directions. The lanes alternate: on some sections you have <strong>two lanes</strong>, on others only <strong>one</strong>.</p>' +
+        '<ul><li>On a <strong>one-lane section</strong> you cannot overtake. Keep a safe distance and wait for the two-lane section.</li>' +
+        '<li>On a <strong>two-lane section</strong>, drive in the right lane and use the left lane to overtake.</li>' +
+        '<li>Only start an overtaking that you can <strong>finish before the left lane ends</strong>. If you will not make it, ease off and move in <strong>behind</strong> the vehicle. Never break the speed limit to get past.</li>' +
+        '<li>When the left lane ends, the driver in that lane must merge into the right lane. Drivers in the right lane should help by keeping a gap.</li></ul>',
+      pics: [
+        { road: { lanes: 2, centre: 'barrier', you: { lane: 'right', y: 330 }, objects: [{ kind: 'truck', lane: 'right', y: 200, label: 'T', color: 'orange' }] } },
+        { road: { lanes: 'oneway2', you: { lane: 'left', y: 320, path: 'straight' }, objects: [{ kind: 'truck', lane: 'right', y: 210, label: 'T', color: 'orange' }] } },
+      ],
+    },
+    {
+      h: 'Rural roads and wild animals',
+      body: '<ul><li><strong>Keep to the right</strong>, especially before <strong>hilltops and bends</strong>, where you cannot see oncoming traffic. Never overtake there.</li>' +
+        '<li>If an obstacle, such as a parked truck, is <strong>on your side</strong> of a narrow road, you should normally let oncoming traffic pass first.</li>' +
+        '<li>On narrow roads, <strong>passing places</strong> (mötesplats, sign M) are for meeting and letting others pass. Use the one on your side. If it is on the other side, wait opposite it so the oncoming driver can use it. <strong>Never park</strong> in a passing place.</li>' +
+        '<li>On long, steep downhill slopes, use a <strong>lower gear</strong> so the engine brakes. Never coast in neutral.</li></ul>' +
+        '<p><strong>Wild animals</strong> such as moose and deer are most active at <strong>dawn and dusk</strong>. Where the warning sign is up, slow down and watch the verges. If one animal crosses, <strong>more may follow</strong>.</p>' +
+        '<p>If you hit a moose, deer, wild boar or other large wild animal, you must <strong>report it to the police</strong> (call 112) and <strong>mark the place</strong>, even if the animal ran off.</p>',
+      pics: [
+        { view: { time: 'dusk', lanes: 2, signs: [{ name: 'w-moose', side: 'right', d: 0.2 }], objects: [{ kind: 'moose', x: 1.1, d: 0.5 }] } },
+        { view: { lanes: 1, signs: [{ name: 'meeting-place', side: 'right', d: 0.22 }], objects: [{ kind: 'car', x: 0, d: 0.6, facing: 'toward', label: 'B', color: 'red' }] } },
+      ],
+    },
+    {
+      h: 'Level crossings',
+      body: '<p>A <strong>level crossing</strong> (plankorsning) is where the road crosses a railway. Warning signs tell you which kind is ahead:</p>' +
+        '<ul><li>The sign showing a <strong>barrier</strong>: level crossing <strong>with barriers</strong>.</li>' +
+        '<li>The sign showing a <strong>steam train</strong>: level crossing <strong>without barriers</strong>. There may be no warning lights either, so slow down, <strong>look and listen</strong> in both directions, and stop if a train is coming.</li>' +
+        '<li>At the crossing itself stands the <strong>cross sign</strong> (kryssmärke), a white X with a red border. A <strong>double cross</strong> means there is <strong>more than one track</strong>: another train may come after the first.</li></ul>' +
+        '<p>When the <strong>red lights flash</strong> or the barriers start to move, <strong>stop</strong>. Never try to beat the barriers or drive around them. Wait until the barriers are fully up and the lights have gone out.</p>' +
+        '<p><strong>Never stop on the tracks.</strong> Only drive onto a crossing if there is room for your whole car on the other side.</p>' +
+        '<p>If your car gets <strong>stuck on the tracks</strong>: get everyone out and <strong>well away from the railway at once</strong>. Then call <strong>112</strong>, or the number shown at the crossing, so trains can be stopped.</p>',
+      pics: [{ signs: ['w-level-crossing-gates', 'w-level-crossing'] }],
+    },
+    {
+      h: 'Tunnels',
+      body: '<ul><li>Use <strong>dipped headlights</strong> and take off your sunglasses before you enter.</li>' +
+        '<li>Keep a <strong>good distance</strong> to the vehicle in front.</li>' +
+        '<li>Do not stop, reverse or make a U-turn, except in an emergency or when traffic stops.</li></ul>' +
+        '<p><strong>If there is a fire</strong> and you cannot drive on, <strong>smoke</strong> is the main danger. Stop as far to the side as possible, <strong>switch off the engine</strong>, <strong>leave the key in the car</strong> so rescue services can move it, and walk to the nearest <strong>emergency exit</strong>.</p>',
+    },
+  ],
+  keyFacts: [
+    'Motorways and expressways: only motor vehicles built for, and allowed to drive at, at least 40 km/h. No pedestrians, cyclists or mopeds.',
+    'Joining: match your speed on the acceleration lane and give way to traffic already on the motorway.',
+    'Leaving: move right in good time and slow down on the deceleration lane, not in the through lane.',
+    'On a motorway or expressway: no reversing, no U-turns, and no stopping except in an emergency. Missed your exit? Drive on to the next one.',
+    'Breakdown: hazard lights, reflective vests, everyone out away from traffic and behind the barrier, then warning triangle if safe.',
+    '2+1 road: only overtake on the two-lane section, and only if you can finish before the lane ends.',
+    'Passing place (M): use the one on your side; never park in it.',
+    'Hit a large wild animal: report it to the police and mark the place.',
+    'Level crossing: never stop on the tracks; stop when red lights flash. Stuck? Everyone out and away, then call 112.',
+    'Tunnel fire: engine off, key left in the car, walk to the emergency exit.',
   ],
 };
 
@@ -5447,6 +5730,95 @@ LESSONS.speed = {
     'Overtake on the left; a vehicle turning left is overtaken on the right.',
     'No overtaking before hilltops, in bends, just before or on an uncontrolled pedestrian crossing, or across a solid line.',
     'Being overtaken: keep right and do not speed up.',
+  ],
+};
+
+</script>
+<script>/* lessons\turning.js */
+LESSONS.turning = {
+  title: 'Turning, lanes & roundabouts',
+  minutes: 25,
+  intro: 'Most junction crashes happen when someone turns or changes lanes. Show what you plan to do in good time, put the car in the right place on the road, and give way to everyone whose path you cross.',
+  sections: [
+    {
+      h: 'Indicating and turning right',
+      body: '<p>Use the <strong>indicator</strong> (körriktningsvisare, blinkers) <strong>in good time</strong> before you turn, change lanes or pull out, so that others can see what you plan to do. Switch it off when you have finished. Indicating only tells others your plan: it <strong>never gives you priority</strong>.</p>' +
+        '<ul><li>Before a <strong>right turn</strong>, position the car <strong>close to the right-hand edge</strong> of the road.</li>' +
+        '<li>Turn in a <strong>tight curve</strong> into the right-hand side of the new road.</li>' +
+        '<li>Check your mirror and blind spot on the right before you turn: cyclists and moped riders may be beside you.</li></ul>',
+      pics: [{ junction: { you: { arm: 'S', path: 'right' } } }],
+    },
+    {
+      h: 'Turning left',
+      body: '<ul><li>On an ordinary <strong>two-way road</strong>, position the car <strong>close to the centre line, on your own side of it</strong>. Traffic behind you can then pass on your right.</li>' +
+        '<li>On a <strong>one-way street</strong> there is no oncoming traffic, so move over <strong>close to the left-hand edge</strong>.</li>' +
+        '<li>Turn so that you end up in the <strong>right-hand half</strong> of the road you turn into. Do not cut the corner into the lane meant for traffic coming towards you.</li>' +
+        '<li>When you turn left you must <strong>give way to oncoming vehicles</strong> going straight ahead or turning right. If you turn right and an oncoming car turns left into the same road, the oncoming car must give way to you.</li></ul>',
+      pics: [{ junction: { you: { arm: 'S', path: 'left' }, vehicles: [{ arm: 'N', path: 'straight', color: 'red', label: 'B' }] } }],
+    },
+    {
+      h: 'Pedestrians and cyclists when you turn',
+      body: '<p>When you turn, you cross the path of people going straight on.</p>' +
+        '<ul><li>Give way to <strong>pedestrians crossing the road you are turning into</strong>.</li>' +
+        '<li>At a pedestrian crossing without traffic lights or a police officer, give way to pedestrians who are on the crossing or about to step onto it.</li>' +
+        '<li><strong>Cyclists and moped riders going straight on</strong> beside you, for example on your right when you turn right, must be allowed to pass before you turn. Check the mirror and the <strong>blind spot</strong>, and never turn in front of them.</li></ul>',
+      pics: [
+        { junction: { you: { arm: 'S', path: 'right', at: 115 }, vehicles: [{ arm: 'S', path: 'straight', kind: 'bike', color: 'green', label: 'B', at: 50 }] } },
+        { junction: { you: { arm: 'S', path: 'left' }, crossings: ['W'], peds: [{ arm: 'W', x: 0.2, label: 'P' }] } },
+      ],
+    },
+    {
+      h: 'Choosing your lane',
+      body: '<ul><li>Choose the right <strong>lane</strong> (körfält) <strong>in good time</strong> before the junction: as a rule, the right-hand lane to turn right and the left-hand lane to turn left.</li>' +
+        '<li><strong>Arrows painted in the lane</strong> show which way you must drive from that lane. If you find yourself in the wrong lane, <strong>follow the arrow</strong> and find another way. Do not turn from the wrong lane or stop to wait for a gap.</li>' +
+        '<li>Blue round signs are <strong>mandatory</strong>: A means you must turn right, B means you must drive straight on (so no left turn and no U-turn). Red-bordered signs forbid: C means no left turn.</li></ul>',
+      pics: [{ signs: ['mandatory-right', 'mandatory-straight', 'no-left-turn'], labels: ['A', 'B', 'C'] }],
+    },
+    {
+      h: 'Changing lanes and zip merging',
+      body: '<ul><li>When you <strong>change lanes</strong> (körfältsbyte) you must <strong>give way to traffic in the lane you move into</strong>. Check your mirrors and blind spot, indicate in good time, and only move over when there is room.</li>' +
+        '<li>Your indicator does not give you priority. Traffic in the other lane does not have to let you in just because you indicate.</li>' +
+        '<li>Where two lanes become one in <strong>slow, queuing traffic</strong>, use the <strong>zip method</strong> (blixtlåsprincipen): drive on in both lanes to near where the lane ends, then take turns, <strong>one car from each lane</strong>.</li>' +
+        '<li>The driver who changes lanes must still make sure it is safe. If you are in the lane that continues, keep an even speed and let the merging car in: do not close the gap.</li></ul>',
+      pics: [{ road: { lanes: 'oneway2', you: { lane: 'right', y: 300, path: 'straight' }, objects: [
+        { kind: 'car', lane: 'left', y: 210, label: 'B', color: 'green', dir: 'up', path: 'change-right' },
+        { kind: 'cone', lane: 'left', y: 80 }, { kind: 'cone', lane: 'left', y: 50 }, { kind: 'cone', lane: 'left', y: 20 },
+      ] } }],
+    },
+    {
+      h: 'Roundabouts',
+      body: '<p>In a roundabout (cirkulationsplats) you always drive round <strong>anticlockwise</strong>, keeping the centre island on your left.</p>' +
+        '<ul><li>Roundabouts in Sweden normally have a <strong>give-way sign</strong> at every entry. You then give way to traffic <strong>already in the roundabout</strong>. You do not have to wait for cars at other entries, and once you are in the roundabout, cars at the entries must give way to you.</li>' +
+        '<li>The blue roundabout sign only tells you to drive round anticlockwise. It does not by itself give anyone priority: look for the give-way sign.</li>' +
+        '<li>Choose your lane before you enter and follow the lane markings. Moving from the inner to the outer lane is a <strong>lane change</strong>, so you must give way to traffic in the outer lane.</li>' +
+        '<li>Indicate <strong>right</strong> when you have <strong>passed the exit before the one you want</strong>. If you leave at the first exit, indicate right already as you approach.</li>' +
+        '<li><strong>Long vehicles</strong> such as buses and lorries may need more than one lane to get round. Keep back, and do not drive alongside them in the roundabout.</li></ul>',
+      pics: [{ roundabout: { you: { arm: 'S', exit: 'W' }, vehicles: [{ ring: 145, label: 'B', color: 'red' }], signs: { S: 'yield', E: 'yield', N: 'yield', W: 'yield' } } }],
+    },
+    {
+      h: 'U-turns and reversing',
+      body: '<ul><li>You may make a <strong>U-turn</strong> (U-sväng) only if it can be done <strong>without danger or obstruction</strong> to other traffic. Let oncoming traffic pass first.</li>' +
+        '<li>U-turns are forbidden where a <strong>no U-turn sign</strong> applies. That sign bans only U-turns: turning left is still allowed.</li>' +
+        '<li>On a <strong>motorway</strong> and an <strong>expressway</strong> (motortrafikled) you must <strong>never turn round or reverse</strong>. If you miss your exit, drive on to the next one.</li>' +
+        '<li><strong>Reversing</strong> (backning) is allowed only if it causes no danger or obstruction, and only for as short a distance as you need. Reverse slowly, look all around, and give way to all other traffic, for example when you reverse out of a parking space.</li></ul>',
+      pics: [
+        { sign: 'no-u-turn' },
+        { junction: { you: { arm: 'S', path: 'uturn' }, vehicles: [{ arm: 'N', path: 'straight', color: 'red', label: 'B' }] } },
+      ],
+    },
+  ],
+  keyFacts: [
+    'Indicate in good time. Indicating tells others your plan but never gives you priority.',
+    'Right turn: close to the right-hand edge, then a tight curve.',
+    'Left turn on a two-way road: close to the centre line on your own side. On a one-way street: close to the left-hand edge.',
+    'After a left turn you must be in the right-hand half of the new road. Do not cut the corner.',
+    'Turning left, give way to oncoming traffic going straight ahead or turning right.',
+    'When you turn, give way to pedestrians crossing the road you turn into and to cyclists going straight on.',
+    'Lane arrows are binding. In the wrong lane, follow the arrow and find another way.',
+    'When you change lanes, give way to traffic in the lane you move into.',
+    'Zip method (blixtlåsprincipen): in slow traffic where two lanes become one, take turns, one car from each lane.',
+    'Roundabout with give-way signs: give way to traffic already in it. Indicate right after passing the exit before yours.',
+    'No U-turns or reversing on motorways and expressways. Reverse only short distances and give way to everyone.',
   ],
 };
 
@@ -5788,6 +6160,83 @@ SV.lessons.environment = {
 };
 
 </script>
+<script>/* sv\lessons\parking.js */
+/* Svenska: parking */
+SV.lessons.parking = {
+  title: 'Stannande och parkering',
+  intro: 'En bil som står på fel plats kan dölja ett barn för andra förare, hindra en buss eller tvinga ut cyklister i trafiken. Lagen skiljer på stannande och parkering, och på vissa platser är det ena eller båda förbjudna.',
+  sections: [
+    {
+      h: 'Stannande eller parkering?',
+      body: '<p>Trafikreglerna använder två olika ord, och provet kontrollerar att du vet skillnaden.</p>' +
+        '<ul><li><strong>Parkering</strong> betyder att fordonet ställs upp, med eller utan förare, av något annat skäl än: för att undvika fara eller på grund av trafiken (till exempel en kö), för att låta <strong>passagerare stiga på eller av</strong>, eller för att <strong>lasta eller lossa gods</strong>.</li>' +
+        '<li><strong>Stannande</strong> är ett kort uppehåll som inte är parkering, till exempel när du släpper av en vän eller lastar av en låda vid en butik.</li></ul>' +
+        '<p>Det spelar ingen roll om du sitter kvar i bilen eller låter motorn gå. Om du väntar tio minuter på en vän som handlar har du <strong>parkerat</strong>.</p>',
+    },
+    {
+      h: 'Vilken sida av vägen',
+      body: '<ul><li>På en väg med trafik i båda riktningarna ska du stanna och parkera på <strong>höger sida</strong> i din färdriktning. Det gäller också när du bara stannar för att släppa av en passagerare.</li>' +
+        '<li>På en <strong>enkelriktad väg</strong> får du stanna och parkera på <strong>båda</strong> sidorna, höger och vänster.</li>' +
+        '<li>Parkera nära vägkanten och längs med den, om inte markeringar visar ett annat sätt att parkera.</li></ul>',
+    },
+    {
+      h: 'Där du inte får stanna eller parkera',
+      body: '<p>På de här platserna får du varken stanna eller parkera, om inte trafiken tvingar dig eller du måste stanna för att undvika fara:</p>' +
+        '<ul><li>På ett <strong>övergångsställe</strong> eller inom <strong>10 meter före</strong> det. Bilar som står där döljer fotgängare för andra förare.</li>' +
+        '<li>På en <strong>cykelöverfart</strong>.</li>' +
+        '<li>I en <strong>korsning</strong> eller inom <strong>10 meter</strong> från närmaste kant av den korsande körbanan.</li>' +
+        '<li>I en <strong>tunnel</strong> och i en <strong>plankorsning</strong> (järnvägskorsning).</li>' +
+        '<li>På en <strong>cykelbana</strong> eller i ett <strong>cykelfält</strong>.</li>' +
+        '<li>I eller nära ett <strong>backkrön</strong> eller en <strong>kurva</strong> där sikten är skymd.</li>' +
+        '<li>Så nära en <strong>spärrlinje</strong> att andra fordon måste korsa den för att komma förbi dig.</li>' +
+        '<li>Där bilen skulle skymma ett <strong>vägmärke eller en trafiksignal</strong>.</li></ul>',
+    },
+    {
+      h: 'Där du inte får parkera',
+      body: '<p>På de här platserna kan ett kort <strong>stannande</strong> för att släppa av passagerare eller lasta gods vara tillåtet om det kan ske säkert, men du får inte <strong>parkera</strong>:</p>' +
+        '<ul><li>Vid en <strong>busshållplats</strong>. Bussarna behöver platsen för att köra in.</li>' +
+        '<li>Framför en <strong>infart till en fastighet</strong>, så att fordon får svårt att köra in eller ut.</li>' +
+        '<li>På en <strong>mötesplats</strong> (M-märket) på en smal väg.</li>' +
+        '<li>På en <strong>huvudled</strong>, både inom och utanför tättbebyggt område. Använd en rastficka eller en sidoväg om du vill vila.</li>' +
+        '<li>Inom <strong>30 meter</strong> från en plankorsning.</li>' +
+        '<li>Inom ett <strong>gångfartsområde</strong>, utom på platser som är markerade för parkering.</li></ul>' +
+        '<p>På <strong>motorväg</strong> och <strong>motortrafikled</strong> får du stanna eller parkera bara på platser som är markerade för det, till exempel rastplatser. På andra ställen får du stanna bara i en nödsituation, till exempel vid motorstopp.</p>',
+    },
+    {
+      h: 'Vägmärken för parkering',
+      body: '<ul><li><strong>Förbud att parkera fordon</strong> (A): blått med röd kant och <strong>ett rött snedstreck</strong>. Du får inte parkera, men du får stanna för att låta passagerare stiga på eller av eller för att lasta och lossa.</li>' +
+        '<li><strong>Förbud att stanna och parkera fordon</strong> (B): blått med röd kant och ett <strong>rött kryss</strong>. Du får inte ens stanna för att släppa av någon. Bara stannande som trafiken tvingar fram är tillåtet.</li>' +
+        '<li><strong>Parkering</strong> (C): det blå P-märket visar var parkering är tillåten.</li></ul>' +
+        '<p>Märken som förbjuder stannande eller parkering gäller bara på den <strong>sida av vägen där de står</strong>, och normalt fram till nästa korsning om inte en tilläggstavla säger något annat.</p>' +
+        '<p><strong>Tilläggstavlor</strong> under märkena kan begränsa hur länge du får parkera, kräva avgift eller <strong>parkeringsskiva</strong>, eller reservera platsen för vissa fordon. Tider på tavlorna: <strong>svarta</strong> siffror gäller vardagar, siffror inom <strong>parentes</strong> dag före söndag eller helgdag, och <strong>röda</strong> siffror söndagar och helgdagar. Läs alltid alla tavlor innan du lämnar bilen.</p>',
+    },
+    {
+      h: 'När du lämnar bilen',
+      body: '<ul><li>Innan du lämnar bilen: stäng av motorn, dra åt <strong>parkeringsbromsen</strong>, ta med nyckeln och lås bilen.</li>' +
+        '<li>Parkerad i <strong>nedförsbacke</strong> intill en trottoarkant: vrid framhjulen <strong>mot kanten</strong>, så att bilen rullar in i den om bromsen släpper.</li>' +
+        '<li>Om du måste lämna bilen vid kanten av en <strong>obelyst väg i mörker</strong> ska du ha <strong>parkeringsljus</strong> (positionsljus) tända så att andra ser bilen. Lämna inte helljus eller dimljus tända, de bländar mötande förare.</li></ul>',
+    },
+    {
+      h: 'Öppna dörren säkert',
+      body: '<p>En dörr som plötsligt öppnas kan få en cyklist som passerar att falla. Innan <strong>du</strong> eller dina passagerare öppnar en dörr ska du titta i <strong>backspegeln</strong> och vrida på huvudet och titta bakåt över <strong>axeln</strong> efter cyklister och annan trafik. Vänta tills de har passerat.</p>' +
+        '<p>Passagerare bör stiga ur på den sida som vetter mot trottoaren när det går.</p>',
+    },
+  ],
+  keyFacts: [
+    'Att släppa av eller ta upp passagerare och att lasta gods är stannande, inte parkering. Att vänta på någon är parkering, även med motorn igång.',
+    'På en väg med trafik i båda riktningarna stannar och parkerar du på höger sida i färdriktningen. På en enkelriktad väg får du använda båda sidorna.',
+    'Du får inte stanna eller parkera på ett övergångsställe eller inom 10 meter före det.',
+    'Du får inte stanna eller parkera i en korsning eller inom 10 meter från den korsande körbanan.',
+    'Du får inte stanna eller parkera i en tunnel, i en plankorsning, på en cykelöverfart eller i ett cykelfält.',
+    'Du får inte parkera vid en busshållplats, på en mötesplats, framför en infart till en fastighet, på en huvudled eller inom 30 meter från en plankorsning.',
+    'På motorväg och motortrafikled: stanna eller parkera bara på markerade platser, till exempel rastplatser.',
+    'Ett rött snedstreck = förbud att parkera. Rött kryss = förbud att stanna och parkera. De gäller på den sida av vägen där märket står.',
+    'På obelysta vägar i mörker ska en bil som står still ha parkeringsljus tända.',
+    'Titta i backspegeln och över axeln efter cyklister innan du öppnar dörren.',
+  ],
+};
+
+</script>
 <script>/* sv\lessons\people.js */
 /* Svenska: people */
 SV.lessons.people = {
@@ -5841,6 +6290,163 @@ SV.lessons.people = {
     'Föraren ansvarar för att passagerare under 15 år använder bälte.',
     'Barn under 135 cm ska ha bilbarnstol eller bälteskudde; ingen bakåtvänd stol framför en aktiverad krockkudde.',
     'Riskutbildning: två delar, båda gjorda före kunskapsprovet och körprovet.',
+  ],
+};
+
+</script>
+<script>/* sv\lessons\priority.js */
+/* Svenska: priority */
+SV.lessons.priority = {
+  title: 'Väjningsregler i korsningar',
+  intro: 'Många allvarliga olyckor sker i korsningar, när två förare båda tror att de får köra först. Lär dig ordningen: polisens tecken, sedan trafiksignaler, sedan vägmärken och sist de allmänna reglerna som högerregeln. Företräde är aldrig något du tar: även när du har det ska du se till att den andra föraren verkligen väjer.',
+  sections: [
+    {
+      h: 'Högerregeln',
+      body: '<p>I en korsning där inget annat bestämmer (ingen polis, inga fungerande trafiksignaler, inga vägmärken) gäller <strong>högerregeln</strong>: när två fordons kurser korsar varandra ska den förare som har det andra fordonet på sin <strong>högra</strong> sida lämna företräde.</p>' +
+        '<ul><li>Det spelar ingen roll vilken väg som ser större ut, om det är en T-korsning eller vem som kommer först.</li>' +
+        '<li>Att du kör rakt fram ger dig inte företräde framför ett fordon från höger.</li>' +
+        '<li>Om ett fordon kommer från <strong>vänster</strong> är du på dess högra sida, så det ska lämna dig företräde. Kontrollera ändå att det verkligen saktar in.</li>' +
+        '<li>Med flera fordon tar du det par för par. Ett fordon som inte har någon på sin högra sida kör först.</li></ul>',
+    },
+    {
+      h: 'Väjningsplikt och stopplikt',
+      body: '<p>Märket <strong>väjningsplikt</strong> är en triangel med röd kant och spetsen nedåt. Det kompletteras ofta av en rad vita trianglar tvärs över ditt körfält (väjningslinje, &quot;hajtänder&quot;).</p>' +
+        '<ul><li>Du ska lämna företräde åt <strong>all</strong> trafik på vägen du kör in på, från <strong>både vänster och höger</strong>. Högerregeln hjälper dig inte längre.</li>' +
+        '<li>Visa tydligt och i god tid att du tänker väja, genom att sänka hastigheten eller stanna. Kör vidare först när du kan göra det utan att någon måste bromsa eller väja.</li>' +
+        '<li>Det gäller även när du svänger höger: du kör ändå in i körfältet för trafiken som kommer från vänster.</li></ul>' +
+        '<p>Märket <strong>stopplikt</strong> betyder samma sak som väjningsplikt, men du ska dessutom <strong>stanna helt</strong>, varje gång, även när vägen är tom. Stanna vid <strong>stopplinjen</strong>. Finns ingen linje stannar du där du har god sikt in på den korsande vägen.</p>',
+    },
+    {
+      h: 'Huvudled',
+      body: '<p>Märket <strong>huvudled</strong> är en gul romb med vit kant. På en huvudled har du företräde framför trafik som kommer från sidovägarna: de har väjningsplikt eller stopplikt.</p>' +
+        '<ul><li>Högerregeln gäller inte mellan dig och sidovägarna. En bil från en sidoväg till höger ska vänta på dig.</li>' +
+        '<li>Huvudleden ger dig bara företräde framför <strong>sidovägarna</strong>. Mellan två fordon på huvudleden gäller de vanliga reglerna. Svänger du vänster ska du ändå lämna företräde åt mötande trafik på huvudleden.</li>' +
+        '<li>Märket <strong>huvudled upphör</strong> visar var huvudleden slutar. Efter det har du inte längre företräde: i nästa korsning bestämmer vägmärkena, eller om det inte finns några, högerregeln.</li></ul>',
+    },
+    {
+      h: 'Vänstersväng och sväng över gående',
+      body: '<p>När du <strong>svänger vänster</strong> ska du lämna företräde åt <strong>mötande</strong> trafik som kör rakt fram eller svänger höger. Det gäller i en omärkt korsning, på huvudled och vid grönt ljus. Att blinka tidigt ger dig aldrig företräde.</p>' +
+        '<ul><li>Om den mötande bilen svänger vänster över <em>din</em> väg medan du kör rakt fram, är det den andra föraren som ska lämna företräde.</li>' +
+        '<li>I en korsning där två sidovägar mitt emot varandra har väjningsplikt väjer båda först för huvudleden. Mellan de två väjer den som svänger vänster för den som kör rakt fram.</li>' +
+        '<li>När du svänger (vänster eller höger) ska du lämna företräde åt <strong>gående</strong> som korsar vägen du svänger in på. De kan ha grönt samtidigt som du.</li></ul>',
+    },
+    {
+      h: 'Ut på vägen: utfartsregeln',
+      body: '<p>När du kör ut på en väg från en <strong>parkeringsplats, bensinstation, privat tomt</strong> eller ett <strong>gångfartsområde</strong>, eller ut från en <strong>cykelbana</strong> eller terrängen, ska du lämna företräde åt <strong>all trafik på vägen</strong>, från båda hållen. Högerregeln gäller inte vid en sådan utfart.</p>' +
+        '<ul><li>Det gäller åt andra hållet också: en bil som kör ut från en bensinstation till höger om dig ska vänta på dig.</li>' +
+        '<li>En cyklist som kör ut från en cykelbana på vägen ska lämna företräde åt trafiken på vägen.</li>' +
+        '<li>En utfart känns ofta igen på en nedsänkt kantsten eller på att trottoaren eller cykelbanan fortsätter förbi den.</li></ul>',
+    },
+    {
+      h: 'Cirkulationsplatser och cykelöverfarter',
+      body: '<p>En cirkulationsplats är en korsning som alla andra: vägmärkena bestämmer vem som har företräde. Nästan varje infart har märket <strong>väjningsplikt</strong> och väjningslinje, så du lämnar företräde åt trafiken som redan är i cirkulationsplatsen, och kör moturs runt den.</p>' +
+        '<p>Där en cykelväg korsar vägen finns två sorters passager:</p>' +
+        '<ul><li><strong>Cykelöverfart</strong>, som visas med märket cykelöverfart: om det inte finns trafiksignaler eller polis ska förare lämna företräde åt cyklister och förare av moped klass II som är på överfarten eller just ska köra ut på den. Kör fram med låg hastighet så att du kan stanna.</li>' +
+        '<li><strong>Cykelpassage</strong>, utan det märket: här är det <strong>cyklisten</strong> som ska lämna företräde åt fordonen på vägen. Som förare ska du ändå vara försiktig och sänka farten vid behov.</li></ul>',
+    },
+    {
+      h: 'Polis, trafiksignaler, utryckningsfordon och spårvagnar',
+      body: '<p>Ordningen är: <strong>polisens tecken</strong>, sedan <strong>trafiksignaler</strong>, sedan <strong>vägmärken</strong> och sist de <strong>allmänna reglerna</strong> som högerregeln. En polis tecken gäller före grönt ljus.</p>' +
+        '<ul><li>Rött och gult samtidigt betyder att signalen snart slår om till grönt: du ska ändå vänta. Gult efter grönt betyder stopp, om du inte är så nära att du inte kan stanna säkert.</li>' +
+        '<li>En grön pil betyder att du får köra i den riktning pilen visar.</li>' +
+        '<li><strong>Blinkande gult</strong> betyder att signalerna inte reglerar trafiken: följ vägmärkena, och om det inte finns några, högerregeln.</li>' +
+        '<li>Ett <strong>utryckningsfordon</strong> som kör med blåljus och siren ska få fri väg. Flytta åt sidan eller stanna på ett säkert ställe, och blockera inte korsningen.</li>' +
+        '<li>En <strong>spårvagn</strong> har lång bromssträcka och kan inte väja för dig. Räkna aldrig med att en spårvagn stannar för dig.</li></ul>',
+    },
+  ],
+  keyFacts: [
+    'Ordningen: polisens tecken, trafiksignaler, vägmärken och sist allmänna regler som högerregeln.',
+    'Högerregeln: när inget är skyltat lämnar du företräde åt fordon som kommer från höger.',
+    'Väjningsplikt: lämna företräde åt all trafik på vägen du kör in på, från båda hållen.',
+    'Stopplikt: stanna alltid helt vid stopplinjen och lämna sedan företräde åt all trafik.',
+    'På huvudled väjer trafiken från sidovägarna för dig; märket huvudled upphör avslutar detta.',
+    'När du svänger vänster lämnar du företräde åt mötande trafik som kör rakt fram eller svänger höger, även vid grönt ljus.',
+    'Utfartsregeln: när du kör ut från en parkeringsplats, bensinstation, tomt eller cykelbana lämnar du företräde åt all trafik på vägen.',
+    'Vid en cykelöverfart utan signaler eller polis lämnar förare företräde åt cyklister; vid en cykelpassage är det cyklisten som väjer.',
+    'Blinkande gult ljus: följ vägmärkena, och om det inte finns några, högerregeln.',
+    'Ge utryckningsfordon med blåljus och siren fri väg.',
+  ],
+};
+
+</script>
+<script>/* sv\lessons\roads.js */
+/* Svenska: roads */
+SV.lessons.roads = {
+  title: 'Motorvägar, landsvägar och järnvägar',
+  intro: 'Olika vägar har olika regler. Motorvägar är de säkraste vägarna räknat per kilometer, men misstag i hög fart får allvarliga följder. På landsvägar är farorna mötande trafik, vilda djur och plankorsningar, där ett tåg aldrig hinner stanna för dig.',
+  sections: [
+    {
+      h: 'Motorväg och motortrafikled',
+      body: '<p>En <strong>motorväg</strong> börjar vid märket för motorväg och slutar vid samma märke med ett rött snedstreck. En <strong>motortrafikled</strong> har ett eget märke. Samma grundregler gäller på båda.</p>' +
+        '<ul><li>Bara <strong>motordrivna fordon som är konstruerade för och får köras i minst 40 km/h</strong> får köra där.</li>' +
+        '<li><strong>Gående, cyklister och mopedförare</strong> får inte färdas där. En klass II-moped får till exempel inte köra där.</li>' +
+        '<li>En motortrafikled har ofta <strong>inget mitträcke</strong> mellan körriktningarna, så mötande trafik kan vara nära.</li>' +
+        '<li>Följ hastighetsbegränsningen på skyltarna. Efter märket för motorvägens slut ska du räkna med lägre hastighet, korsningar och långsammare trafikanter.</li></ul>',
+    },
+    {
+      h: 'Köra på och av motorvägen',
+      body: '<p><strong>Köra på:</strong> du kör ut på motorvägen via <strong>accelerationsfältet</strong> (påfartssträckan). Använd det för att <strong>anpassa farten</strong> till trafiken på motorvägen, ge tecken och kör in i en lämplig lucka.</p>' +
+        '<ul><li>Du har <strong>väjningsplikt</strong> mot trafiken som redan är på motorvägen. De behöver inte lämna plats åt dig.</li>' +
+        '<li>Stanna inte i slutet av accelerationsfältet om det inte verkligen saknas en lucka.</li></ul>' +
+        '<p><strong>Köra av:</strong> byt till höger körfält <strong>i god tid</strong> och ge tecken. Behåll farten tills du är ute på <strong>retardationsfältet</strong> vid avfarten, och sänk farten där. Att bromsa i det genomgående körfältet kan orsaka upphinnandeolyckor.</p>' +
+        '<p>Om du <strong>missar din avfart</strong> kör du vidare till nästa.</p>',
+    },
+    {
+      h: 'Köra på motorvägen, och haveri',
+      body: '<ul><li>Kör i <strong>högra körfältet</strong>. Använd körfälten till vänster för <strong>omkörning</strong>, och ge sedan tecken och gå tillbaka till höger när det är säkert.</li>' +
+        '<li><strong>Backa eller vänd aldrig</strong>, och använd aldrig öppningar i mittremsan.</li>' +
+        '<li><strong>Du får bara stanna i en nödsituation</strong>, till exempel vid haveri eller sjukdom. Det gäller även vägrenen. För att vila eller använda telefonen kör du till en rastplats eller lämnar motorvägen.</li></ul>' +
+        '<p><strong>Vid haveri:</strong> försök att rulla ut på vägrenen, så långt till höger som möjligt. Sedan:</p>' +
+        '<ul><li>Slå på <strong>varningsblinkers</strong> och ta på <strong>reflexvästar</strong>.</li>' +
+        '<li>Låt alla gå ut på sidan <strong>bort från trafiken</strong> och vänta <strong>bakom räcket</strong>. Stanna inte kvar i bilen och ställ dig inte bakom den.</li>' +
+        '<li>Sätt ut <strong>varningstriangeln</strong> om det kan göras säkert, och ring efter hjälp.</li></ul>',
+    },
+    {
+      h: '2+1-väg',
+      body: '<p>En <strong>2+1-väg</strong> har ett <strong>mitträcke</strong>, ofta ett vajerräcke, mellan körriktningarna. Körfälten växlar: på vissa sträckor har du <strong>två körfält</strong>, på andra bara <strong>ett</strong>.</p>' +
+        '<ul><li>På en <strong>enfältssträcka</strong> kan du inte köra om. Håll säkert avstånd och vänta på tvåfältssträckan.</li>' +
+        '<li>På en <strong>tvåfältssträcka</strong> kör du i högra körfältet och använder det vänstra för omkörning.</li>' +
+        '<li>Påbörja bara en omkörning som du kan <strong>avsluta innan det vänstra körfältet tar slut</strong>. Om du inte hinner, släpp av på gasen och lägg dig <strong>bakom</strong> fordonet. Kör aldrig fortare än hastighetsbegränsningen för att komma förbi.</li>' +
+        '<li>När det vänstra körfältet tar slut måste föraren i det körfältet byta in i det högra. Förare i högra körfältet bör hjälpa till genom att lämna en lucka.</li></ul>',
+    },
+    {
+      h: 'Landsväg och vilda djur',
+      body: '<ul><li><strong>Håll till höger</strong>, särskilt före <strong>backkrön och kurvor</strong>, där du inte ser mötande trafik. Kör aldrig om där.</li>' +
+        '<li>Om ett hinder, till exempel en parkerad lastbil, står <strong>på din sida</strong> av en smal väg ska du normalt låta mötande trafik passera först.</li>' +
+        '<li>På smala vägar är <strong>mötesplatser</strong> (märket M) till för att mötas och släppa förbi andra. Använd den som ligger på din sida. Ligger den på andra sidan väntar du mitt emot den så att den mötande föraren kan använda den. <strong>Parkera aldrig</strong> på en mötesplats.</li>' +
+        '<li>I långa, branta nedförsbackar använder du en <strong>lägre växel</strong> så att motorn bromsar. Rulla aldrig i friläge.</li></ul>' +
+        '<p><strong>Vilda djur</strong> som älg och rådjur är mest aktiva i <strong>gryning och skymning</strong>. Där varningsmärket står, sänk farten och håll utkik längs vägkanterna. Om ett djur korsar vägen kan <strong>fler komma efter</strong>.</p>' +
+        '<p>Om du kör på en älg, ett rådjur, ett vildsvin eller ett annat stort vilt djur måste du <strong>anmäla det till polisen</strong> (ring 112) och <strong>märka ut platsen</strong>, även om djuret sprang därifrån.</p>',
+    },
+    {
+      h: 'Plankorsningar',
+      body: '<p>En <strong>plankorsning</strong> är en plats där vägen korsar en järnväg. Varningsmärken visar vilken sorts korsning som kommer:</p>' +
+        '<ul><li>Märket med en <strong>bom</strong>: plankorsning <strong>med bommar</strong>.</li>' +
+        '<li>Märket med ett <strong>ånglok</strong>: plankorsning <strong>utan bommar</strong>. Det kan också saknas ljussignaler, så sänk farten, <strong>titta och lyssna</strong> åt båda hållen och stanna om ett tåg kommer.</li>' +
+        '<li>Vid själva korsningen står <strong>kryssmärket</strong>, ett vitt kryss med röd kant. Ett <strong>dubbelt kryss</strong> betyder att det finns <strong>mer än ett spår</strong>: ett tåg till kan komma efter det första.</li></ul>' +
+        '<p>När de <strong>röda ljusen blinkar</strong> eller bommarna börjar röra sig ska du <strong>stanna</strong>. Försök aldrig hinna före bommarna och kör aldrig runt dem. Vänta tills bommarna är helt uppe och ljusen har slocknat.</p>' +
+        '<p><strong>Stanna aldrig på spåret.</strong> Kör bara ut på en plankorsning om det finns plats för hela bilen på andra sidan.</p>' +
+        '<p>Om bilen <strong>fastnar på spåret</strong>: få ut alla och <strong>långt bort från järnvägen direkt</strong>. Ring sedan <strong>112</strong>, eller numret som står vid korsningen, så att tågen kan stoppas.</p>',
+    },
+    {
+      h: 'Tunnlar',
+      body: '<ul><li>Använd <strong>halvljus</strong> och ta av dig solglasögonen innan du kör in.</li>' +
+        '<li>Håll ett <strong>bra avstånd</strong> till fordonet framför.</li>' +
+        '<li>Stanna, backa eller vänd inte, utom i en nödsituation eller när trafiken står still.</li></ul>' +
+        '<p><strong>Om det brinner</strong> och du inte kan köra vidare är <strong>röken</strong> den största faran. Stanna så långt åt sidan som möjligt, <strong>stäng av motorn</strong>, <strong>lämna nyckeln i bilen</strong> så att räddningstjänsten kan flytta den, och gå till närmaste <strong>nödutgång</strong>.</p>',
+    },
+  ],
+  keyFacts: [
+    'Motorväg och motortrafikled: bara motordrivna fordon som är konstruerade för och får köras i minst 40 km/h. Inga gående, cyklister eller mopeder.',
+    'Köra på: anpassa farten på accelerationsfältet och lämna företräde åt trafiken som redan är på motorvägen.',
+    'Köra av: byt till höger i god tid och sänk farten på retardationsfältet, inte i det genomgående körfältet.',
+    'På motorväg och motortrafikled: ingen backning, ingen vändning och inget stopp utom i nödsituation. Missat avfarten? Kör vidare till nästa.',
+    'Haveri: varningsblinkers, reflexvästar, alla ut bort från trafiken och bakom räcket, sedan varningstriangel om det är säkert.',
+    '2+1-väg: kör bara om på tvåfältssträckan, och bara om du hinner avsluta innan körfältet tar slut.',
+    'Mötesplats (M): använd den på din sida; parkera aldrig där.',
+    'Kör du på ett stort vilt djur: anmäl det till polisen och märk ut platsen.',
+    'Plankorsning: stanna aldrig på spåret; stanna när de röda ljusen blinkar. Fast? Alla ut och bort, ring sedan 112.',
+    'Brand i tunnel: stäng av motorn, lämna nyckeln i bilen och gå till nödutgången.',
   ],
 };
 
@@ -5970,6 +6576,79 @@ SV.lessons.speed = {
     'Kör om till vänster; ett fordon som ska svänga vänster körs om till höger.',
     'Ingen omkörning före backkrön, i kurvor, strax före eller på ett obevakat övergångsställe eller över en spärrlinje.',
     'När du blir omkörd: håll till höger och öka inte farten.',
+  ],
+};
+
+</script>
+<script>/* sv\lessons\turning.js */
+/* Svenska: turning */
+SV.lessons.turning = {
+  title: 'Svängning, körfält och cirkulationsplatser',
+  intro: 'De flesta olyckor i korsningar sker när någon svänger eller byter körfält. Visa i god tid vad du tänker göra, placera bilen rätt på vägen och lämna företräde åt alla vars väg du korsar.',
+  sections: [
+    {
+      h: 'Tecken och högersväng',
+      body: '<p>Använd <strong>körriktningsvisaren</strong> (blinkers) <strong>i god tid</strong> innan du svänger, byter körfält eller kör ut, så att andra ser vad du tänker göra. Stäng av den när du är klar. Tecknet visar bara andra vad du planerar: det <strong>ger dig aldrig företräde</strong>.</p>' +
+        '<ul><li>Före en <strong>högersväng</strong> placerar du bilen <strong>nära vägens högra kant</strong>.</li>' +
+        '<li>Sväng i en <strong>liten båge</strong> in på högra sidan av den nya vägen.</li>' +
+        '<li>Kontrollera spegeln och döda vinkeln till höger innan du svänger: cyklister och mopedförare kan finnas bredvid dig.</li></ul>',
+    },
+    {
+      h: 'Vänstersväng',
+      body: '<ul><li>På en vanlig <strong>väg med trafik i båda riktningarna</strong> placerar du bilen <strong>nära mittlinjen, på din egen sida av den</strong>. Trafiken bakom dig kan då passera till höger om dig.</li>' +
+        '<li>På en <strong>enkelriktad gata</strong> finns ingen mötande trafik, så du placerar dig <strong>nära vänstra kanten</strong>.</li>' +
+        '<li>Sväng så att du hamnar på <strong>högra halvan</strong> av vägen du svänger in på. Skär inte kurvan in i körfältet för trafik som kommer mot dig.</li>' +
+        '<li>När du svänger vänster ska du <strong>lämna företräde åt mötande fordon</strong> som kör rakt fram eller svänger höger. Om du svänger höger och en mötande bil svänger vänster in på samma väg ska den mötande bilen lämna företräde åt dig.</li></ul>',
+    },
+    {
+      h: 'Gående och cyklister när du svänger',
+      body: '<p>När du svänger korsar du vägen för dem som fortsätter rakt fram.</p>' +
+        '<ul><li>Lämna företräde åt <strong>gående som korsar vägen du svänger in på</strong>.</li>' +
+        '<li>Vid ett övergångsställe som inte regleras med trafiksignaler eller av en polis lämnar du företräde åt gående som är på övergångsstället eller just ska gå ut på det.</li>' +
+        '<li><strong>Cyklister och mopedförare som kör rakt fram</strong> bredvid dig, till exempel till höger om dig när du svänger höger, ska få passera innan du svänger. Kontrollera spegeln och <strong>döda vinkeln</strong>, och sväng aldrig framför dem.</li></ul>',
+    },
+    {
+      h: 'Välj rätt körfält',
+      body: '<ul><li>Välj rätt <strong>körfält</strong> <strong>i god tid</strong> före korsningen: som regel högra körfältet för att svänga höger och vänstra körfältet för att svänga vänster.</li>' +
+        '<li><strong>Pilar i körfältet</strong> visar åt vilket håll du ska köra från det körfältet. Om du har hamnat i fel körfält, <strong>följ pilen</strong> och hitta en annan väg. Sväng inte från fel körfält och stanna inte för att vänta på en lucka.</li>' +
+        '<li>Blå runda märken är <strong>påbud</strong>: A betyder att du ska svänga höger, B att du ska köra rakt fram (alltså ingen vänstersväng och ingen U-sväng). Märken med röd kant är förbud: C betyder förbud mot vänstersväng.</li></ul>',
+    },
+    {
+      h: 'Körfältsbyte och blixtlåsprincipen',
+      body: '<ul><li>När du gör ett <strong>körfältsbyte</strong> ska du <strong>lämna företräde åt trafiken i det körfält du byter till</strong>. Kontrollera speglar och döda vinkeln, ge tecken i god tid och byt bara när det finns plats.</li>' +
+        '<li>Körriktningsvisaren ger dig inte företräde. Trafiken i det andra körfältet behöver inte släppa in dig bara för att du blinkar.</li>' +
+        '<li>Där två körfält blir ett i <strong>långsam, köande trafik</strong> använder du <strong>blixtlåsprincipen</strong>: kör vidare i båda körfälten fram till där körfältet tar slut och turas sedan om, <strong>en bil från varje körfält</strong>.</li>' +
+        '<li>Den som byter körfält ska ändå försäkra sig om att det kan ske säkert. Om du kör i körfältet som fortsätter, håll jämn fart och släpp in bilen: stäng inte luckan.</li></ul>',
+    },
+    {
+      h: 'Cirkulationsplatser',
+      body: '<p>I en cirkulationsplats kör du alltid <strong>moturs</strong>, med mittrundeln till vänster om dig.</p>' +
+        '<ul><li>Cirkulationsplatser i Sverige har normalt <strong>väjningsplikt</strong> vid varje infart. Du lämnar då företräde åt trafik som <strong>redan är i cirkulationsplatsen</strong>. Du behöver inte vänta på bilar vid andra infarter, och när du väl är inne i cirkulationsplatsen ska bilarna vid infarterna lämna företräde åt dig.</li>' +
+        '<li>Det blå märket för cirkulationsplats talar bara om att du ska köra moturs. Det ger i sig ingen företräde: titta efter märket för väjningsplikt.</li>' +
+        '<li>Välj körfält innan du kör in och följ körfältsmarkeringarna. Att byta från det inre till det yttre körfältet är ett <strong>körfältsbyte</strong>, så du ska lämna företräde åt trafiken i det yttre körfältet.</li>' +
+        '<li>Ge tecken <strong>höger</strong> när du har <strong>passerat utfarten före den du ska ta</strong>. Om du ska ta första utfarten ger du tecken höger redan när du närmar dig.</li>' +
+        '<li><strong>Långa fordon</strong> som bussar och lastbilar kan behöva mer än ett körfält för att komma runt. Håll avstånd och kör inte bredvid dem i cirkulationsplatsen.</li></ul>',
+    },
+    {
+      h: 'U-sväng och backning',
+      body: '<ul><li>Du får göra en <strong>U-sväng</strong> bara om det kan ske <strong>utan fara eller hinder</strong> för annan trafik. Låt mötande trafik passera först.</li>' +
+        '<li>U-sväng är förbjuden där ett märke för <strong>förbud mot U-sväng</strong> gäller. Märket förbjuder bara U-sväng: vänstersväng är fortfarande tillåten.</li>' +
+        '<li>På <strong>motorväg</strong> och <strong>motortrafikled</strong> får du <strong>aldrig vända eller backa</strong>. Om du missar din avfart kör du vidare till nästa.</li>' +
+        '<li><strong>Backning</strong> är tillåten bara om den kan ske utan fara eller hinder, och bara så kort sträcka som behövs. Backa långsamt, titta runt om bilen och lämna företräde åt all annan trafik, till exempel när du backar ut från en parkeringsplats.</li></ul>',
+    },
+  ],
+  keyFacts: [
+    'Ge tecken i god tid. Tecknet visar andra vad du planerar men ger dig aldrig företräde.',
+    'Högersväng: nära högra kanten, sedan en liten båge.',
+    'Vänstersväng på väg med trafik i båda riktningarna: nära mittlinjen på din egen sida. På enkelriktad gata: nära vänstra kanten.',
+    'Efter en vänstersväng ska du vara på högra halvan av den nya vägen. Skär inte kurvan.',
+    'När du svänger vänster lämnar du företräde åt mötande trafik som kör rakt fram eller svänger höger.',
+    'När du svänger lämnar du företräde åt gående som korsar vägen du svänger in på och åt cyklister som kör rakt fram.',
+    'Pilar i körfältet gäller. I fel körfält följer du pilen och hittar en annan väg.',
+    'Vid körfältsbyte lämnar du företräde åt trafiken i det körfält du byter till.',
+    'Blixtlåsprincipen: i långsam trafik där två körfält blir ett turas man om, en bil från varje körfält.',
+    'Cirkulationsplats med väjningsplikt: lämna företräde åt trafik som redan är i den. Ge tecken höger när du har passerat utfarten före din.',
+    'Ingen U-sväng eller backning på motorväg och motortrafikled. Backa bara korta sträckor och lämna företräde åt alla.',
   ],
 };
 
@@ -6686,10 +7365,10 @@ SV.q({
     options: [
       'Ja, bara du slår på varningsblinkers',
       'Ja, om du parkerar på högra sidan',
-      'Nej, utanför tättbebyggt område får du inte parkera på huvudled; använd en parkeringsficka eller en sidoväg',
+      'Nej, du får inte parkera på huvudled; använd en parkeringsficka eller en sidoväg',
       'Bara i dagsljus',
     ],
-    explain: 'Den gula romben visar att vägen är huvudled. Utanför tättbebyggt område får du inte parkera på huvudled. Att stanna en kort stund, till exempel för att släppa av en passagerare, är fortfarande tillåtet om det kan ske säkert.',
+    explain: 'Den gula romben visar att vägen är huvudled. Du får aldrig parkera på huvudled, varken inom eller utanför tättbebyggt område. Att stanna en kort stund, till exempel för att släppa av en passagerare, är fortfarande tillåtet om det kan ske säkert.',
   },
   'parking-08': {
     q: 'Får du parkera din bil i busshållplatsens ficka, där bil A står?',

@@ -75,11 +75,11 @@ QB.push(
     options: [
       'Yes, as long as you put the hazard lights on',
       'Yes, if you park on the right side',
-      'No, parking on a priority road outside built-up areas is not allowed; use a lay-by or a side road',
+      'No, parking on a priority road is not allowed; use a lay-by or a side road',
       'Only during daylight',
     ],
     answer: 2,
-    explain: 'The yellow diamond shows a priority road (huvudled). Outside built-up areas you may not park on a priority road. Stopping briefly, for example to let a passenger out, is still allowed if it is safe.',
+    explain: 'The yellow diamond shows a priority road (huvudled). You may never park on a priority road, inside or outside built-up areas. Stopping briefly, for example to let a passenger out, is still allowed if it is safe.',
   },
   {
     id: 'parking-08',

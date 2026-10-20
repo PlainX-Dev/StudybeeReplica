@@ -65,10 +65,10 @@ SV.q({
     options: [
       'Ja, bara du slår på varningsblinkers',
       'Ja, om du parkerar på högra sidan',
-      'Nej, utanför tättbebyggt område får du inte parkera på huvudled; använd en parkeringsficka eller en sidoväg',
+      'Nej, du får inte parkera på huvudled; använd en parkeringsficka eller en sidoväg',
       'Bara i dagsljus',
     ],
-    explain: 'Den gula romben visar att vägen är huvudled. Utanför tättbebyggt område får du inte parkera på huvudled. Att stanna en kort stund, till exempel för att släppa av en passagerare, är fortfarande tillåtet om det kan ske säkert.',
+    explain: 'Den gula romben visar att vägen är huvudled. Du får aldrig parkera på huvudled, varken inom eller utanför tättbebyggt område. Att stanna en kort stund, till exempel för att släppa av en passagerare, är fortfarande tillåtet om det kan ske säkert.',
   },
   'parking-08': {
     q: 'Får du parkera din bil i busshållplatsens ficka, där bil A står?',
