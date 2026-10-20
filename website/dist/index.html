@@ -9,6 +9,10 @@
 <meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Körkort 30">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23ffcd00'/%3E%3Cpath d='M18 26h64L50 82z' fill='%23d22630'/%3E%3Cpath d='M32 34h36L50 66z' fill='%23ffcd00'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -152,6 +156,7 @@ a.card:hover { text-decoration: none; transform: translateY(-1px); }
 .grid-2 { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 24px; align-items: start; }
 .stack { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 @media (max-width: 980px) { .grid-2 { grid-template-columns: minmax(0, 1fr); } }
+.grid-2.even { grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .actions.center { justify-content: center; }
 .note { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: var(--r-sm); background: color-mix(in srgb, var(--yellow) 18%, var(--surface)); font-size: 15px; }
@@ -484,6 +489,16 @@ label.chip input:focus-visible + span, .seg input:focus-visible + span { outline
 .chart .line { fill: none; stroke: var(--blue); stroke-width: 2.5; stroke-linejoin: round; }
 .chart .dot { stroke: var(--surface); stroke-width: 2; }
 .chart .dot.ok { fill: var(--green-bright); } .chart .dot.bad { fill: var(--red); }
+
+/* ---------------------------------------------------------------- sync + reminders */
+input.text { font: inherit; font-size: 16px; padding: 0 14px; min-height: 44px; border-radius: 12px; border: 0; background: var(--fill); color: var(--label); width: 100%; letter-spacing: 0.04em; }
+.codebox { display: flex; flex-direction: column; gap: 8px; }
+.code { font: 600 20px/1.2 ui-monospace, 'SF Mono', Consolas, monospace; letter-spacing: 0.08em; padding: 14px 16px; border-radius: 12px; background: var(--fill); text-align: center; user-select: all; overflow-wrap: anywhere; }
+.syncdot { width: 10px; height: 10px; border-radius: 50%; background: var(--label-3); flex: none; align-self: center; }
+.syncdot.ok { background: var(--green-bright); } .syncdot.syncing { background: #ff9f0a; animation: flicker 1s infinite; } .syncdot.error { background: var(--red); }
+.steps { margin: 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 6px; }
+.promo { flex-direction: row; align-items: center; gap: 12px; }
+.promo .grow b { font-size: 15px; }
 
 /* ---------------------------------------------------------------- overlays */
 #toast { position: fixed; left: 50%; top: calc(16px + env(safe-area-inset-top, 0px)); transform: translateX(-50%); display: flex; align-items: center; gap: 10px; background: var(--surface); color: var(--label); padding: 12px 18px; border-radius: 99px; font-weight: 600; font-size: 15px; box-shadow: var(--shadow-lg); z-index: 50; max-width: calc(100% - 32px); }
@@ -5032,13 +5047,14 @@ LESSONS.vulnerable = {
 
   // ------------------------------------------------------------- storage
   const KEY = 'korkort30.v1';
-  const fresh = () => ({ start: null, testDate: null, q: {}, lessons: {}, done: {}, mocks: [], log: [], days: {}, xp: 0, badges: {}, best: 0 });
+  const fresh = () => ({ start: null, testDate: null, setAt: 0, q: {}, lessons: {}, done: {}, doneT: {}, mocks: [], log: [], days: {}, xp: 0, badges: {}, best: 0, epoch: Math.random().toString(36).slice(2), epochAt: 0 });
   let S = fresh();
   try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(fresh(), JSON.parse(raw)); } catch (e) { /* storage blocked: run in memory */ }
   let storageOk = true;
-  function save() {
+  function saveLocal() {
     try { localStorage.setItem(KEY, JSON.stringify(S)); storageOk = true; } catch (e) { storageOk = false; }
   }
+  function save() { saveLocal(); scheduleSync(); }
 
   // ------------------------------------------------------------- dates
   const today = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
@@ -5076,6 +5092,7 @@ LESSONS.vulnerable = {
     person: '<circle cx="12" cy="6" r="3"/><path d="M6 21v-5a6 6 0 0 1 12 0v5"/>',
     leaf: '<path d="M5 19c0-9 6-14 15-14 0 9-5 15-14 15z"/><path d="M5 19 13 11"/>',
     cross: '<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/>',
+    bell: '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
     more: '<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>',
   };
   const icon = (n, cls = '') => `<svg class="ico ${cls}" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICON[n]}</svg>`;
@@ -5242,7 +5259,7 @@ LESSONS.vulnerable = {
   const dayProgress = (n) => PLAN[n - 1].tasks.filter((_, i) => S.done[`${n}-${i}`]).length / PLAN[n - 1].tasks.length;
   function markDone(key, on = true) {
     const was = !!S.done[key];
-    S.done[key] = on;
+    S.done[key] = on; S.doneT[key] = Date.now();
     if (on && !was) {
       dayRec().t++; addXP(40);
       const n = +key.split('-')[0];
@@ -5448,6 +5465,167 @@ LESSONS.vulnerable = {
     }).join('')}</ol>`;
   }
 
+  // ------------------------------------------------------------- cloud: sync between devices + daily reminders
+  // Works on the hosted site only (Vercel functions in /api). A random sync code links devices.
+  const hosted = /^https?:$/.test(location.protocol);
+  const SYNC_KEY = 'korkort30.sync';
+  const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const cloud = { checked: false, sync: false, push: false, vapid: null, status: 'off', last: 0, error: '', subscribed: false };
+  let syncId = null;
+  try { syncId = localStorage.getItem(SYNC_KEY); } catch (e) { /* no storage */ }
+  const newCode = () => Array.from(crypto.getRandomValues(new Uint8Array(20)), (b) => CODE_CHARS[b % 32]).join('');
+  const prettyCode = (c) => (c || '').match(/.{1,4}/g).join('-');
+  const cleanCode = (c) => String(c || '').toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/[01IO]/g, '');
+  const linkUrl = () => `${location.origin}${location.pathname}#link-${syncId}`;
+  async function api(path, opts = {}) {
+    const r = await fetch(`/api/${path}`, { headers: { 'content-type': 'application/json' }, ...opts });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.error || `Server error ${r.status}`);
+    return j;
+  }
+  /** Merge two progress states. Every field merges so that no device's work is lost. */
+  function merge(a, b) {
+    if (!b) return a;
+    if ((a.epoch || '') !== (b.epoch || '') && (a.epochAt || 0) !== (b.epochAt || 0)) return (a.epochAt || 0) > (b.epochAt || 0) ? a : Object.assign(fresh(), b);
+    const m = Object.assign(fresh(), a);
+    const newer = (b.setAt || 0) > (a.setAt || 0) ? b : a;
+    m.start = newer.start || a.start || b.start; m.testDate = newer.testDate ?? a.testDate; m.setAt = Math.max(a.setAt || 0, b.setAt || 0);
+    m.q = { ...a.q };
+    for (const [id, s] of Object.entries(b.q || {})) { const o = m.q[id]; if (!o || s.seen > o.seen || (s.seen === o.seen && s.last > o.last)) m.q[id] = s; }
+    m.lessons = { ...b.lessons, ...a.lessons };
+    m.done = {}; m.doneT = {};
+    for (const k of new Set([...Object.keys(a.done || {}), ...Object.keys(b.done || {})])) {
+      const ta = (a.doneT || {})[k] || 0, tb = (b.doneT || {})[k] || 0;
+      m.done[k] = ta === tb ? !!((a.done || {})[k] || (b.done || {})[k]) : ta > tb ? !!a.done[k] : !!b.done[k];
+      m.doneT[k] = Math.max(ta, tb);
+    }
+    const byDate = (x, y) => { const seen = new Set(); return [...(x || []), ...(y || [])].filter((e) => { const k = `${e.date}|${e.title || ''}|${e.score ?? e.right}`; if (seen.has(k)) return false; seen.add(k); return true; }).sort((p, q) => p.date - q.date); };
+    m.mocks = byDate(a.mocks, b.mocks); m.log = byDate(a.log, b.log);
+    m.days = { ...a.days };
+    for (const [d, r] of Object.entries(b.days || {})) { const o = m.days[d] || { a: 0, r: 0, t: 0 }; m.days[d] = { a: Math.max(o.a, r.a), r: Math.max(o.r, r.r), t: Math.max(o.t, r.t) }; }
+    m.badges = { ...b.badges, ...a.badges };
+    for (const k of ['xp', 'best', 'maxCombo']) m[k] = Math.max(a[k] || 0, b[k] || 0);
+    m.epoch = a.epoch || b.epoch; m.epochAt = Math.max(a.epochAt || 0, b.epochAt || 0);
+    return m;
+  }
+  let syncing = Promise.resolve(); let pushT = null; let dirty = false;
+  function syncNow(opts = {}) {
+    if (!hosted || !syncId || !cloud.sync) return Promise.resolve();
+    syncing = syncing.then(async () => {
+      cloud.status = 'syncing'; paintSync();
+      try {
+        if (!opts.overwrite) {
+          const { state } = await api(`sync?id=${syncId}`);
+          const before = JSON.stringify(S);
+          S = merge(S, state);
+          if (JSON.stringify(S) !== before) { saveLocal(); if (!opts.quiet) render(); }
+        }
+        await api('sync', { method: 'PUT', body: JSON.stringify({ id: syncId, state: S }), keepalive: JSON.stringify(S).length < 60000 });
+        dirty = false; cloud.status = 'ok'; cloud.last = Date.now(); cloud.error = '';
+      } catch (e) { cloud.status = 'error'; cloud.error = e.message; }
+      paintSync();
+    });
+    return syncing;
+  }
+  function scheduleSync() { if (!syncId) return; dirty = true; clearTimeout(pushT); pushT = setTimeout(() => syncNow({ quiet: true }), 2500); }
+  function paintSync() { const el = $('#syncStatus'); if (el) el.innerHTML = syncLine(); const dot = $('#syncDot'); if (dot) dot.className = `syncdot ${cloud.status}`; }
+  function syncLine() {
+    if (cloud.status === 'syncing') return 'Syncing…';
+    if (cloud.status === 'error') return `Not synced: ${esc(cloud.error)}`;
+    if (cloud.last) return `Synced ${new Date(cloud.last).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`;
+    return 'Waiting to sync';
+  }
+  async function linkDevice(code, { fresh: isNew = false } = {}) {
+    syncId = code;
+    try { localStorage.setItem(SYNC_KEY, code); } catch (e) { /* ignore */ }
+    if (!isNew) {
+      const { state } = await api(`sync?id=${code}`);
+      if (state) { S.epoch = state.epoch; S.epochAt = state.epochAt; S = merge(S, state); saveLocal(); }
+    }
+    await syncNow({ overwrite: isNew });
+  }
+  function unlink() { syncId = null; try { localStorage.removeItem(SYNC_KEY); } catch (e) { /* ignore */ } cloud.status = 'off'; }
+
+  // --- reminders
+  const isIOS = () => /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const standalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  const pushSupported = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  const b64ToBytes = (s) => { const p = '='.repeat((4 - (s.length % 4)) % 4); const raw = atob((s + p).replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from(raw, (c) => c.charCodeAt(0)); };
+  let swReg = null;
+  async function registerSW() {
+    if (!hosted || !('serviceWorker' in navigator)) return null;
+    try { swReg = await navigator.serviceWorker.register('/sw.js'); return swReg; } catch (e) { return null; }
+  }
+  async function refreshPushState() {
+    if (!swReg || !pushSupported()) { cloud.subscribed = false; return; }
+    const sub = await swReg.pushManager.getSubscription();
+    cloud.subscribed = !!sub && Notification.permission === 'granted';
+  }
+  async function enableReminders() {
+    if (!syncId) await linkDevice(newCode(), { fresh: true });
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') throw new Error(perm === 'denied' ? 'Notifications are blocked for this site. Allow them in your browser or phone settings, then try again.' : 'Notifications were not allowed.');
+    const reg = swReg || (await registerSW());
+    if (!reg) throw new Error('This browser cannot run the reminder service.');
+    await navigator.serviceWorker.ready;
+    const sub = (await reg.pushManager.getSubscription()) || (await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(cloud.vapid) }));
+    await api('push', { method: 'POST', body: JSON.stringify({ action: 'subscribe', id: syncId, subscription: sub.toJSON(), tz: Intl.DateTimeFormat().resolvedOptions().timeZone }) });
+    cloud.subscribed = true;
+  }
+  async function disableReminders() {
+    const sub = swReg && (await swReg.pushManager.getSubscription());
+    if (sub) { await api('push', { method: 'POST', body: JSON.stringify({ action: 'unsubscribe', id: syncId, endpoint: sub.endpoint }) }).catch(() => {}); await sub.unsubscribe(); }
+    cloud.subscribed = false;
+  }
+
+  async function cloudInit() {
+    if (!hosted) { cloud.checked = true; return; }
+    registerSW().then(refreshPushState).then(() => { if (route === 'progress' || route === 'today') render(); });
+    try { const c = await api('config'); cloud.sync = c.sync; cloud.push = c.push; cloud.vapid = c.vapidPublicKey; } catch (e) { /* no API: plain static hosting */ }
+    cloud.checked = true;
+    const m = location.hash.match(/^#link-([A-Za-z0-9-]+)$/);
+    if (m && cloud.sync) {
+      const code = cleanCode(m[1]);
+      history.replaceState(null, '', '#today'); route = 'today';
+      if (code.length === 20) { try { await linkDevice(code); toast('This device is now linked. Progress is shared.'); } catch (e) { toast(`Could not link: ${e.message}`, 'close'); } }
+    } else if (syncId && cloud.sync) await syncNow({ quiet: true });
+    render();
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (!syncId || !cloud.sync) return;
+    if (document.visibilityState === 'hidden' && dirty) { clearTimeout(pushT); syncNow({ quiet: true }); }
+    if (document.visibilityState === 'visible' && Date.now() - cloud.last > 15000) syncNow();
+  });
+
+  function cloudCard() {
+    if (!hosted) return `<section class="card"><h2>Sync and reminders</h2><p class="muted">These work on the hosted site. This copy was opened from a file on your computer, so progress stays in this browser.</p></section>`;
+    if (!cloud.checked) return `<section class="card"><h2>Sync and reminders</h2><p class="muted">Checking the server…</p></section>`;
+    if (!cloud.sync) return `<section class="card"><h2>Sync and reminders</h2><p class="muted">The server for sync isn't set up yet. Connect an Upstash Redis database to this project in Vercel (see the README), then redeploy.</p></section>`;
+    const sync = syncId
+      ? `<div class="row-between"><h2>Sync between devices</h2><span class="syncdot ${cloud.status}" id="syncDot" aria-hidden="true"></span></div>
+         <p class="muted small" id="syncStatus">${syncLine()}</p>
+         <p>Open this link on your phone (or any device) once. After that, both share the same progress automatically.</p>
+         <div class="codebox"><span class="code">${prettyCode(syncId)}</span></div>
+         <div class="actions"><button class="btn filled" data-act="copyLink">Copy link for your phone</button><button class="btn tinted" data-act="syncNow">Sync now</button><button class="btn plain" data-act="unlinkAsk">Unlink this device</button></div>
+         <p class="muted small">Keep the code private: anyone with it can see and change this progress.</p>`
+      : `<h2>Sync between devices</h2>
+         <p>Share one set of progress between your PC and phone: streak, plan, mistakes and mock results.</p>
+         <div class="actions"><button class="btn filled" data-act="syncOn">Turn on sync</button></div>
+         <form id="linkForm" class="row-form"><div class="field"><label for="linkCode">Already set up on another device? Enter its code</label><input id="linkCode" class="text" autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX"></div><button class="btn tinted" type="submit">Link</button></form>`;
+    let rem;
+    if (!cloud.push) rem = `<p class="muted">Reminders need VAPID keys on the server. See the README.</p>`;
+    else if (isIOS() && !standalone()) rem = `<p>On iPhone, reminders work from the Home Screen app:</p><ol class="steps"><li>Tap the <b>Share</b> button in Safari.</li><li>Choose <b>Add to Home Screen</b>.</li><li>Open Körkort 30 from the new icon and come back here.</li></ol>`;
+    else if (!pushSupported()) rem = `<p class="muted">This browser can't receive notifications. Try Chrome on Android, or the Home Screen app on iPhone.</p>`;
+    else if (cloud.subscribed) rem = `<p><b class="okc">On.</b> You get one reminder each evening, around 18:00 Swedish time, only on days you haven't studied yet.</p><div class="actions"><button class="btn tinted" data-act="pushTest">Send a test now</button><button class="btn plain" data-act="pushOff">Turn off on this device</button></div>`;
+    else rem = `<p>One reminder each evening, around 18:00 Swedish time, only on days you haven't studied yet. It tells you your plan day and your streak.</p><div class="actions"><button class="btn filled" data-act="pushOn">Turn on daily reminder</button></div>${!syncId ? '<p class="muted small">This also turns on sync, so the reminder knows when you have already studied on another device.</p>' : ''}`;
+    return `<section class="card" id="cloud">${sync}</section><section class="card"><h2>Daily reminder</h2>${rem}</section>`;
+  }
+  function reminderPromo() {
+    if (!hosted || !cloud.push || cloud.subscribed || !pushSupported() && !isIOS()) return '';
+    try { if (localStorage.getItem('korkort30.nopromo')) return ''; } catch (e) { /* ignore */ }
+    return `<section class="card promo"><span class="tile" style="--tile:#ff3b30;--s:40px"><span style="color:#fff">${icon('bell')}</span></span><div class="grow"><b>Never miss a day</b><span class="muted small">Get a short evening reminder on your phone, and share progress with your PC.</span></div><a class="btn tinted small" href="#progress">Set up</a><button class="iconbtn" data-act="noPromo" aria-label="Hide">${icon('close')}</button></section>`;
+  }
+
   // ------------------------------------------------------------- views
   function viewWelcome() {
     const t = iso(today());
@@ -5544,6 +5722,7 @@ LESSONS.vulnerable = {
             <ul class="group plain">${weak.map((id) => { const s = topicStats(id); return `<li class="row"><a href="#lesson-${id}" class="rowlink">${topicTile(id, 28)}<span class="grow">${esc(TOPIC[id].name)}</span><span class="muted small">${s.acc === null ? 'new' : Math.round(s.acc * 100) + '%'}</span>${icon('chevron', 'chev')}</a></li>`; }).join('')}</ul>
             <button class="btn tinted" data-act="quick" data-topics="weak" data-n="20">Practise these</button>
           </section>
+          ${reminderPromo()}
           <a class="card badges-mini" href="#progress"><div class="row-between"><h3>Badges</h3><span class="muted small">${earned.length}/${BADGES.length}</span></div>
             <div class="badge-row">${BADGES.slice(0, 6).map((b) => badgeIcon(b, !!S.badges[b.id], 40)).join('')}</div></a>
         </aside>
@@ -5688,6 +5867,7 @@ LESSONS.vulnerable = {
         <li style="--c:#30d158"><b>${answered ? Math.round((right / answered) * 100) : 0}%</b><span>of ${answered} answers right</span></li>
         <li style="--c:#0a84ff"><b>${totalSeen}<small>/${ALL.length}</small></b><span>questions seen</span></li>
       </ul>
+      <div class="grid-2 even">${cloudCard()}</div>
       <section class="card"><div class="row-between"><h2>Badges</h2><span class="muted">${Object.keys(S.badges).length} of ${BADGES.length}</span></div>
         <div class="badges">${BADGES.map((b) => `<div class="badge-item ${S.badges[b.id] ? 'on' : ''}">${badgeIcon(b, !!S.badges[b.id])}<b>${esc(b.name)}</b><span>${esc(b.desc)}</span></div>`).join('')}</div></section>
       <section class="card"><h2>Topics</h2><ul class="group plain">
@@ -5878,7 +6058,16 @@ LESSONS.vulnerable = {
       catch (err) { toast('That code could not be read. Copy the whole code and try again.', 'close'); }
     }
     else if (act === 'resetAsk') { $('#backupArea').innerHTML = `<p class="note">${icon('signs')}<span>This deletes all progress, streaks, badges and mock results in this browser.</span></p><div class="actions"><button class="btn danger" data-act="resetDo">Delete everything</button></div>`; }
-    else if (act === 'resetDo') { S = fresh(); save(); session = null; go('today'); toast('Progress deleted.'); }
+    else if (act === 'resetDo') { S = fresh(); S.epochAt = Date.now(); saveLocal(); syncNow({ overwrite: true }); session = null; go('today'); toast('Progress deleted.'); }
+    else if (act === 'syncOn') { cloudAction(() => linkDevice(newCode(), { fresh: true }), 'Sync is on. Copy the link to your phone.'); }
+    else if (act === 'syncNow') { cloudAction(() => syncNow(), 'Synced.'); }
+    else if (act === 'copyLink') { const u = linkUrl(); (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(() => toast('Link copied. Open it on your phone.'), () => { const b2 = $('.codebox'); if (b2) b2.insertAdjacentHTML('beforeend', `<input class="text" readonly value="${esc(u)}" onfocus="this.select()">`); }); }
+    else if (act === 'unlinkAsk') { b.dataset.act = 'unlinkDo'; b.textContent = 'Tap again to unlink'; b.classList.add('danger'); }
+    else if (act === 'unlinkDo') { unlink(); render(); toast('This device is unlinked. Its progress stays here.'); }
+    else if (act === 'pushOn') { cloudAction(enableReminders, 'Daily reminder is on.'); }
+    else if (act === 'pushOff') { cloudAction(disableReminders, 'Reminder turned off on this device.'); }
+    else if (act === 'pushTest') { cloudAction(async () => { const r = await api('push', { method: 'POST', body: JSON.stringify({ action: 'test', id: syncId }) }); if (!r.sent) throw new Error('No device received it. Turn the reminder off and on again.'); }, 'Test sent. It should arrive in a few seconds.'); }
+    else if (act === 'noPromo') { try { localStorage.setItem('korkort30.nopromo', '1'); } catch (e2) { /* ignore */ } render(); }
   });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !$('#celebrate').hidden) { $('#celebrate').hidden = true; return; }
@@ -5900,19 +6089,29 @@ LESSONS.vulnerable = {
   document.addEventListener('submit', (e) => {
     e.preventDefault();
     if (e.target.id === 'startForm') {
-      S.start = $('#startDate').value || iso(today()); S.testDate = $('#testDate').value || null; save(); go('today');
+      S.start = $('#startDate').value || iso(today()); S.testDate = $('#testDate').value || null; S.setAt = Date.now(); save(); go('today');
     } else if (e.target.id === 'practiceForm') {
       const topics = [...e.target.querySelectorAll('input[name=topic]:checked')].map((x) => x.value);
       const n = +(e.target.querySelector('input[name=n]:checked') || {}).value || 20;
       if (!topics.length) { $('#practiceMsg').textContent = 'Pick at least one topic.'; return; }
       startSession({ mode: 'practice', title: topics.length === 1 ? `${TOPIC[topics[0]].short} practice` : 'Custom practice', items: pickPractice(topics, n) });
     } else if (e.target.id === 'settingsForm') {
-      S.start = $('#setStart').value || S.start; S.testDate = $('#setTest').value || null; save(); toast('Dates saved.'); render();
+      S.start = $('#setStart').value || S.start; S.testDate = $('#setTest').value || null; S.setAt = Date.now(); save(); toast('Dates saved.'); render();
+    } else if (e.target.id === 'linkForm') {
+      const code = cleanCode($('#linkCode').value);
+      if (code.length !== 20) { toast('A sync code has 20 letters and digits.', 'close'); return; }
+      cloudAction(() => linkDevice(code), 'Linked. Progress is now shared.');
     }
   });
 
+  async function cloudAction(fn, okMsg) {
+    try { await fn(); toast(okMsg); } catch (e) { toast(e.message, 'close'); }
+    render();
+  }
+
   checkBadges(); newBadges = [];
   render();
+  cloudInit();
 })();
 
 </script>

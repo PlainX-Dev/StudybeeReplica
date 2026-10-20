@@ -1,0 +1,17 @@
+{
+  "name": "korkort30",
+  "private": true,
+  "type": "module",
+  "description": "Körkort 30: Swedish theory test trainer. Static site in website/dist plus Vercel functions in api/.",
+  "scripts": {
+    "build": "python3 website/build.py",
+    "validate": "node website/tools/validate.js",
+    "vapid": "web-push generate-vapid-keys",
+    "dev": "node website/tools/dev-server.mjs"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "@upstash/redis": "^1.35.0",
+    "web-push": "^3.6.7"
+  }
+}

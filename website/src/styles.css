@@ -135,6 +135,7 @@ a.card:hover { text-decoration: none; transform: translateY(-1px); }
 .grid-2 { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 24px; align-items: start; }
 .stack { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 @media (max-width: 980px) { .grid-2 { grid-template-columns: minmax(0, 1fr); } }
+.grid-2.even { grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .actions.center { justify-content: center; }
 .note { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: var(--r-sm); background: color-mix(in srgb, var(--yellow) 18%, var(--surface)); font-size: 15px; }
@@ -467,6 +468,16 @@ label.chip input:focus-visible + span, .seg input:focus-visible + span { outline
 .chart .line { fill: none; stroke: var(--blue); stroke-width: 2.5; stroke-linejoin: round; }
 .chart .dot { stroke: var(--surface); stroke-width: 2; }
 .chart .dot.ok { fill: var(--green-bright); } .chart .dot.bad { fill: var(--red); }
+
+/* ---------------------------------------------------------------- sync + reminders */
+input.text { font: inherit; font-size: 16px; padding: 0 14px; min-height: 44px; border-radius: 12px; border: 0; background: var(--fill); color: var(--label); width: 100%; letter-spacing: 0.04em; }
+.codebox { display: flex; flex-direction: column; gap: 8px; }
+.code { font: 600 20px/1.2 ui-monospace, 'SF Mono', Consolas, monospace; letter-spacing: 0.08em; padding: 14px 16px; border-radius: 12px; background: var(--fill); text-align: center; user-select: all; overflow-wrap: anywhere; }
+.syncdot { width: 10px; height: 10px; border-radius: 50%; background: var(--label-3); flex: none; align-self: center; }
+.syncdot.ok { background: var(--green-bright); } .syncdot.syncing { background: #ff9f0a; animation: flicker 1s infinite; } .syncdot.error { background: var(--red); }
+.steps { margin: 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 6px; }
+.promo { flex-direction: row; align-items: center; gap: 12px; }
+.promo .grow b { font-size: 15px; }
 
 /* ---------------------------------------------------------------- overlays */
 #toast { position: fixed; left: 50%; top: calc(16px + env(safe-area-inset-top, 0px)); transform: translateX(-50%); display: flex; align-items: center; gap: 10px; background: var(--surface); color: var(--label); padding: 12px 18px; border-radius: 99px; font-weight: 600; font-size: 15px; box-shadow: var(--shadow-lg); z-index: 50; max-width: calc(100% - 32px); }

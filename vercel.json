@@ -1,14 +1,19 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "installCommand": "",
   "buildCommand": "",
   "outputDirectory": "website/dist",
   "cleanUrls": true,
+  "crons": [
+    { "path": "/api/cron", "schedule": "0 17 * * *" }
+  ],
   "headers": [
     { "source": "/(.*)", "headers": [
       { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
       { "key": "X-Content-Type-Options", "value": "nosniff" }
+    ] },
+    { "source": "/sw.js", "headers": [
+      { "key": "Service-Worker-Allowed", "value": "/" }
     ] }
   ]
 }

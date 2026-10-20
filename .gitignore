@@ -30,3 +30,8 @@ pubspec.lock
 
 # Python tooling
 __pycache__/
+
+# Node (Vercel functions)
+node_modules/
+.vercel/
+.env*

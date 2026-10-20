@@ -4,19 +4,47 @@ A website for passing the **Swedish B-licence theory test** (Trafikverket kunska
 
 ## Host it on Vercel
 
-The repo root has a `vercel.json` that serves the prebuilt `website/dist/` folder. Nothing is built on Vercel.
+The repo root has `vercel.json`, `package.json` and an `api/` folder. Vercel serves the prebuilt
+`website/dist/` folder and runs the functions in `api/` for sync and reminders.
 
-1. Go to vercel.com → **Add New… → Project** and import this GitHub repository.
-2. Leave **Root Directory** as the repository root and keep the framework preset as **Other**. `vercel.json` sets the rest.
-3. Deploy. Under **Settings → Git**, choose the branch that holds the site as the production branch, or merge it into `main` first.
+1. **Import the repo.** On vercel.com choose **Add New… → Project** and import this repository. Keep the
+   root directory as the repo root and the framework preset as **Other**. Deploy.
+   If the site lives on a branch, merge it into `main` or set that branch as the production branch
+   under **Settings → Git**.
+2. **Add a database for sync.** In the project open **Storage → Create Database → Upstash for Redis**
+   (free plan) and connect it to the project. This adds `KV_REST_API_URL` and `KV_REST_API_TOKEN`.
+3. **Add keys for reminders.** Run `npx web-push generate-vapid-keys` on any computer with Node.
+   In **Settings → Environment Variables** add:
+   - `VAPID_PUBLIC_KEY`: the public key
+   - `VAPID_PRIVATE_KEY`: the private key (keep it secret)
+   - `VAPID_SUBJECT`: `mailto:` followed by your email address
+   - `CRON_SECRET`: any long random string, so only Vercel can trigger the daily job
+4. **Redeploy** (Deployments → ⋯ → Redeploy) so the new settings take effect.
 
-Every push after that redeploys automatically. Run `python3 website/build.py` and commit `website/dist/` whenever you change `src/`.
+The daily reminder runs at 17:00 UTC (18:00 Swedish winter time, 19:00 summer time) from the `crons`
+entry in `vercel.json`. On the free Hobby plan Vercel runs it once a day, sometime within that hour.
+
+### Linking your phone and PC
+
+On the PC open **Progress → Sync between devices → Turn on sync**, then **Copy link for your phone**
+and open that link on the phone (email or message it to yourself). Both devices now share streaks,
+plan ticks, mistakes and mock results. They sync when you answer and when you reopen the app.
+
+### Turning on reminders
+
+- **iPhone (iOS 16.4 or later):** open the site in Safari, tap **Share → Add to Home Screen**, open
+  Körkort 30 from the new icon, then **Progress → Turn on daily reminder** and allow notifications.
+- **Android:** open the site in Chrome, **Progress → Turn on daily reminder**, allow notifications.
+  Installing it via **⋮ → Add to Home screen** makes it feel like an app.
+
+Use **Send a test now** to check it works. The reminder comes only on days you haven't studied yet
+(fewer than 10 questions and no plan task done) and says which plan day you're on and how long your streak is.
 
 ## Use it on your PC without hosting
 
 Open **`dist/index.html`** in Chrome, Edge or Firefox. It is one self-contained file and works offline;
-only the web font falls back to the system font. Progress is saved in that browser. Use
-**Progress → Copy backup code** to move it to another browser or device.
+only the web font falls back to the system font. Sync and reminders need the hosted site; opened from
+a file, progress stays in that browser (use **Progress → Copy backup code** to move it).
 
 ## What is in it
 
@@ -34,7 +62,8 @@ The source is in `src/`. Rebuild `dist/index.html` after any change:
 
 ```bash
 node tools/validate.js      # checks every question, lesson and picture
-python3 build.py            # writes dist/index.html
+python3 build.py            # writes dist/, copies src/static/ and regenerates api/_plan.js
+npm install && npm run dev  # local server with in-memory sync at http://localhost:3030
 ```
 
 `tools/AUTHORING.md` describes the question format and the picture specs
