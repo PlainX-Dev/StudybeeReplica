@@ -27,7 +27,7 @@ SV.q({
       '1,0 promille',
       '1,5 promille',
     ],
-    explain: 'Vid 1,0 promille eller mer (0,50 mg/l i utandningsluften) är det grovt rattfylleri. Det kan också bedömas som grovt vid lägre halter om din körning var tydligt påverkad eller särskilt farlig.',
+    explain: 'Vid 1,0 promille eller mer (0,50 mg/l i utandningsluften) är det grovt rattfylleri. Det är också grovt vid lägre halter om du var avsevärt påverkad av alkohol eller annat medel, eller om körningen innebar en påtaglig fara för trafiksäkerheten.',
   },
   'people-04': {
     q: 'Hur kan du bli av med alkoholen i kroppen snabbare?',
@@ -201,7 +201,7 @@ SV.q({
       'Kör om den snabbt vid första tillfället',
       'Kör tätt bakom den med helljus för att väcka föraren',
     ],
-    explain: 'Föraren kan vara berusad, trött eller sjuk. Håll dig långt bakom, eftersom föraren kan göra något plötsligt. En farlig förare kan anmälas till polisen.',
+    explain: 'Föraren kan vara berusad, trött eller sjuk. Håll dig långt bakom, eftersom föraren kan göra något plötsligt. En förare som är farlig i trafiken just nu är ett nödläge, så ring 112 när du har stannat säkert eller låt en passagerare ringa. 114 14 använder du bara för sådant som inte är akut.',
   },
   'people-22': {
     q: 'Vad består den obligatoriska riskutbildningen för B-körkort av?',

@@ -77,7 +77,7 @@ window.PLAN = [
     { type: 'practice', topics: ['speed', 'parking', 'roads'], n: 30, label: 'Rules mix' },
     { type: 'practice', topics: ['priority', 'turning'], n: 15, label: 'Junction drill' },
   ], goal: '80% on the rules mix.' },
-  { day: 14, week: 2, title: 'First mock exam', focus: 'Your first full test: 65 questions in 50 minutes.', tasks: [
+  { day: 14, week: 2, title: 'First mock exam', focus: 'Your first full test: the 65 scored questions in 50 minutes. The real test adds 5 unscored trial questions.', tasks: [
     { type: 'mock' },
     { type: 'review' },
   ], goal: '46 of 65 (70%). The real pass mark is 52.' },

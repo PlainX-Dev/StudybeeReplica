@@ -141,7 +141,7 @@ QB.push(
     q: 'When you reverse out of a parking space, you damage a parked car. The owner is nowhere to be seen. What do you do?',
     options: ['Leave, since nobody saw it happen', 'Wait ten minutes and then leave', 'Leave your name and contact details for the owner and report it to the police', 'Only report it to your own insurance company'],
     answer: 2,
-    explain: 'If you damage someone\'s property and the owner is not there, you must make sure they can contact you, and the police should be told. Driving away without leaving your details is hit-and-run (smitning).',
+    explain: 'If you damage someone\'s property and the owner is not there, you must leave your name and contact details and tell the owner or the police without delay. Driving away without leaving your details is hit-and-run (smitning).',
   },
   {
     id: 'emergency-18',

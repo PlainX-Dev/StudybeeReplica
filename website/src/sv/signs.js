@@ -41,7 +41,6 @@ SV.signs = {
   'bike-path': 'Påbjuden cykelbana',
   footpath: 'Påbjuden gångbana',
   'shared-path': 'Påbjuden gång- och cykelbana',
-  'speed-20': 'Högsta tillåtna hastighet 20 km/h',
   'speed-30': 'Högsta tillåtna hastighet 30 km/h',
   'speed-40': 'Högsta tillåtna hastighet 40 km/h',
   'speed-50': 'Högsta tillåtna hastighet 50 km/h',

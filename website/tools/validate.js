@@ -3,7 +3,7 @@ const fs = require('fs'), path = require('path'), vm = require('vm');
 const root = path.join(__dirname, '..', 'src');
 const ctx = { console }; ctx.window = ctx; ctx.globalThis = ctx; vm.createContext(ctx);
 const load = (f) => vm.runInContext(fs.readFileSync(f, 'utf8'), ctx, { filename: f });
-load(path.join(root, 'scenes.js')); load(path.join(root, 'topics.js'));
+load(path.join(root, 'signs-official.js')); load(path.join(root, 'scenes.js')); load(path.join(root, 'topics.js'));
 const only = process.argv[2];
 for (const dir of ['questions', 'lessons'])
   for (const f of fs.readdirSync(path.join(root, dir)).filter((x) => x.endsWith('.js')).sort())
@@ -41,6 +41,7 @@ if (!only) {
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : e.name.endsWith('.js') ? [path.join(d, e.name)] : []));
   for (const f of walk(svDir).sort()) load(f);
   const SV = ctx.SV; const sv = [];
+  for (const n of ctx.Signs.list()) if (!ctx.SIGN_ART[n]) sv.push(`sign ${n}: no official artwork in signs-official.js`);
   for (const q of ctx.QB) {
     const s = SV.qs[q.id];
     if (!s) { sv.push(`${q.id}: no Swedish text`); continue; }

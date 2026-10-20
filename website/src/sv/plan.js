@@ -30,7 +30,7 @@ SV.plan = {
     0: { label: 'Regelmix' },
     1: { label: 'Korsningsdrill' },
   } },
-  14: { title: 'Första övningsprovet', focus: 'Ditt första fullständiga prov: 65 frågor på 50 minuter.', goal: '46 av 65 (70 %). Gränsen för godkänt på det riktiga provet är 52.' },
+  14: { title: 'Första övningsprovet', focus: 'Ditt första fullständiga prov: de 65 frågor som räknas, på 50 minuter. Det riktiga provet har dessutom 5 testfrågor som inte räknas.', goal: '46 av 65 (70 %). Gränsen för godkänt på det riktiga provet är 52.' },
   15: { title: 'Känn din bil', focus: 'Körkortsregler, lyktor, däck, last och släp.', goal: '75 % på fordonsövningen.' },
   16: { title: 'Sparsam körning', focus: 'Kör mjukt och spara bränsle.', goal: '80 % på miljöövningen.', tasks: {
     2: { label: 'Lyft svaga områden' },

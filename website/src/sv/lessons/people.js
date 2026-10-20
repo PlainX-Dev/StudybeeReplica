@@ -6,7 +6,7 @@ SV.lessons.people = {
     {
       h: 'Alkohol',
       body: '<ul><li><em>Rattfylleri</em>: <strong>0,2 promille</strong> i blodet eller <strong>0,10 mg/l</strong> i utandningsluften.</li>' +
-        '<li><em>Grovt rattfylleri</em>: <strong>1,0 promille</strong> (0,50 mg/l) eller mer, eller lägre om din körning var tydligt påverkad.</li>' +
+        '<li><em>Grovt rattfylleri</em>: <strong>1,0 promille</strong> (0,50 mg/l) eller mer. Det är också grovt vid lägre halt om du var avsevärt påverkad av alkohol eller annat medel, eller om körningen innebar en påtaglig fara för trafiksäkerheten.</li>' +
         '<li>Bara <strong>tiden</strong> får bort alkoholen. Kaffe, mat, frisk luft eller en dusch hjälper inte.</li>' +
         '<li>Efter en blöt kväll kan du fortfarande ligga över gränsen <strong>nästa morgon</strong>.</li></ul>',
     },
@@ -31,7 +31,7 @@ SV.lessons.people = {
       h: 'Attityd, stress och unga förare',
       body: '<p>Nya förare, särskilt unga, har en mycket högre olycksrisk. De saknar erfarenhet av att upptäcka risker och <strong>överskattar ofta sin förmåga</strong>. Kompisar i bilen kan pressa dig att ta risker.</p>' +
         '<p>Stress och ilska får dig att köra aggressivt för en liten vinst. Planera in extra tid, acceptera förseningar och låt andra förares misstag passera.</p>' +
-        '<p>Den obligatoriska <strong>riskutbildningen</strong> har två delar, och båda ska vara gjorda före körprovet: del 1 om alkohol, droger, trötthet och riskbeteenden; del 2 körning på halkbana.</p>',
+        '<p>Den obligatoriska <strong>riskutbildningen</strong> har två delar, och båda ska vara gjorda innan du gör kunskapsprovet och körprovet: del 1 om alkohol, droger, trötthet och riskbeteenden; del 2 körning på halkbana.</p>',
     },
     {
       h: 'Bilbälte och barn',
@@ -49,6 +49,6 @@ SV.lessons.people = {
     'Det är förbjudet att hålla mobilen i handen när du kör.',
     'Föraren ansvarar för att passagerare under 15 år använder bälte.',
     'Barn under 135 cm ska ha bilbarnstol eller bälteskudde; ingen bakåtvänd stol framför en aktiverad krockkudde.',
-    'Riskutbildning: två delar, båda före körprovet.',
+    'Riskutbildning: två delar, båda gjorda före kunskapsprovet och körprovet.',
   ],
 };

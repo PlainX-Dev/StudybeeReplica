@@ -38,115 +38,78 @@
   const col = (c) => COLORS[c] || c || COLORS.red;
 
   // ------------------------------------------------------------------ signs
-  const SY = '#ffcd00'; // Swedish sign yellow
-  const SR = '#d22630'; // sign red
-  const SB = '#0063a6'; // sign blue
-  const K = '#111';
-
-  const tri = (inner) =>
-    `<path d="M50 6 L95 88 Q96 92 92 92 L8 92 Q4 92 5 88 Z" fill="${SR}"/>` +
-    `<path d="M50 22 L82 81 L18 81 Z" fill="${SY}"/>` + inner;
-  const ring = (inner, fill = SY) =>
-    `<circle cx="50" cy="50" r="46" fill="${SR}"/><circle cx="50" cy="50" r="35" fill="${fill}"/>` + inner;
-  const blueDisc = (inner) => `<circle cx="50" cy="50" r="46" fill="${SB}" stroke="#fff" stroke-width="3"/>` + inner;
-  const blueSq = (inner) => `<rect x="5" y="5" width="90" height="90" rx="8" fill="${SB}" stroke="#fff" stroke-width="3"/>` + inner;
-  const arrow = (d, w = 9, c = '#fff') => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>`;
-  const head = (x, y, ang, c = '#fff', s = 1) =>
-    `<path d="M0 -13 L11 3 L-11 3 Z" fill="${c}" transform="translate(${x} ${y}) rotate(${ang}) scale(${s})"/>`;
-  const person = (x, y, s = 1, c = K) =>
-    `<g transform="translate(${x} ${y}) scale(${s})" fill="${c}" stroke="${c}" stroke-linecap="round">` +
-    `<circle cx="0" cy="-16" r="4.5" stroke="none"/>` +
-    `<path d="M0 -10 L-1 4 M-1 4 L-7 16 M-1 4 L5 16 M0 -8 L-7 -1 M0 -8 L7 -2" fill="none" stroke-width="3.6"/></g>`;
-  const child = (x, y, s = 1, c = K) => person(x, y, s * 0.75, c);
-  const bicycle = (x, y, s = 1, c = K) =>
-    `<g transform="translate(${x} ${y}) scale(${s})" fill="none" stroke="${c}" stroke-width="3">` +
-    `<circle cx="-11" cy="6" r="7"/><circle cx="11" cy="6" r="7"/>` +
-    `<path d="M-11 6 L-3 -6 L8 -6 L11 6 M-3 -6 L1 6 L8 -6 M-5 -10 L-1 -10 M8 -6 L6 -12 L10 -12"/></g>`;
-  const carSide = (x, y, s = 1, c = K) =>
-    `<g transform="translate(${x} ${y}) scale(${s})" fill="${c}">` +
-    `<path d="M-16 4 L-16 -3 L-10 -4 L-6 -11 L7 -11 L12 -4 L16 -3 L16 4 Z"/>` +
-    `<circle cx="-9" cy="5" r="3.5"/><circle cx="9" cy="5" r="3.5"/></g>`;
-
+  // Official artwork from Transportstyrelsen, embedded by tools/fetch_signs.py (signs-official.js).
+  // Only the English names live here; Swedish names are in sv/signs.js.
   const SIGNS = {
-    // --- priority
-    yield: { name: 'Give way (väjningsplikt)', g: `<path d="M6 10 L94 10 Q98 10 96 14 L52 92 Q50 95 48 92 L4 14 Q2 10 6 10 Z" fill="${SR}"/><path d="M22 20 L78 20 L50 72 Z" fill="${SY}"/>` },
-    stop: { name: 'Stop (stopplikt)', g: `<path d="M30 4 L70 4 L96 30 L96 70 L70 96 L30 96 L4 70 L4 30 Z" fill="#fff"/><path d="M31 8 L69 8 L92 31 L92 69 L69 92 L31 92 L8 69 L8 31 Z" fill="${SR}"/><text x="50" y="59" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="25" fill="#fff" text-anchor="middle">STOP</text>` },
-    'main-road': { name: 'Priority road (huvudled)', g: `<path d="M50 2 L98 50 L50 98 L2 50 Z" fill="#fff" stroke="#999" stroke-width="1"/><path d="M50 16 L84 50 L50 84 L16 50 Z" fill="${SY}"/>` },
-    'end-main-road': { name: 'End of priority road', g: `<path d="M50 2 L98 50 L50 98 L2 50 Z" fill="#fff" stroke="#999" stroke-width="1"/><path d="M50 16 L84 50 L50 84 L16 50 Z" fill="${SY}"/><path d="M28 72 L72 28" stroke="${K}" stroke-width="5"/><path d="M34 78 L78 34 M22 66 L66 22" stroke="${K}" stroke-width="2"/>` },
-    'oncoming-priority': { name: 'Give way to oncoming traffic', g: ring(`${arrow('M38 78 L38 30', 7, K)}${head(38, 26, 0, K, 0.8)}${arrow('M62 22 L62 70', 7, SR)}${head(62, 74, 180, SR, 0.8)}`) },
-    'priority-over-oncoming': { name: 'Priority over oncoming traffic', g: blueSq(`${arrow('M38 80 L38 34', 8)}${head(38, 28, 0, '#fff', 0.85)}${arrow('M62 20 L62 66', 8, SR)}${head(62, 72, 180, SR, 0.85)}`) },
-
-    // --- warning
-    'w-crossroads': { name: 'Warning: crossroads', g: tri(`<path d="M50 38 L50 76 M38 57 L62 57" stroke="${K}" stroke-width="7"/>`) },
-    'w-roundabout': { name: 'Warning: roundabout', g: tri(`<g fill="none" stroke="${K}" stroke-width="5"><path d="M36 60 A15 15 0 0 1 44 46"/><path d="M55 45 A15 15 0 0 1 64 59"/><path d="M58 70 A15 15 0 0 1 41 70"/></g><path d="M42 40 l8 6 l-9 4z M70 58 l-5 9 l-5-8z M36 74 l-2-10 l9 4z" fill="${K}"/>`) },
-    'w-pedestrian-crossing': { name: 'Warning: pedestrian crossing', g: tri(`${person(50, 64, 1.05)}<path d="M33 77 L67 77" stroke="${K}" stroke-width="3" stroke-dasharray="4 3"/>`) },
-    'w-children': { name: 'Warning: children', g: tri(`${person(44, 66, 1)}${child(58, 70, 1)}`) },
-    'w-moose': { name: 'Warning: moose (älg)', g: tri(`<g fill="${K}"><path d="M30 58 Q32 50 42 50 L58 50 Q63 48 65 44 L70 45 L72 52 L67 55 L64 62 L62 76 L59 76 L58 64 L42 64 L40 76 L37 76 L36 63 Q30 62 30 58 Z"/><path d="M64 44 Q60 36 56 38 L60 40 L58 34 L62 38 L63 32 L66 40 L70 34 L69 41 Z"/></g>`) },
-    'w-deer': { name: 'Warning: deer', g: tri(`<g fill="${K}"><path d="M34 60 Q36 53 44 53 L58 53 L63 46 L66 47 L66 53 L62 58 L61 75 L58 75 L57 63 L45 63 L43 75 L40 75 L39 63 Q34 63 34 60 Z"/><path d="M63 46 L60 38 M64 45 L67 37" stroke="${K}" stroke-width="2"/></g>`) },
-    'w-roadworks': { name: 'Warning: roadworks', g: tri(`${person(46, 64, 0.95)}<path d="M54 76 L60 64 L66 76 Z" fill="${K}"/><path d="M50 58 L60 50" stroke="${K}" stroke-width="3"/>`) },
-    'w-slippery': { name: 'Warning: slippery road', g: tri(`${carSide(50, 50, 0.9)}<path d="M36 74 Q40 64 46 70 T56 66 M50 76 Q54 66 60 72 T68 68" fill="none" stroke="${K}" stroke-width="2.6"/>`) },
-    'w-traffic-lights': { name: 'Warning: traffic lights', g: tri(`<rect x="43" y="36" width="14" height="40" rx="4" fill="${K}"/><circle cx="50" cy="43" r="4" fill="${SR}"/><circle cx="50" cy="56" r="4" fill="#f5b400"/><circle cx="50" cy="69" r="4" fill="#1aa34a"/>`) },
-    'w-level-crossing-gates': { name: 'Warning: level crossing with barriers', g: tri(`<path d="M30 74 L70 74 L70 68 L30 68 Z M34 68 L34 54 L66 54 L66 68 M40 54 L40 68 M46 54 L46 68 M52 54 L52 68 M58 54 L58 68 M64 54 L64 68" fill="${K}" stroke="${K}" stroke-width="2"/>`) },
-    'w-level-crossing': { name: 'Warning: level crossing without barriers', g: tri(`<g fill="${K}"><rect x="30" y="56" width="34" height="14" rx="2"/><rect x="58" y="46" width="10" height="24"/><rect x="34" y="48" width="6" height="8"/><circle cx="36" cy="73" r="3.5"/><circle cx="48" cy="73" r="3.5"/><circle cx="60" cy="73" r="3.5"/></g>`) },
-    'w-cyclists': { name: 'Warning: cyclists', g: tri(bicycle(50, 64, 1.05)) },
-    'w-narrowing': { name: 'Warning: road narrows', g: tri(`<path d="M40 78 L40 62 L45 52 L45 38 M60 78 L60 62 L55 52 L55 38" fill="none" stroke="${K}" stroke-width="4.5"/>`) },
-    'w-two-way': { name: 'Warning: two-way traffic', g: tri(`${arrow('M43 78 L43 46', 5, K)}${head(43, 43, 0, K, 0.55)}${arrow('M57 40 L57 72', 5, K)}${head(57, 75, 180, K, 0.55)}`) },
-    'w-danger': { name: 'Warning: other danger', g: tri(`<rect x="46" y="38" width="8" height="26" rx="2" fill="${K}"/><circle cx="50" cy="72" r="4.5" fill="${K}"/>`) },
-    'w-queue': { name: 'Warning: queues likely', g: tri(`${carSide(50, 46, 0.75)}${carSide(50, 58, 0.75)}${carSide(50, 70, 0.75)}`) },
-    'w-steep-down': { name: 'Warning: steep hill downwards', g: tri(`<path d="M28 78 L72 78 L28 50 Z" fill="${K}"/><text x="62" y="60" font-family="Arial" font-weight="700" font-size="11" fill="${K}" text-anchor="middle">10%</text>`) },
-    'w-bumps': { name: 'Warning: speed bump', g: tri(`<path d="M28 76 L40 76 Q50 58 60 76 L72 76" fill="none" stroke="${K}" stroke-width="5"/>`) },
-    'w-curve-right': { name: 'Warning: bend to the right', g: tri(`<path d="M44 80 L44 60 Q44 44 60 42" fill="none" stroke="${K}" stroke-width="6"/>${head(62, 42, 90, K, 0.7)}`) },
-    'w-curve-left': { name: 'Warning: bend to the left', g: tri(`<path d="M56 80 L56 60 Q56 44 40 42" fill="none" stroke="${K}" stroke-width="6"/>${head(38, 42, -90, K, 0.7)}`) },
-
-    // --- prohibition
-    'no-entry': { name: 'No entry for vehicles', g: `<circle cx="50" cy="50" r="46" fill="${SR}"/><rect x="18" y="42" width="64" height="16" fill="#fff"/>` },
-    'no-vehicles': { name: 'No vehicles (both directions)', g: ring('') },
-    'no-overtaking': { name: 'No overtaking', g: ring(`${carSide(38, 52, 0.95, SR)}${carSide(62, 52, 0.95, K)}`) },
-    'no-left-turn': { name: 'No left turn', g: ring(`<path d="M58 76 L58 50 Q58 40 46 40 L38 40" fill="none" stroke="${K}" stroke-width="7"/>${head(34, 40, -90, K, 0.75)}<path d="M26 74 L74 26" stroke="${SR}" stroke-width="7"/>`) },
-    'no-right-turn': { name: 'No right turn', g: ring(`<path d="M42 76 L42 50 Q42 40 54 40 L62 40" fill="none" stroke="${K}" stroke-width="7"/>${head(66, 40, 90, K, 0.75)}<path d="M26 74 L74 26" stroke="${SR}" stroke-width="7"/>`) },
-    'no-u-turn': { name: 'No U-turn', g: ring(`<path d="M60 76 L60 44 Q60 32 49 32 Q38 32 38 44 L38 56" fill="none" stroke="${K}" stroke-width="7"/>${head(38, 60, 180, K, 0.75)}<path d="M26 74 L74 26" stroke="${SR}" stroke-width="7"/>`) },
-    'no-parking': { name: 'No parking', g: `<circle cx="50" cy="50" r="46" fill="${SR}"/><circle cx="50" cy="50" r="35" fill="${SB}"/><path d="M24 24 L76 76" stroke="${SR}" stroke-width="10"/>` },
-    'no-stopping': { name: 'No stopping or parking', g: `<circle cx="50" cy="50" r="46" fill="${SR}"/><circle cx="50" cy="50" r="35" fill="${SB}"/><path d="M24 24 L76 76 M76 24 L24 76" stroke="${SR}" stroke-width="10"/>` },
-
-    // --- mandatory
-    'mandatory-right': { name: 'Turn right (mandatory)', g: blueDisc(`<path d="M40 78 L40 52 Q40 40 54 40 L60 40" fill="none" stroke="#fff" stroke-width="10"/>${head(66, 40, 90, '#fff', 0.95)}`) },
-    'mandatory-straight': { name: 'Straight ahead only', g: blueDisc(`${arrow('M50 82 L50 34', 10)}${head(50, 28, 0, '#fff', 0.95)}`) },
-    'pass-right': { name: 'Pass on the right side', g: blueDisc(`${arrow('M34 34 L62 62', 10)}${head(66, 66, 135, '#fff', 0.95)}`) },
-    'roundabout-mandatory': { name: 'Roundabout', g: blueDisc(`<g fill="none" stroke="#fff" stroke-width="7"><path d="M36 60 A17 17 0 0 1 44 34"/><path d="M56 33 A17 17 0 0 1 66 58"/><path d="M58 68 A17 17 0 0 1 38 66"/></g><path d="M44 26 l9 8 l-11 4z M72 56 l-6 11 l-6-9z M34 74 l-3-12 l10 4z" fill="#fff"/>`) },
-    'bike-path': { name: 'Cycle path', g: blueDisc(bicycle(50, 52, 1.35, '#fff')) },
-    footpath: { name: 'Footpath', g: blueDisc(person(50, 58, 1.45, '#fff')) },
-    'shared-path': { name: 'Shared path for pedestrians and cyclists', g: blueDisc(`<path d="M50 14 L50 86" stroke="#fff" stroke-width="3"/>${person(32, 58, 1.05, '#fff')}${bicycle(70, 54, 0.75, '#fff')}`) },
-
-    // --- speed limits
-    'speed-20': speed(20), 'speed-30': speed(30), 'speed-40': speed(40), 'speed-50': speed(50), 'speed-60': speed(60),
-    'speed-70': speed(70), 'speed-80': speed(80), 'speed-90': speed(90), 'speed-100': speed(100), 'speed-110': speed(110), 'speed-120': speed(120),
-
-    // --- information
-    parking: { name: 'Parking', g: blueSq(`<text x="50" y="76" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="68" fill="#fff" text-anchor="middle">P</text>`) },
-    'ped-crossing': { name: 'Pedestrian crossing', g: blueSq(`<path d="M50 14 L88 84 L12 84 Z" fill="#fff"/>${person(50, 68, 1.1)}<path d="M30 80 L70 80" stroke="${K}" stroke-width="3" stroke-dasharray="5 3"/>`) },
-    'bike-crossing': { name: 'Cycle crossing', g: blueSq(`<path d="M50 14 L88 84 L12 84 Z" fill="#fff"/>${bicycle(50, 66, 0.95)}`) },
-    motorway: { name: 'Motorway', g: blueSq(`<path d="M24 86 L42 30 M76 86 L58 30" stroke="#fff" stroke-width="8" fill="none"/><path d="M50 86 L50 30" stroke="#fff" stroke-width="5" fill="none"/><path d="M28 34 L72 34" stroke="#fff" stroke-width="8"/>`) },
-    'end-motorway': { name: 'End of motorway', g: blueSq(`<path d="M24 86 L42 30 M76 86 L58 30" stroke="#fff" stroke-width="8" fill="none"/><path d="M50 86 L50 30" stroke="#fff" stroke-width="5" fill="none"/><path d="M28 34 L72 34" stroke="#fff" stroke-width="8"/><path d="M14 86 L86 14" stroke="${SR}" stroke-width="8"/>`) },
-    expressway: { name: 'Expressway (motortrafikled)', g: blueSq(carSide(50, 54, 2.1, '#fff')) },
-    'dead-end': { name: 'Dead end', g: blueSq(`<path d="M50 86 L50 30" stroke="#fff" stroke-width="16"/><rect x="26" y="18" width="48" height="16" fill="${SR}"/>`) },
-    'one-way': { name: 'One-way traffic', g: blueSq(`${arrow('M50 86 L50 32', 14)}${head(50, 24, 0, '#fff', 1.3)}`) },
-    'pedestrian-zone': { name: 'Pedestrian priority zone (gångfartsområde)', g: blueSq(`<path d="M14 44 L30 30 L46 44 L46 62 L14 62 Z" fill="#fff"/>${person(62, 62, 1.0, '#fff')}${child(78, 64, 1.0, '#fff')}${carSide(36, 80, 0.85, '#fff')}<circle cx="74" cy="82" r="5" fill="#fff"/>`) },
-    'speed-camera': { name: 'Speed camera (ATK)', g: blueSq(`<rect x="22" y="38" width="44" height="30" rx="5" fill="#fff"/><rect x="66" y="45" width="12" height="16" fill="#fff"/><circle cx="44" cy="53" r="9" fill="${SB}"/><circle cx="44" cy="53" r="5" fill="#fff"/><rect x="28" y="32" width="12" height="6" fill="#fff"/>`) },
-    'bus-lane': { name: 'Bus lane', g: blueSq(`<text x="50" y="62" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="30" fill="#fff" text-anchor="middle">BUSS</text>`) },
-    'meeting-place': { name: 'Passing place (mötesplats)', g: blueSq(`<text x="50" y="72" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="56" fill="#fff" text-anchor="middle">M</text>`) },
+    yield: 'Give way (väjningsplikt)',
+    stop: 'Stop (stopplikt)',
+    'main-road': 'Priority road (huvudled)',
+    'end-main-road': 'End of priority road',
+    'oncoming-priority': 'Give way to oncoming traffic',
+    'priority-over-oncoming': 'Priority over oncoming traffic',
+    'w-crossroads': 'Warning: crossroads',
+    'w-roundabout': 'Warning: roundabout',
+    'w-pedestrian-crossing': 'Warning: pedestrian crossing',
+    'w-children': 'Warning: children',
+    'w-moose': 'Warning: moose (älg)',
+    'w-deer': 'Warning: deer',
+    'w-roadworks': 'Warning: roadworks',
+    'w-slippery': 'Warning: slippery road',
+    'w-traffic-lights': 'Warning: traffic lights',
+    'w-level-crossing-gates': 'Warning: level crossing with barriers',
+    'w-level-crossing': 'Warning: level crossing without barriers',
+    'w-cyclists': 'Warning: cyclists',
+    'w-narrowing': 'Warning: road narrows',
+    'w-two-way': 'Warning: two-way traffic',
+    'w-danger': 'Warning: other danger',
+    'w-queue': 'Warning: queues likely',
+    'w-steep-down': 'Warning: steep hill downwards',
+    'w-bumps': 'Warning: speed bump',
+    'w-curve-right': 'Warning: bend to the right',
+    'w-curve-left': 'Warning: bend to the left',
+    'no-entry': 'No entry for vehicles',
+    'no-vehicles': 'No vehicles (both directions)',
+    'no-overtaking': 'No overtaking',
+    'no-left-turn': 'No left turn',
+    'no-right-turn': 'No right turn',
+    'no-u-turn': 'No U-turn',
+    'no-parking': 'No parking',
+    'no-stopping': 'No stopping or parking',
+    'mandatory-right': 'Turn right (mandatory)',
+    'mandatory-straight': 'Straight ahead only',
+    'pass-right': 'Pass on the right side',
+    'roundabout-mandatory': 'Roundabout',
+    'bike-path': 'Cycle path',
+    footpath: 'Footpath',
+    'shared-path': 'Shared path for pedestrians and cyclists',
+    'speed-30': 'Speed limit 30 km/h',
+    'speed-40': 'Speed limit 40 km/h',
+    'speed-50': 'Speed limit 50 km/h',
+    'speed-60': 'Speed limit 60 km/h',
+    'speed-70': 'Speed limit 70 km/h',
+    'speed-80': 'Speed limit 80 km/h',
+    'speed-90': 'Speed limit 90 km/h',
+    'speed-100': 'Speed limit 100 km/h',
+    'speed-110': 'Speed limit 110 km/h',
+    'speed-120': 'Speed limit 120 km/h',
+    parking: 'Parking',
+    'ped-crossing': 'Pedestrian crossing',
+    'bike-crossing': 'Cycle crossing',
+    motorway: 'Motorway',
+    'end-motorway': 'End of motorway',
+    expressway: 'Expressway (motortrafikled)',
+    'dead-end': 'Dead end',
+    'one-way': 'One-way traffic',
+    'pedestrian-zone': 'Pedestrian priority zone (gångfartsområde)',
+    'speed-camera': 'Speed camera (ATK)',
+    'bus-lane': 'Bus lane',
+    'meeting-place': 'Passing place (mötesplats)',
   };
-
-  function speed(n) {
-    return {
-      name: `Speed limit ${n} km/h`,
-      g: ring(`<text x="50" y="${n >= 100 ? 61 : 63}" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="${n >= 100 ? 29 : 37}" fill="${K}" text-anchor="middle" letter-spacing="-1">${n}</text>`),
-    };
-  }
 
   const Signs = {
     list: () => Object.keys(SIGNS),
     has: (n) => Object.prototype.hasOwnProperty.call(SIGNS, n),
-    name: (n) => (SIGNS[n] ? SIGNS[n].name : n),
+    name: (n) => SIGNS[n] || n,
     group(n) {
       if (/^w-/.test(n)) return 'Warning signs';
       if (/^speed-|^no-/.test(n)) return 'Prohibition signs';
@@ -154,12 +117,14 @@
       if (['mandatory-right', 'mandatory-straight', 'pass-right', 'roundabout-mandatory', 'bike-path', 'footpath', 'shared-path'].includes(n)) return 'Mandatory signs';
       return 'Information signs';
     },
-    /** inner group in a 100x100 box */
+    /** the official sign picture, fitted into a 100x100 box */
     g(n) {
-      const s = SIGNS[n];
-      if (!s) throw new Error(`Unknown sign: ${n}`);
-      return s.g;
+      const art = (window.SIGN_ART || {})[n];
+      if (!SIGNS[n] || !art) throw new Error(`Unknown sign: ${n}`);
+      return `<image href="${art[3]}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid meet"/>`;
     },
+    /** official sign number, e.g. B1 */
+    code: (n) => ((window.SIGN_ART || {})[n] || [])[0],
     svg(n, size = 120) {
       return `<svg class="sign" viewBox="0 0 100 100" width="${size}" height="${size}" role="img" aria-label="${esc(Signs.name(n))}">${Signs.g(n)}</svg>`;
     },

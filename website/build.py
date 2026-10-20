@@ -10,7 +10,7 @@ ROOT = pathlib.Path(__file__).parent
 SRC = ROOT / 'src'
 
 def scripts():
-    order = ['i18n.js', 'scenes.js', 'topics.js', 'plan.js']
+    order = ['i18n.js', 'signs-official.js', 'scenes.js', 'topics.js', 'plan.js']
     files = [SRC / f for f in order]
     files += sorted((SRC / 'questions').glob('*.js')) + sorted((SRC / 'lessons').glob('*.js'))
     files += sorted((SRC / 'sv').rglob('*.js'))

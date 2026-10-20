@@ -22,7 +22,7 @@ QB.push(
     q: 'From what blood alcohol level is it always counted as gross drink driving (grov rattfylleri)?',
     options: ['0.5 per mille', '0.8 per mille', '1.0 per mille', '1.5 per mille'],
     answer: 2,
-    explain: 'At 1.0 per mille or more (0.50 mg/l breath) it is gross drink driving. It can also be gross at lower levels if your driving was clearly affected or was especially dangerous.',
+    explain: 'At 1.0 per mille or more (0.50 mg/l breath) it is gross drink driving. It is also gross at lower levels if you were considerably impaired by alcohol or another drug, or if your driving put traffic safety in obvious danger.',
   },
   {
     id: 'people-04',
@@ -254,7 +254,7 @@ QB.push(
       'Drive close behind it with full beam to wake the driver up',
     ],
     answer: 0,
-    explain: 'The driver may be drunk, tired or ill. Keep well back, as they may do something sudden. A dangerous driver can be reported to the police.',
+    explain: 'The driver may be drunk, tired or ill. Keep well back, as they may do something sudden. A driver who is a danger on the road right now is an emergency, so call 112 once you are stopped safely or have a passenger call. Use 114 14 only for things that are not urgent.',
   },
   {
     id: 'people-22',

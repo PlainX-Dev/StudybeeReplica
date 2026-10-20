@@ -6,7 +6,7 @@ LESSONS.people = {
     {
       h: 'Alcohol',
       body: '<ul><li>Drink driving (<em>rattfylleri</em>): <strong>0.2 per mille</strong> in the blood or <strong>0.10 mg/l</strong> in exhaled air.</li>' +
-        '<li>Gross drink driving (<em>grov rattfylleri</em>): <strong>1.0 per mille</strong> (0.50 mg/l) or more, or lower if your driving was clearly affected.</li>' +
+        '<li>Gross drink driving (<em>grovt rattfylleri</em>): <strong>1.0 per mille</strong> (0.50 mg/l) or more. It is also gross at a lower level if you were considerably impaired by alcohol or another drug, or if your driving put traffic safety in obvious danger.</li>' +
         '<li>Only <strong>time</strong> removes alcohol. Coffee, food, fresh air or a shower do not help.</li>' +
         '<li>After a heavy evening you can still be over the limit <strong>the next morning</strong>.</li></ul>',
       pics: [{ view: { time: 'day', lanes: 2, curve: 0.3, objects: [{ kind: 'car', x: -0.5, d: 0.55, facing: 'toward', color: 'grey' }] } }],
@@ -35,7 +35,7 @@ LESSONS.people = {
       h: 'Attitude, stress and young drivers',
       body: '<p>New drivers, especially young ones, have a much higher crash risk. They lack experience in spotting risks and often <strong>overestimate their ability</strong>. Friends in the car can push you to take risks.</p>' +
         '<p>Stress and anger make you drive aggressively for little gain. Plan extra time, accept delays, and let other drivers\' mistakes go.</p>' +
-        '<p>The compulsory <strong>risk education</strong> (riskutbildning) has two parts, both done before the driving test: part 1 on alcohol, drugs, fatigue and risky behaviour; part 2 driving on a slippery track.</p>',
+        '<p>The compulsory <strong>risk education</strong> (riskutbildning) has two parts, both done before you take the theory test and the driving test: part 1 on alcohol, drugs, fatigue and risky behaviour; part 2 driving on a slippery track.</p>',
     },
     {
       h: 'Seat belts and children',
@@ -53,6 +53,6 @@ LESSONS.people = {
     'Holding a mobile phone while driving is forbidden.',
     'Driver is responsible for belts of passengers under 15.',
     'Children under 135 cm need a child restraint; no rear-facing seat in front of an active airbag.',
-    'Riskutbildning: two parts, both before the driving test.',
+    'Riskutbildning: two parts, both done before the theory test and the driving test.',
   ],
 };

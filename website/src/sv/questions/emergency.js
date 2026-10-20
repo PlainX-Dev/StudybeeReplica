@@ -83,7 +83,7 @@ SV.q({
   'emergency-17': {
     q: 'När du backar ut från en parkeringsplats skadar du en parkerad bil. Ägaren syns inte till. Vad gör du?',
     options: ['Åker därifrån, eftersom ingen såg det hända', 'Väntar i tio minuter och åker sedan', 'Lämnar ditt namn och dina kontaktuppgifter till ägaren och anmäler det till polisen', 'Anmäler det bara till ditt eget försäkringsbolag'],
-    explain: 'Om du skadar någon annans egendom och ägaren inte är på plats måste du se till att ägaren kan kontakta dig, och polisen bör underrättas. Att köra iväg utan att lämna dina uppgifter är smitning.',
+    explain: 'Om du skadar någon annans egendom och ägaren inte är på plats måste du lämna ditt namn och dina kontaktuppgifter och utan dröjsmål underrätta ägaren eller polisen. Att köra iväg utan att lämna dina uppgifter är smitning.',
   },
   'emergency-18': {
     q: 'Det kommer rök under motorhuven medan du kör. Vad gör du?',
