@@ -2,15 +2,25 @@
 
 A website for passing the **Swedish B-licence theory test** (Trafikverket kunskapsprov) in 30 days.
 
-## Use it on your PC
+## Host it on Vercel
 
-Open **`index.html`** in Chrome, Edge or Firefox: double-click it, or drag it into a browser window.
-It is one self-contained file. Everything works offline except the two web fonts, which fall back to
-system fonts. Your progress is saved in that browser on that computer. Use **Progress → Backup** to copy
-a backup code, and restore it in another browser or on another PC.
+The repo root has a `vercel.json` that serves the prebuilt `website/dist/` folder. Nothing is built on Vercel.
+
+1. Go to vercel.com → **Add New… → Project** and import this GitHub repository.
+2. Leave **Root Directory** as the repository root and keep the framework preset as **Other**. `vercel.json` sets the rest.
+3. Deploy. Under **Settings → Git**, choose the branch that holds the site as the production branch, or merge it into `main` first.
+
+Every push after that redeploys automatically. Run `python3 website/build.py` and commit `website/dist/` whenever you change `src/`.
+
+## Use it on your PC without hosting
+
+Open **`dist/index.html`** in Chrome, Edge or Firefox. It is one self-contained file and works offline;
+only the web font falls back to the system font. Progress is saved in that browser. Use
+**Progress → Copy backup code** to move it to another browser or device.
 
 ## What is in it
 
+- **Daily pull**: three activity rings (plan tasks, 30 questions, accuracy), a streak that needs 10 questions a day, XP levels from *L-plate* to *Licence ready*, 16 badges, answer combos, and confetti when you close a day.
 - **30-day plan**: a daily task list of about an hour a day. Lessons come first, then drills, then six full mock exams from day 14 to day 29. Tasks tick themselves off when you finish them.
 - **Lessons**: one per topic, with pictures and a key-facts box. A key-facts sheet puts every topic on one page.
 - **Practice**: picture questions such as "You want to turn left here. Who goes first?", drawn as top-down junctions and roundabouts, road scenes and driver's-eye views. Every answer comes with an explanation.
@@ -20,11 +30,11 @@ a backup code, and restore it in another browser or on another PC.
 
 ## Editing
 
-The source is in `src/`. Rebuild `index.html` after any change:
+The source is in `src/`. Rebuild `dist/index.html` after any change:
 
 ```bash
 node tools/validate.js      # checks every question, lesson and picture
-python3 build.py            # writes index.html
+python3 build.py            # writes dist/index.html
 ```
 
 `tools/AUTHORING.md` describes the question format and the picture specs

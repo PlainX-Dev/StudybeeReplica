@@ -6,10 +6,10 @@ LESSONS.emergency = {
   sections: [
     {
       h: 'Make the scene safe',
-      body: '<ol><li>Stop safely and switch on the <strong>hazard lights</strong>.</li>' +
+      body: '<ul><li>Stop safely and switch on the <strong>hazard lights</strong>.</li>' +
         '<li>Put on a <strong>reflective vest</strong>, especially in the dark.</li>' +
         '<li>Place the <strong>warning triangle well behind</strong> the vehicles, further back on fast roads and <strong>before a crest or bend</strong>, so drivers are warned in time.</li>' +
-        '<li>Switch off the ignition of crashed cars to reduce the risk of fire.</li></ol>',
+        '<li>Switch off the ignition of crashed cars to reduce the risk of fire.</li></ul>',
       pics: [
         { road: { lanes: 2, you: { lane: 'right', y: 110 }, objects: [{ kind: 'cone', x: 223, y: 360, label: 'B' }, { kind: 'car', lane: 'oncoming', y: 260, color: 'grey' }] } },
       ],

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Bundle src/ into one self-contained page.
 
-  python3 build.py            -> index.html  (open it in any browser, works offline)
+  python3 build.py            -> dist/index.html  (deployed by Vercel; also opens straight from disk)
   python3 build.py --fragment OUT.html -> same page without the <html>/<head>/<body> wrapper
 """
 import pathlib, sys
@@ -36,5 +36,7 @@ if __name__ == '__main__':
         pathlib.Path(sys.argv[2]).write_text(fragment(), encoding='utf-8')
         print('wrote', sys.argv[2])
     else:
-        (ROOT / 'index.html').write_text(page(), encoding='utf-8')
-        print('wrote', ROOT / 'index.html', f'({(ROOT / "index.html").stat().st_size // 1024} KB)')
+        out = ROOT / 'dist' / 'index.html'
+        out.parent.mkdir(exist_ok=True)
+        out.write_text(page(), encoding='utf-8')
+        print('wrote', out, f'({out.stat().st_size // 1024} KB)')
