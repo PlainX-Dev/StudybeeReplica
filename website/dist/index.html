@@ -590,6 +590,14 @@ input.text { font: inherit; font-size: 16px; padding: 0 14px; min-height: 44px; 
 
 :lang(en) .signcard::after { content: 'Tap to reveal'; }
 
+/* real photos on picture questions; the drawing shows instead if the photo fails to load */
+.photo { display: flex; flex-direction: column; gap: 4px; }
+.photo img { width: 100%; height: auto; display: block; border-radius: 10px; }
+.photo small { font-size: 11px; color: var(--label-2); padding: 0 4px; }
+.photo small a { color: inherit; text-decoration: underline; }
+.photo:not(.fail) + .photo-fallback, .photo.fail { display: none; }
+@media (max-width: 640px) { .qpic .photo img { max-height: 34svh; width: auto; max-width: 100%; margin: 0 auto; object-fit: contain; } }
+
 </style>
 </head>
 <body>
@@ -751,6 +759,25 @@ window.SIGN_ART = {
   'meeting-place': ['E18', 229, 228, 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOUAAADkCAMAAABQSxOBAAAAwFBMVEUAVZb+/v5/qsq/1OQAVZYAVZaqxtw5e62WuNPP3+sAVZbf6fEfaqNPiravyd5flL1vn8M0eKuUuNNVjbkAVZYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD9R1LiAAAAQHRSTlP/////Pn+/////v////////7+/v18AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfF5YTgAABIdJREFUeNrt3d16ojAQBuAJtJtkg0Dbvf9rXdSKQa3mz3Vm9pujntT2fSDmI5CB3n5f1MfX5y/J9fn1cUn6Q28U1zQaDTXOG9V7rByc0VNuuK3sjK5yN5TWG20V7KXSGo01bZU7YxQzv5XWaK1dpDR6y67KzSTpdpYkl925EHH8SRkPypk01LQVHZRnuh9ISUWn51G52xxdLeWig7lXruxAmsqfWXvl5utITw1n16LcXec+HbXm8nlROp2HMjqY46Lsz99Fyuo0MsOiPP3cq1OuZ+mi1Doso4EZKTsooYQSSiihhBLKFGXqynuT1YbEv9W/TOnbLmcwVTbIw7Phrzwu9FZU+hL4K5Wm1YINb2XfaPGNt7JqUsq5L/VaZcUS0mDkKMM/GJSvV5rx+YOSgfJ0F/hpkwgPZdnQNNKUJUmvF6csSHqzkafMTnr5DzdwUOZehAWZyv6JkwgfZVbSm4xUZcZ0Mhi5yvCcZMdMmZz0yp5Z5aJMfH6o8DFANsq0oWmkK/0Tkh0/ZULSK/5oRsqHSa/8sVVOykdJL+hQ+iYL6dyVdz96MlqUd6aTqmfJmSlN22THVTk2TXZclT8kvcoNHuyUN4fmYLQpfcNkx1d5I+lVfyRD5VXSq9+QxFF5mfSCTqVvlexYKzdDczZaldF00mSXIFOlaZPsXqYMef9XYrIbmSn7KSfpJSa7ruOmTD08Nj3Z9cRPmTj/hfRBSRyVNnU66ZKzEkNl6hTo0idXjsrqa4yroMRSSY33pjNV2sbtFHgqm3VcGYmzsk1yW+/uclUOpmWq56ps0ndlJu5Kqm/41BN/Zf3QJAlK227llrGycrHDkQxl1cKVJylKarWcyVtpa/uBiVAWJz1HkpSFF2GBZCmHJrf/uCuLkt5M0pQFSW8kecr8pEcSlbb+nrwAZWbS60imMivpeZKqzLndPMhV2srHS2Uok5OeI8nKxKTnSbaSqp65FKPc1WzHEKNMSHojyVc+THqBNCht+b4aQcoHj6Z3pEN5N+n1pEV5L+kNepS2cOOQLOWPv+1Ik/KHpOdJl5KKNmeKU9qSjbbilDeS3kj6lFdJL5BG5ZC/Y1qg8iLpdaRTuRmaPWlVxkmP9CptZvMfmcp1ud2RZuV30vOkW0lZHXHEKm1OszyxyuWDRtKvJEf/g5KghBJKKKGEEkoooYQSSiihhBJKKKGEEkoooYQSSiihhBJKKKGEEkoooYQSSiihhBJKKKGEEkoooYQSSiihhBJKKKGEEkoooYQSSiihLFYO9n49RVn3RwuUAgtKKKGEEkooocxThqdmtFeWi5R9ettIYbXKFqXL6Bspq9ZQvygnk9ejTt6w7BblkNYuW+6hNHZRnvu6elXI8dyndq+cjMZztotauO6VUSdQp28W2Xc3PSij7rVBxxet9ZtuvAflphm6n6VDh6m/6B59VLZ5lTXPsquyyausedah8ee38sErROTW8ev0pFTK/L7OWpXV77Jme7pulHVveeZY/ZpYYyXZXpMxmhA3ymVKcUEFMbjNpH+hPNya6KTX7vLi6v0vmdV57b9lY64AAAAASUVORK5CYII='],
   'parking': ['E19', 229, 229, 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOUAAADlCAMAAACbF8AkAAAAwFBMVEUAVZb+/v6/1OR/qsoAVZY9fa8AVZZ/qsqYutTf6fFflL0faqPP3+tvn8Ovyd5PirYAVZZflL0/f7AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADbpi3HAAAAQHRSTlP/////P/9/f///////////GX9/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAtPFTZwAAA9RJREFUeNrt3dmWmzAMBmAvceoNmPb9H7aEZFiS6cEBN8eSfl3mKt/BCGNkWX1d+cdFXdQmojeaeoS+SxvUdaN0XnOJHP+hTEZzijD8pOw0t+hflV7zi+CelFmzDLdRMkU+mA+l12xjUQ7bm9bSDp+fU9BduX7ODIp+pPXYHB7K1W+d4hEuLIn2oXxOSSxiGbZxUnYckStmmJTzxbWckMotF29Upk3SZRRzurGjMvK8lGOm/YaZUTmTEzPlcmeOSrNkXGZhf1Aadsr5XvzNWTln2V9QQgkllFBCCeVHlN7UCG+tcw0ra354yD4m/srptcE7AcoJmgQob3/HSVA+fYJkqzx9PYkox/X/JEF5arWfkPLEnIyS8viSPy3l0VFLTKm9COWxP0dOqbMI5REmQeUBJkXl+ymIpPJtJk2ljiKUb86CqCqzCOV7VQFklW+NWbrKLEL5zvsJYaWWobQilFqG0opQ6haV3pWE9aH6dPaTyuIBlmyouzzSpHKMWOZMtJWFez466spVifLpaV7DyiJmIq8sYXb0lQXMnoGyYCsoB+X+dCpxUO6O2YGDcvexaVkoXY3007xShQpT2faVvkKSbV85iFAmEUoFZeEaOwGlgZKNUkPJJfs4EcooQrkzwws8lFrCbD3WKP1pXrm3JMLiLXqoUkTRujJIWMPb/VgSGCj3Uk9p3WHTyn1k2UJl08pY7Zt7w0qrdaXPJO0qXa5YWNCoMvmqRSItKlM0lSu7P6k0RQ0JTahfPUq6qimIqN2KEpRBRLVhlKAMIqqAnQRlryQoRewnGSQoeyVAGUTs2XMSlFHCLtNOwo5hL2H3t5ewk99L6MpgJXTYiBK6pTgBnW+MhF5NVkBHquwEdBfrBPTDswJ6G57uyNm+Mlj+PUf9wL1/bPAD817ApmbD448qQ9lZY9G5pnt0m//VTRNKKKGEEkoooYQSSiihhBJKKKGEEkoooYQSSiihhBJKKKGEEkoooYQSSiihhBJKKKGEEkoooYQSSiihhBJKKKGEEkoooYQSSiihhLKSMu5s6+ahbDaghBJKKKGEEkoo1fbQ+z+LUrNTzme6XNXFnuwG2W58H3kSRuVwpkUriduyH5XLIYyJl3K+FbubMh/r2d56LCcSppsy1ukK2ep4HR8eN6U623O3beSYVSelPXrQAIFH5TQPmJSb4yY9gxwUw7Zd8l25PZw5GG8Jh8kvLczvyvUFZhZZLUrlOSNnJVPmHbkoWQ7a79esRalc4Iac2wmvlGXHiNKJ1SNxoxyHbWZofFHeztr0xpD2BdPbp1flq/q68I+vv61SbzUhM6pnAAAAAElFTkSuQmCC'],
   'speed-camera': ['E24', 240, 240, 'data:image/png;base64,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'],
+};
+
+</script>
+<script>/* photos.js */
+/* Real photos for picture questions, keyed by question id. Each photo was checked by eye against
+ * the question and approved by the site owner before it was added. Files live in src/static/photos/.
+ *   'speed-04': { file, author, license, licenseUrl, page }   page = the Wikimedia Commons file page */
+window.PHOTOS = {
+  'conditions-05': {"file": "conditions-05.jpg", "author": "W.carter", "license": "CC BY-SA 4.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0", "page": "https://commons.wikimedia.org/wiki/File:Frosty_fog_on_birches_in_Tuntorp_3.jpg"},
+  'conditions-04': {"file": "conditions-04.jpg", "author": "W.carter", "license": "CC BY-SA 4.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0", "page": "https://commons.wikimedia.org/wiki/File:Frosty_fog_on_birches_in_Tuntorp_1.jpg"},
+  'environment-05': {"file": "environment-05.jpg", "author": "Angriffer", "license": "CC BY 3.0", "licenseUrl": "https://creativecommons.org/licenses/by/3.0", "page": "https://commons.wikimedia.org/wiki/File:E22_motorvag_ryssberget.JPG"},
+  'environment-07': {"file": "environment-07.jpg", "author": "Susanne Nilsson", "license": "CC BY-SA 2.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0", "page": "https://commons.wikimedia.org/wiki/File:Winter_road_in_Sweden.jpg"},
+  'conditions-16': {"file": "conditions-16.jpg", "author": "Michal Klajban", "license": "CC BY-SA 4.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0", "page": "https://commons.wikimedia.org/wiki/File:An_elk_road_sign_by_the_road_262,_Sweden.jpg"},
+  'speed-04': {"file": "speed-04.jpg", "author": "Андрей Бобровский", "license": "CC BY 3.0", "licenseUrl": "https://creativecommons.org/licenses/by/3.0", "page": "https://commons.wikimedia.org/wiki/File:%D0%A8%D0%B2%D0%B5%D1%86%D0%B8%D1%8F_(Sweden)_-_panoramio_(2).jpg"},
+  'speed-07': {"file": "speed-07.jpg", "author": "Christoph Schenk", "license": "CC BY-SA 3.0", "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/", "page": "https://commons.wikimedia.org/wiki/File:Fabodvagen1_Sweden.jpg"},
+  'people-17': {"file": "people-17.jpg", "author": "Per Ola Wiberg from Ekerö, Sweden", "license": "CC BY 2.0", "licenseUrl": "https://creativecommons.org/licenses/by/2.0", "page": "https://commons.wikimedia.org/wiki/File:Flickr_-_Per_Ola_Wiberg_~_mostly_away_-_curve.jpg"},
+  'vehicle-14': {"file": "vehicle-14.jpg", "author": "MikaPr65", "license": "CC BY-SA 4.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0", "page": "https://commons.wikimedia.org/wiki/File:BD815_Winter.jpg"},
+  'people-11': {"file": "people-11.jpg", "author": "Foxy Woods", "license": "Public domain", "licenseUrl": "https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain", "page": "https://commons.wikimedia.org/wiki/File:Framrutan_p%C3%A5_en_Vovlo_v50.jpg"},
+  'vehicle-07': {"file": "vehicle-07.jpg", "author": "Sebbe (sv:User:Sebbe)", "license": "Public domain", "licenseUrl": "https://commons.wikimedia.org/wiki/Commons:Licensing#Public_domain", "page": "https://commons.wikimedia.org/wiki/File:Swedish_road_342.jpg"},
 };
 
 </script>
@@ -9284,6 +9311,7 @@ SV.topics = {
 /* UI text. Each key: { en, sv }. Values may use {placeholders} or be functions of vars (for plurals).
  * Read with T('key', { n: 3 }). Values that contain HTML are marked *Html and are trusted; escape vars before passing them. */
 window.STRINGS = {
+  'photo.credit': { en: 'Photo: {author}, {license}', sv: 'Foto: {author}, {license}' },
   // ---------------------------------------------------------------- general
   'greet.late': { en: 'Late-night study', sv: 'Sent uppe' },
   'greet.morning': { en: 'Good morning', sv: 'God morgon' },
@@ -10044,6 +10072,17 @@ window.STRINGS = {
   function langButtons(size = '') {
     return `<span class="muted small">${T('lang.label')}</span>` + ['sv', 'en'].map((l) => `<button class="btn ${LANG === l ? 'filled' : 'plain'} ${size}" data-act="lang" data-lang="${l}" lang="${l}" aria-pressed="${LANG === l}">${T(`lang.${l}`)}</button>`).join('');
   }
+  /** A question's picture: its approved real photo (photos.js) with the credit, falling back to the
+   *  drawing if the photo cannot load, for example offline; otherwise the drawing. */
+  function questionPic(q) {
+    const drawn = Scene.render(q.img);
+    const p = (window.PHOTOS || {})[q.id];
+    if (!p) return drawn;
+    return `<span class="photo"><img src="photos/${esc(p.file)}" alt="" loading="lazy" onerror="this.parentNode.classList.add('fail')">` +
+      `<small>${T('photo.credit', { author: esc(p.author), license: `<a href="${esc(p.licenseUrl)}" target="_blank" rel="noopener">${esc(p.license)}</a>` })} · <a href="${esc(p.page)}" target="_blank" rel="noopener">Wikimedia Commons</a></small></span>` +
+      `<span class="photo-fallback">${drawn}</span>`;
+  }
+
   function rings(vals, size = 168) {
     // vals: [{v: 0..1+, color, track}]
     const c = size / 2; const w = size * 0.115; const gap = w * 0.22;
@@ -10487,7 +10526,7 @@ window.STRINGS = {
       <p class="lede">${T('mistakes.lede')}</p></header>
       ${list.length ? `<div class="actions"><button class="btn filled large" data-act="review">${T('mistakes.reviewN', { n: Math.min(40, list.length) })}</button></div>
       <div class="mlist">${list.map((q) => `<details class="card mitem"><summary>${topicTile(q.topic, 28)}<span class="grow">${esc(q.q)}</span>${icon('chevron', 'chev')}</summary>
-        ${q.img ? `<div class="pic">${Scene.render(q.img)}</div>` : ''}<p><b class="okc">${T('mistakes.correct')}</b> ${esc(q.options[q.answer])}</p><p class="prose muted">${esc(q.explain)}</p></details>`).join('')}</div>`
+        ${q.img ? `<div class="pic">${questionPic(q)}</div>` : ''}<p><b class="okc">${T('mistakes.correct')}</b> ${esc(q.options[q.answer])}</p><p class="prose muted">${esc(q.explain)}</p></details>`).join('')}</div>`
       : `<section class="card empty"><span class="tile" style="--tile:#30d158;--s:56px"><span style="color:#fff">${icon('check')}</span></span><h2>${T('mistakes.clear')}</h2><p class="muted">${T('mistakes.clearBody')}</p><a class="btn tinted" href="#practice">${T('common.practise')}</a></section>`}`;
   }
 
@@ -10572,7 +10611,7 @@ window.STRINGS = {
         ${mock ? `<div class="timer" id="timer"></div>` : `<div class="combo ${s.combo >= 3 ? 'hot' : ''}" aria-live="polite">${icon('flame')}<b>${s.combo}</b></div>`}
       </div>
       <div class="qgrid ${q.img ? '' : 'noimg'}">
-        ${q.img ? `<figure class="pic qpic">${Scene.render(q.img)}</figure>` : ''}
+        ${q.img ? `<figure class="pic qpic">${questionPic(q)}</figure>` : ''}
         <div class="qside">
           <p class="eyebrow">${esc(s.title)} · ${esc(TOPIC[q.topic].short)} · ${T('common.ofN', { n: s.i + 1, m: s.items.length })}</p>
           <h1 class="qtext">${esc(q.q)}</h1>

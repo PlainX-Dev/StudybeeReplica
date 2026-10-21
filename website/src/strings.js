@@ -1,6 +1,7 @@
 /* UI text. Each key: { en, sv }. Values may use {placeholders} or be functions of vars (for plurals).
  * Read with T('key', { n: 3 }). Values that contain HTML are marked *Html and are trusted; escape vars before passing them. */
 window.STRINGS = {
+  'photo.credit': { en: 'Photo: {author}, {license}', sv: 'Foto: {author}, {license}' },
   // ---------------------------------------------------------------- general
   'greet.late': { en: 'Late-night study', sv: 'Sent uppe' },
   'greet.morning': { en: 'Good morning', sv: 'God morgon' },

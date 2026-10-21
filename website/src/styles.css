@@ -568,3 +568,11 @@ input.text { font: inherit; font-size: 16px; padding: 0 14px; min-height: 44px; 
 }
 
 :lang(en) .signcard::after { content: 'Tap to reveal'; }
+
+/* real photos on picture questions; the drawing shows instead if the photo fails to load */
+.photo { display: flex; flex-direction: column; gap: 4px; }
+.photo img { width: 100%; height: auto; display: block; border-radius: 10px; }
+.photo small { font-size: 11px; color: var(--label-2); padding: 0 4px; }
+.photo small a { color: inherit; text-decoration: underline; }
+.photo:not(.fail) + .photo-fallback, .photo.fail { display: none; }
+@media (max-width: 640px) { .qpic .photo img { max-height: 34svh; width: auto; max-width: 100%; margin: 0 auto; object-fit: contain; } }

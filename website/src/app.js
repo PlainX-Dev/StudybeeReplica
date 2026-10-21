@@ -362,6 +362,17 @@
   function langButtons(size = '') {
     return `<span class="muted small">${T('lang.label')}</span>` + ['sv', 'en'].map((l) => `<button class="btn ${LANG === l ? 'filled' : 'plain'} ${size}" data-act="lang" data-lang="${l}" lang="${l}" aria-pressed="${LANG === l}">${T(`lang.${l}`)}</button>`).join('');
   }
+  /** A question's picture: its approved real photo (photos.js) with the credit, falling back to the
+   *  drawing if the photo cannot load, for example offline; otherwise the drawing. */
+  function questionPic(q) {
+    const drawn = Scene.render(q.img);
+    const p = (window.PHOTOS || {})[q.id];
+    if (!p) return drawn;
+    return `<span class="photo"><img src="photos/${esc(p.file)}" alt="" loading="lazy" onerror="this.parentNode.classList.add('fail')">` +
+      `<small>${T('photo.credit', { author: esc(p.author), license: `<a href="${esc(p.licenseUrl)}" target="_blank" rel="noopener">${esc(p.license)}</a>` })} · <a href="${esc(p.page)}" target="_blank" rel="noopener">Wikimedia Commons</a></small></span>` +
+      `<span class="photo-fallback">${drawn}</span>`;
+  }
+
   function rings(vals, size = 168) {
     // vals: [{v: 0..1+, color, track}]
     const c = size / 2; const w = size * 0.115; const gap = w * 0.22;
@@ -805,7 +816,7 @@
       <p class="lede">${T('mistakes.lede')}</p></header>
       ${list.length ? `<div class="actions"><button class="btn filled large" data-act="review">${T('mistakes.reviewN', { n: Math.min(40, list.length) })}</button></div>
       <div class="mlist">${list.map((q) => `<details class="card mitem"><summary>${topicTile(q.topic, 28)}<span class="grow">${esc(q.q)}</span>${icon('chevron', 'chev')}</summary>
-        ${q.img ? `<div class="pic">${Scene.render(q.img)}</div>` : ''}<p><b class="okc">${T('mistakes.correct')}</b> ${esc(q.options[q.answer])}</p><p class="prose muted">${esc(q.explain)}</p></details>`).join('')}</div>`
+        ${q.img ? `<div class="pic">${questionPic(q)}</div>` : ''}<p><b class="okc">${T('mistakes.correct')}</b> ${esc(q.options[q.answer])}</p><p class="prose muted">${esc(q.explain)}</p></details>`).join('')}</div>`
       : `<section class="card empty"><span class="tile" style="--tile:#30d158;--s:56px"><span style="color:#fff">${icon('check')}</span></span><h2>${T('mistakes.clear')}</h2><p class="muted">${T('mistakes.clearBody')}</p><a class="btn tinted" href="#practice">${T('common.practise')}</a></section>`}`;
   }
 
@@ -890,7 +901,7 @@
         ${mock ? `<div class="timer" id="timer"></div>` : `<div class="combo ${s.combo >= 3 ? 'hot' : ''}" aria-live="polite">${icon('flame')}<b>${s.combo}</b></div>`}
       </div>
       <div class="qgrid ${q.img ? '' : 'noimg'}">
-        ${q.img ? `<figure class="pic qpic">${Scene.render(q.img)}</figure>` : ''}
+        ${q.img ? `<figure class="pic qpic">${questionPic(q)}</figure>` : ''}
         <div class="qside">
           <p class="eyebrow">${esc(s.title)} · ${esc(TOPIC[q.topic].short)} · ${T('common.ofN', { n: s.i + 1, m: s.items.length })}</p>
           <h1 class="qtext">${esc(q.q)}</h1>
