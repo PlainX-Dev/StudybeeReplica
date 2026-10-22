@@ -1,13 +1,14 @@
 LESSONS.roads = {
   title: 'Motorways, rural roads & railways',
   minutes: 25,
+  updated: '2026-10-22T14:00:00Z',
   intro: 'Different roads have different rules. Motorways are the safest roads per kilometre, but mistakes at high speed are severe. On country roads the dangers are oncoming traffic, wild animals and railway crossings, where a train can never stop in time for you.',
   sections: [
     {
       h: 'Motorways and expressways',
       body: '<p>A <strong>motorway</strong> (motorväg) starts at the motorway sign and ends at the same sign with a red diagonal bar. An <strong>expressway</strong> (motortrafikled) has its own sign. The same basic rules apply on both.</p>' +
         '<ul><li>Only <strong>motor vehicles built for, and allowed to drive at, at least 40 km/h</strong> may use them.</li>' +
-        '<li><strong>Pedestrians, cyclists and moped riders</strong> are not allowed. A class II moped, for example, may not drive there.</li>' +
+        '<li><strong>Pedestrians, cyclists and moped riders</strong> are not allowed. A class II moped, for example, is built for at most 25 km/h and may not drive there.</li>' +
         '<li>Expressways often have <strong>no central barrier</strong> between the directions, so oncoming traffic can be close.</li>' +
         '<li>Follow the speed limit on the signs. After the end-of-motorway sign, expect a lower speed limit, junctions and slower road users.</li></ul>',
       pics: [{ signs: ['motorway', 'end-motorway', 'expressway'] }],
@@ -52,12 +53,13 @@ LESSONS.roads = {
       body: '<ul><li><strong>Keep to the right</strong>, especially before <strong>hilltops and bends</strong>, where you cannot see oncoming traffic. Never overtake there.</li>' +
         '<li>If an obstacle, such as a parked truck, is <strong>on your side</strong> of a narrow road, you should normally let oncoming traffic pass first.</li>' +
         '<li>On narrow roads, <strong>passing places</strong> (mötesplats, sign M) are for meeting and letting others pass. Use the one on your side. If it is on the other side, wait opposite it so the oncoming driver can use it. <strong>Never park</strong> in a passing place.</li>' +
-        '<li>On long, steep downhill slopes, use a <strong>lower gear</strong> so the engine brakes. Never coast in neutral.</li></ul>' +
+        '<li>On long, steep downhill slopes (warned by the <strong>steep hill</strong> sign), use a <strong>lower gear</strong> so the engine brakes, and use the footbrake when needed. Braking with the footbrake all the way down can <strong>overheat the brakes</strong> so they lose their effect. Never coast in neutral.</li></ul>' +
         '<p><strong>Wild animals</strong> such as moose and deer are most active at <strong>dawn and dusk</strong>. Where the warning sign is up, slow down and watch the verges. If one animal crosses, <strong>more may follow</strong>.</p>' +
         '<p>If you hit a moose, deer, wild boar or other large wild animal, you must <strong>report it to the police</strong> (call 112) and <strong>mark the place</strong>, even if the animal ran off.</p>',
       pics: [
         { view: { time: 'dusk', lanes: 2, signs: [{ name: 'w-moose', side: 'right', d: 0.2 }], objects: [{ kind: 'moose', x: 1.1, d: 0.5 }] } },
         { view: { lanes: 1, signs: [{ name: 'meeting-place', side: 'right', d: 0.22 }], objects: [{ kind: 'car', x: 0, d: 0.6, facing: 'toward', label: 'B', color: 'red' }] } },
+        { signs: ['w-steep-down', 'w-moose'] },
       ],
     },
     {
@@ -88,6 +90,7 @@ LESSONS.roads = {
     '2+1 road: only overtake on the two-lane section, and only if you can finish before the lane ends.',
     'Passing place (M): use the one on your side; never park in it.',
     'Hit a large wild animal: report it to the police and mark the place.',
+    'Long steep downhill: lower gear and engine braking. Constant footbrake can overheat the brakes.',
     'Level crossing: never stop on the tracks; stop when red lights flash. Stuck? Everyone out and away, then call 112.',
     'Tunnel fire: engine off, key left in the car, walk to the emergency exit.',
   ],

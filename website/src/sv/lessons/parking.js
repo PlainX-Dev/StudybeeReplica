@@ -33,10 +33,10 @@ SV.lessons.parking = {
       body: '<p>På de här platserna kan ett kort <strong>stannande</strong> för att släppa av passagerare eller lasta gods vara tillåtet om det kan ske säkert, men du får inte <strong>parkera</strong>:</p>' +
         '<ul><li>Vid en <strong>busshållplats</strong>. Bussarna behöver platsen för att köra in.</li>' +
         '<li>Framför en <strong>infart till en fastighet</strong>, så att fordon får svårt att köra in eller ut.</li>' +
-        '<li>På en <strong>mötesplats</strong> (M-märket) på en smal väg.</li>' +
-        '<li>På en <strong>huvudled</strong>, både inom och utanför tättbebyggt område. Använd en rastficka eller en sidoväg om du vill vila.</li>' +
+        '<li>På en <strong>mötesplats</strong> (M-märket) på en smal väg. Den måste hållas fri så att fordon kan mötas eller släppa förbi andra.</li>' +
+        '<li>På en <strong>huvudled</strong>, som visas med den <strong>gula romben</strong>, både inom och utanför tättbebyggt område. Använd en rastficka eller en sidoväg om du vill vila.</li>' +
         '<li>Inom <strong>30 meter</strong> från en plankorsning.</li>' +
-        '<li>Inom ett <strong>gångfartsområde</strong>, utom på platser som är markerade för parkering.</li></ul>' +
+        '<li>Inom ett <strong>gångfartsområde</strong>, som börjar vid märket för gångfartsområde, utom på platser som är markerade för parkering. Där ska du också köra i gångfart och lämna gående företräde.</li></ul>' +
         '<p>På <strong>motorväg</strong> och <strong>motortrafikled</strong> får du stanna eller parkera bara på platser som är markerade för det, till exempel rastplatser. På andra ställen får du stanna bara i en nödsituation, till exempel vid motorstopp.</p>',
     },
     {

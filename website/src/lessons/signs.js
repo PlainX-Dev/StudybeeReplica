@@ -1,7 +1,7 @@
 LESSONS.signs = {
   title: 'Road signs and road markings',
   minutes: 27,
-  updated: '2026-10-22',
+  updated: '2026-10-22T14:00:00Z',
   intro: 'Signs and markings tell you what you must do, what you must not do and what lies ahead. On the test you must recognise them quickly, so learn the shapes and colours first and the details second.',
   sections: [
     {

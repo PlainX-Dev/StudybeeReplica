@@ -2,7 +2,7 @@
 LESSONS.emergency = {
   title: 'Accidents, first aid & breakdowns',
   minutes: 20,
-  updated: '2026-10-22',
+  updated: '2026-10-22T14:00:00Z',
   intro: 'If you arrive at an accident, what you do in the first minutes can save lives. Learn the order: make the scene safe, call 112, then L-ABC.',
   sections: [
     {

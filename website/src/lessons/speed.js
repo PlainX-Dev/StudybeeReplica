@@ -1,6 +1,7 @@
 LESSONS.speed = {
   title: 'Speed, distance & overtaking',
   minutes: 25,
+  updated: '2026-10-22T14:00:00Z',
   intro: 'Speed decides how long it takes you to stop and how hard you hit if you cannot. The speed limit is the highest speed allowed, not a target: you must always drive so that you can stop within the distance you can see is clear.',
   sections: [
     {
@@ -8,13 +9,14 @@ LESSONS.speed = {
       body: '<ul><li>Where no limit is signed, the <strong>basic speed limit</strong> (bashastighet) applies: <strong>50 km/h</strong> inside a built-up area (tättbebyggt område) and <strong>70 km/h</strong> outside.</li>' +
         '<li>Other limits are shown by <strong>speed limit signs</strong>, for example 30 or 40 km/h near schools and in residential streets, or higher limits on main roads.</li>' +
         '<li>On <strong>motorways</strong> and <strong>expressways</strong> (motortrafikled), follow the limit on the signs. The highest limit in Sweden is <strong>120 km/h</strong>, and only where it is signed.</li>' +
-        '<li>A speed limit sign applies at all times unless an extra plate says otherwise. It also applies when you overtake.</li></ul>',
-      pics: [{ signs: ['speed-30', 'speed-50', 'speed-70', 'speed-110'] }],
+        '<li>A speed limit sign applies at all times unless an extra plate says otherwise. It also applies when you overtake.</li>' +
+        '<li>A speed limit sign is a <strong>rule</strong>, not advice. A <strong>warning sign</strong>, such as the red triangle for <strong>children</strong>, only tells you about a danger ahead, here that children may be near the road. It does not change the speed limit.</li></ul>',
+      pics: [{ signs: ['speed-30', 'speed-50', 'speed-70', 'speed-110'] }, { signs: ['w-children'] }],
     },
     {
       h: 'Adapting your speed',
       body: '<p>You must adapt your speed to the road, the traffic, the weather and the <strong>visibility</strong>. The key rule: you must always be able to <strong>stop within the distance you can see is clear</strong>.</p>' +
-        '<ul><li>In <strong>fog, rain or snow</strong>, and on <strong>ice</strong>, slow down well below the limit.</li>' +
+        '<ul><li>In <strong>fog, rain or snow</strong>, and on <strong>ice</strong>, slow down well below the limit. Do not use <strong>full beam in fog</strong>: the light reflects back at you and you see less.</li>' +
         '<li>At night on <strong>dipped beam</strong> you see a much shorter distance, so drive slower.</li>' +
         '<li>Before <strong>hilltops and bends</strong> you cannot see what is coming: keep right and be ready to stop.</li>' +
         '<li>You may drive below the limit, but not so slowly, without good reason, that you hold up other traffic unnecessarily.</li></ul>',
@@ -25,7 +27,7 @@ LESSONS.speed = {
       body: '<ul><li><strong>Reaction distance</strong> (reaktionssträcka): how far the car travels from when you notice a danger until you start to brake. At 90 km/h the car moves <strong>25 metres every second</strong>. Tiredness, alcohol and distraction make it longer.</li>' +
         '<li><strong>Braking distance</strong> (bromssträcka): how far the car travels from when you start to brake until it stops. A wet or icy road, worn tyres and downhill slopes make it longer.</li>' +
         '<li><strong>Stopping distance</strong> (stoppsträcka) = reaction distance + braking distance.</li></ul>' +
-        '<p><strong>Double the speed</strong> and the reaction distance doubles, but the <strong>braking distance and the crash energy become about four times as large</strong>. Even a small increase in speed makes a crash much more violent.</p>',
+        '<p>The braking distance and the crash energy grow with the <strong>square of the speed</strong>. <strong>Double the speed</strong> and the reaction distance doubles, but the <strong>braking distance and the crash energy become about four times as large</strong>. Even a small increase in speed makes a crash much more violent: about 40% more speed gives roughly <strong>twice</strong> the energy. That is why low limits are used where there are pedestrians and cyclists.</p>',
     },
     {
       h: 'Following distance',
@@ -45,10 +47,10 @@ LESSONS.speed = {
     {
       h: 'Where you must not overtake',
       body: '<ul><li>Just before a <strong>hilltop</strong>, in or just before a <strong>bend</strong>, or anywhere else where you <strong>cannot see far enough</strong> ahead.</li>' +
-        '<li>Just before or on a <strong>pedestrian crossing</strong> that is not controlled by traffic lights or a police officer.</li>' +
+        '<li>Just before or on a <strong>pedestrian crossing</strong> (marked by the blue pedestrian crossing sign) that is not controlled by traffic lights or a police officer. A vehicle in front of you can hide a pedestrian who is about to step out.</li>' +
         '<li>Across a <strong>solid centre line</strong> (spärrlinje): you may not cross or straddle it.</li>' +
         '<li>Where a <strong>no-overtaking sign</strong> applies, for vehicles covered by the sign.</li></ul>',
-      pics: [{ view: { lanes: 2, centre: 'solid', crest: true, objects: [{ kind: 'tractor', x: 0.5, d: 0.25, label: 'T' }] } }],
+      pics: [{ view: { lanes: 2, centre: 'solid', crest: true, objects: [{ kind: 'tractor', x: 0.5, d: 0.25, label: 'T' }] } }, { signs: ['ped-crossing', 'no-overtaking'] }],
     },
     {
       h: 'Consequences of speeding',

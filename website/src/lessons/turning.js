@@ -1,7 +1,7 @@
 LESSONS.turning = {
   title: 'Turning, lanes & roundabouts',
   minutes: 25,
-  updated: '2026-10-22',
+  updated: '2026-10-22T14:00:00Z',
   intro: 'Most junction crashes happen when someone turns or changes lanes. Show what you plan to do in good time, put the car in the right place on the road, and give way to everyone whose path you cross.',
   sections: [
     {

@@ -1,7 +1,7 @@
 LESSONS.priority = {
   title: 'Right of way at junctions',
   minutes: 25,
-  updated: '2026-10-22',
+  updated: '2026-10-22T14:00:00Z',
   intro: 'Many serious crashes happen at junctions, when two drivers both think they may go first. Learn the order: police signals, then traffic lights, then signs, then the general rules such as the right-hand rule. Right of way is never something you take: even when you have it, watch that the other driver really gives way.',
   sections: [
     {

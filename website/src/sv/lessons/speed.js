@@ -8,12 +8,13 @@ SV.lessons.speed = {
       body: '<ul><li>Där ingen hastighetsbegränsning är skyltad gäller <strong>bashastigheten</strong>: <strong>50 km/h</strong> inom tättbebyggt område och <strong>70 km/h</strong> utanför.</li>' +
         '<li>Andra hastighetsbegränsningar visas med <strong>vägmärken</strong>, till exempel 30 eller 40 km/h vid skolor och på bostadsgator, eller högre gränser på större vägar.</li>' +
         '<li>På <strong>motorväg</strong> och <strong>motortrafikled</strong> följer du den hastighet som skyltarna visar. Den högsta hastighetsbegränsningen i Sverige är <strong>120 km/h</strong>, och bara där den är skyltad.</li>' +
-        '<li>Ett märke för hastighetsbegränsning gäller hela tiden om inte en tilläggstavla säger något annat. Det gäller också när du kör om.</li></ul>',
+        '<li>Ett märke för hastighetsbegränsning gäller hela tiden om inte en tilläggstavla säger något annat. Det gäller också när du kör om.</li>' +
+        '<li>Ett märke för hastighetsbegränsning är en <strong>regel</strong>, inte ett råd. Ett <strong>varningsmärke</strong>, till exempel den röda triangeln för <strong>barn</strong>, talar bara om en fara längre fram, här att det kan finnas barn nära vägen. Det ändrar inte hastighetsbegränsningen.</li></ul>',
     },
     {
       h: 'Anpassa hastigheten',
       body: '<p>Du ska anpassa hastigheten efter vägen, trafiken, vädret och <strong>sikten</strong>. Huvudregeln: du ska alltid kunna <strong>stanna på den sträcka som du kan se är fri</strong>.</p>' +
-        '<ul><li>I <strong>dimma, regn eller snö</strong> och på <strong>is</strong> sänker du farten långt under hastighetsbegränsningen.</li>' +
+        '<ul><li>I <strong>dimma, regn eller snö</strong> och på <strong>is</strong> sänker du farten långt under hastighetsbegränsningen. Använd inte <strong>helljus i dimma</strong>: ljuset reflekteras tillbaka mot dig och du ser sämre.</li>' +
         '<li>I mörker med <strong>halvljus</strong> ser du en mycket kortare sträcka, så kör långsammare.</li>' +
         '<li>Före <strong>backkrön och kurvor</strong> ser du inte vad som kommer: håll till höger och var beredd att stanna.</li>' +
         '<li>Du får köra under hastighetsbegränsningen, men inte utan giltigt skäl så långsamt att du hindrar annan trafik i onödan.</li></ul>',
@@ -23,7 +24,7 @@ SV.lessons.speed = {
       body: '<ul><li><strong>Reaktionssträcka</strong>: hur långt bilen färdas från att du upptäcker en fara tills du börjar bromsa. I 90 km/h färdas bilen <strong>25 meter varje sekund</strong>. Trötthet, alkohol och distraktion gör den längre.</li>' +
         '<li><strong>Bromssträcka</strong>: hur långt bilen färdas från att du börjar bromsa tills den står still. Våt eller isig väg, slitna däck och nedförsbackar gör den längre.</li>' +
         '<li><strong>Stoppsträcka</strong> = reaktionssträcka + bromssträcka.</li></ul>' +
-        '<p><strong>Dubbla hastigheten</strong> ger dubbelt så lång reaktionssträcka, men <strong>bromssträckan och krockvåldet blir ungefär fyra gånger så stora</strong>. Även en liten höjning av hastigheten gör en krock mycket våldsammare.</p>',
+        '<p>Bromssträckan och krockvåldet ökar med <strong>hastigheten i kvadrat</strong>. <strong>Dubbla hastigheten</strong> ger dubbelt så lång reaktionssträcka, men <strong>bromssträckan och krockvåldet blir ungefär fyra gånger så stora</strong>. Även en liten höjning av hastigheten gör en krock mycket våldsammare: ungefär 40 % högre hastighet ger ungefär <strong>dubbelt</strong> så mycket energi. Därför används låga hastighetsbegränsningar där det finns fotgängare och cyklister.</p>',
     },
     {
       h: 'Avstånd till framförvarande',
@@ -41,7 +42,7 @@ SV.lessons.speed = {
     {
       h: 'Där du inte får köra om',
       body: '<ul><li>Strax före ett <strong>backkrön</strong>, i eller strax före en <strong>kurva</strong> eller på andra platser där du <strong>inte ser tillräckligt långt</strong> framåt.</li>' +
-        '<li>Strax före eller på ett <strong>övergångsställe</strong> som inte regleras med trafiksignaler eller av en polis.</li>' +
+        '<li>Strax före eller på ett <strong>övergångsställe</strong> (utmärkt med det blå märket för övergångsställe) som inte regleras med trafiksignaler eller av en polis (obevakat övergångsställe). Ett fordon framför dig kan skymma en fotgängare som är på väg ut.</li>' +
         '<li>Över en <strong>spärrlinje</strong>: du får inte korsa eller köra på den.</li>' +
         '<li>Där ett märke för <strong>förbud mot omkörning</strong> gäller, för de fordon som märket omfattar.</li></ul>',
     },

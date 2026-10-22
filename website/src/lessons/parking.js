@@ -1,6 +1,7 @@
 LESSONS.parking = {
   title: 'Stopping & parking',
   minutes: 20,
+  updated: '2026-10-22T14:00:00Z',
   intro: 'A car standing in the wrong place can hide a child from other drivers, block a bus or force cyclists out into traffic. The law separates stopping from parking, and some places ban one or both.',
   sections: [
     {
@@ -35,12 +36,12 @@ LESSONS.parking = {
       body: '<p>In these places a short <strong>stop</strong> to let passengers out or to load goods may be allowed if it is safe, but you must not <strong>park</strong>:</p>' +
         '<ul><li>At a <strong>bus stop</strong> (busshållplats). Buses need the space to pull in.</li>' +
         '<li>In front of the <strong>entrance to a property</strong>, so that vehicles find it hard to drive in or out.</li>' +
-        '<li>At a <strong>passing place</strong> (mötesplats, the M sign) on a narrow road.</li>' +
-        '<li>On a <strong>priority road</strong> (huvudled), inside or outside built-up areas. Use a lay-by or a side road to rest.</li>' +
+        '<li>At a <strong>passing place</strong> (mötesplats, the M sign) on a narrow road. It must be kept free so vehicles can meet or let others pass.</li>' +
+        '<li>On a <strong>priority road</strong> (huvudled), shown by the <strong>yellow diamond</strong> sign, inside or outside built-up areas. Use a lay-by or a side road to rest.</li>' +
         '<li>Within <strong>30 metres</strong> of a level crossing.</li>' +
-        '<li>In a <strong>walking-pace zone</strong> (gångfartsområde), except at places marked for parking.</li></ul>' +
+        '<li>In a <strong>walking-pace zone</strong> (gångfartsområde), which starts at the walking-pace zone sign, except at places marked for parking. There you must also drive at walking pace and give way to pedestrians.</li></ul>' +
         '<p>On a <strong>motorway</strong> or an <strong>expressway</strong> (motortrafikled) you may stop or park only at places marked for it, such as rest areas. Stopping anywhere else is allowed only in an emergency, for example a breakdown.</p>',
-      pics: [{ road: { lanes: 2, busStop: 190, objects: [{ kind: 'car', x: 258, y: 190, dir: 'up', label: 'A', color: 'red' }] } }],
+      pics: [{ road: { lanes: 2, busStop: 190, objects: [{ kind: 'car', x: 258, y: 190, dir: 'up', label: 'A', color: 'red' }] } }, { signs: ['meeting-place', 'main-road', 'pedestrian-zone'] }],
     },
     {
       h: 'Parking signs',

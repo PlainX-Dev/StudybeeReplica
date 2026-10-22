@@ -1,6 +1,7 @@
 LESSONS.people = {
   title: 'Alcohol, fatigue & risk',
-  minutes: 20,
+  minutes: 25,
+  updated: '2026-10-22T14:00:00Z',
   intro: 'Most crashes are caused by the driver, not the car or the road. Alcohol, drugs, tiredness, distraction and overconfidence all make you see less and react later.',
   sections: [
     {
@@ -34,7 +35,8 @@ LESSONS.people = {
     {
       h: 'Attitude, stress and young drivers',
       body: '<p>New drivers, especially young ones, have a much higher crash risk. They lack experience in spotting risks and often <strong>overestimate their ability</strong>. Friends in the car can push you to take risks.</p>' +
-        '<p>Stress and anger make you drive aggressively for little gain. Plan extra time, accept delays, and let other drivers\' mistakes go.</p>' +
+        '<p>Stress and anger make you drive aggressively for little gain. Plan extra time, accept delays and keep a safe distance in a queue. If someone cuts in close in front of you, ease off and let the gap grow again: punishing other drivers puts everyone in danger.</p>' +
+        '<p>A car that keeps <strong>drifting</strong> over the centre line may have a driver who is drunk, tired or ill. Keep well back, as they may do something sudden; do not try to overtake quickly. A driver who is a danger on the road right now is an emergency: call <strong>112</strong> once you have stopped safely, or let a passenger call. The police number <strong>114 14</strong> is only for things that are not urgent.</p>' +
         '<p>The compulsory <strong>risk education</strong> (riskutbildning) has two parts, both done before you take the theory test and the driving test: part 1 on alcohol, drugs, fatigue and risky behaviour; part 2 driving on a slippery track.</p>',
     },
     {
@@ -54,5 +56,6 @@ LESSONS.people = {
     'Driver is responsible for belts of passengers under 15.',
     'Children under 135 cm need a child restraint; no rear-facing seat in front of an active airbag.',
     'Riskutbildning: two parts, both done before the theory test and the driving test.',
+    'A driver who is a danger on the road right now: keep back and call 112 when safe (114 14 is for non-urgent matters).',
   ],
 };

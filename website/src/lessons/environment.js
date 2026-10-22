@@ -2,7 +2,7 @@
 LESSONS.environment = {
   title: 'Eco-driving & environment',
   minutes: 15,
-  updated: '2026-10-22',
+  updated: '2026-10-22T14:00:00Z',
   intro: 'The way you drive can change your fuel use a lot. Eco-driving (sparsam körning) also makes you a calmer and safer driver, and the test checks that you know why.',
   sections: [
     {

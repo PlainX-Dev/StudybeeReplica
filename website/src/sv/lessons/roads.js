@@ -7,7 +7,7 @@ SV.lessons.roads = {
       h: 'Motorväg och motortrafikled',
       body: '<p>En <strong>motorväg</strong> börjar vid märket för motorväg och slutar vid samma märke med ett rött snedstreck. En <strong>motortrafikled</strong> har ett eget märke. Samma grundregler gäller på båda.</p>' +
         '<ul><li>Bara <strong>motordrivna fordon som är konstruerade för och får köras i minst 40 km/h</strong> får köra där.</li>' +
-        '<li><strong>Gående, cyklister och mopedförare</strong> får inte färdas där. En klass II-moped får till exempel inte köra där.</li>' +
+        '<li><strong>Gående, cyklister och mopedförare</strong> får inte färdas där. En moped klass II är till exempel konstruerad för högst 25 km/h och får inte köra där.</li>' +
         '<li>En motortrafikled har ofta <strong>inget mitträcke</strong> mellan körriktningarna, så mötande trafik kan vara nära.</li>' +
         '<li>Följ hastighetsbegränsningen på skyltarna. Efter märket för motorvägens slut ska du räkna med lägre hastighet, korsningar och långsammare trafikanter.</li></ul>',
     },
@@ -42,7 +42,7 @@ SV.lessons.roads = {
       body: '<ul><li><strong>Håll till höger</strong>, särskilt före <strong>backkrön och kurvor</strong>, där du inte ser mötande trafik. Kör aldrig om där.</li>' +
         '<li>Om ett hinder, till exempel en parkerad lastbil, står <strong>på din sida</strong> av en smal väg ska du normalt låta mötande trafik passera först.</li>' +
         '<li>På smala vägar är <strong>mötesplatser</strong> (märket M) till för att mötas och släppa förbi andra. Använd den som ligger på din sida. Ligger den på andra sidan väntar du mitt emot den så att den mötande föraren kan använda den. <strong>Parkera aldrig</strong> på en mötesplats.</li>' +
-        '<li>I långa, branta nedförsbackar använder du en <strong>lägre växel</strong> så att motorn bromsar. Rulla aldrig i friläge.</li></ul>' +
+        '<li>I långa, branta nedförsbackar (varningsmärket för <strong>brant nedförslutning</strong>) använder du en <strong>lägre växel</strong> så att motorbromsen hjälper till, och bromsar med fotbromsen när det behövs. Om du bromsar hela tiden med fotbromsen kan bromsarna bli <strong>överhettade</strong> och tappa verkan. Rulla aldrig i friläge.</li></ul>' +
         '<p><strong>Vilda djur</strong> som älg och rådjur är mest aktiva i <strong>gryning och skymning</strong>. Där varningsmärket står, sänk farten och håll utkik längs vägkanterna. Om ett djur korsar vägen kan <strong>fler komma efter</strong>.</p>' +
         '<p>Om du kör på en älg, ett rådjur, ett vildsvin eller ett annat stort vilt djur måste du <strong>anmäla det till polisen</strong> (ring 112) och <strong>märka ut platsen</strong>, även om djuret sprang därifrån.</p>',
     },
@@ -73,6 +73,7 @@ SV.lessons.roads = {
     '2+1-väg: kör bara om på tvåfältssträckan, och bara om du hinner avsluta innan körfältet tar slut.',
     'Mötesplats (M): använd den på din sida; parkera aldrig där.',
     'Kör du på ett stort vilt djur: anmäl det till polisen och märk ut platsen.',
+    'Lång, brant nedförsbacke: lägre växel och motorbroms. Att bromsa hela tiden med fotbromsen kan överhetta bromsarna.',
     'Plankorsning: stanna aldrig på spåret; stanna när de röda ljusen blinkar. Fast? Alla ut och bort, ring sedan 112.',
     'Brand i tunnel: stäng av motorn, lämna nyckeln i bilen och gå till nödutgången.',
   ],

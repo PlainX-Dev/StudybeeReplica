@@ -30,7 +30,8 @@ SV.lessons.people = {
     {
       h: 'Attityd, stress och unga förare',
       body: '<p>Nya förare, särskilt unga, har en mycket högre olycksrisk. De saknar erfarenhet av att upptäcka risker och <strong>överskattar ofta sin förmåga</strong>. Kompisar i bilen kan pressa dig att ta risker.</p>' +
-        '<p>Stress och ilska får dig att köra aggressivt för en liten vinst. Planera in extra tid, acceptera förseningar och låt andra förares misstag passera.</p>' +
+        '<p>Stress och ilska får dig att köra aggressivt för en liten vinst. Planera in extra tid, acceptera förseningar och håll säkert avstånd i en kö. Om någon kör in tätt framför dig, släpp på gasen och låt avståndet öka igen: att straffa andra förare utsätter alla för fara.</p>' +
+        '<p>En bil som hela tiden <strong>glider</strong> över mittlinjen kan ha en förare som är berusad, trött eller sjuk. Håll dig långt bakom, eftersom föraren kan göra något plötsligt; försök inte köra om snabbt. En förare som är farlig i trafiken just nu är ett nödläge: ring <strong>112</strong> när du har stannat säkert, eller låt en passagerare ringa. Polisens nummer <strong>114 14</strong> använder du bara för sådant som inte är akut.</p>' +
         '<p>Den obligatoriska <strong>riskutbildningen</strong> har två delar, och båda ska vara gjorda innan du gör kunskapsprovet och körprovet: del 1 om alkohol, droger, trötthet och riskbeteenden; del 2 körning på halkbana.</p>',
     },
     {
@@ -50,5 +51,6 @@ SV.lessons.people = {
     'Föraren ansvarar för att passagerare under 15 år använder bälte.',
     'Barn under 135 cm ska ha bilbarnstol eller bälteskudde; ingen bakåtvänd stol framför en aktiverad krockkudde.',
     'Riskutbildning: två delar, båda gjorda före kunskapsprovet och körprovet.',
+    'En förare som är farlig i trafiken just nu: håll avstånd och ring 112 när det är säkert (114 14 är för sådant som inte är akut).',
   ],
 };

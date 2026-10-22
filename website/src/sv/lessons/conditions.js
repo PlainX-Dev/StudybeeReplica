@@ -12,18 +12,19 @@ SV.lessons.conditions = {
     },
     {
       h: 'Regn och dimma',
-      body: '<p><strong>Vattenplaning</strong>: däcken glider på vatten och styrningen blir lätt. Släpp gasen och håll ratten stilla; bromsa inte hårt och gör inga tvära rattrörelser. Det första regnet efter en torrperiod gör vägen extra hal.</p>' +
-        '<p>I <strong>dimma</strong> använder du halvljus (och främre dimljus om bilen har det), inte helljus. Använd <strong>dimbakljuset</strong> bara vid riktigt dålig sikt, och stäng av det om det bländar den som kör bakom dig.</p>',
+      body: '<p><strong>Vattenplaning</strong>: däcken glider på vatten och styrningen blir lätt. Släpp gasen och håll ratten stilla; bromsa inte hårt och gör inga tvära rattrörelser. Det första regnet efter en torrperiod gör vägen extra hal: det lyfter damm, gummi och olja från vägbanan till en hal hinna tills kraftigare regn har spolat bort den.</p>' +
+        '<p>I <strong>dimma</strong> använder du halvljus (och främre dimljus om bilen har det), inte helljus. Använd <strong>dimbakljuset</strong> bara vid riktigt dålig sikt, och släck det när dimman lättar eller om det bländar den som kör nära bakom dig.</p>' +
+        '<p>I dimma kan den sträcka du kan se är fri vara mycket kort, och farten måste låta dig stanna inom den. Att följa bakljusen på bilen framför lockar dig att köra för fort och för nära.</p>',
     },
     {
       h: 'Vinterdäck och mönsterdjup',
-      body: '<ul><li><strong>Vinterdäck</strong> är obligatoriska <strong>1 december – 31 mars</strong> när det råder vinterväglag.</li>' +
+      body: '<ul><li><strong>Vinterdäck</strong> är obligatoriska <strong>1 december – 31 mars</strong> när det råder <em>vinterväglag</em>: snö, is, snömodd eller frost på någon del av vägen.</li>' +
         '<li><strong>Dubbdäck</strong> är tillåtna <strong>1 oktober – 15 april</strong>, och utanför den perioden om det råder (eller kan befaras) vinterväglag.</li>' +
         '<li>Minsta mönsterdjup: <strong>3 mm</strong> för vinterdäck under vinterperioden, <strong>1,6 mm</strong> för sommardäck.</li></ul>',
     },
     {
       h: 'Is och snö',
-      body: '<p>Isen är halast runt <strong>0 °C</strong>, när det ligger vatten ovanpå. <strong>Broar</strong>, skuggiga partier och öppna sträckor fryser först. På snö och is blir bromssträckan många gånger längre, så håll ett mycket längre avstånd.</p>' +
+      body: '<p>Isen är halast runt <strong>0 °C</strong>, när det ligger vatten ovanpå. <strong>Broar</strong> kyls både ovanifrån och underifrån, så de kan vara isiga när resten av vägen inte är det. Skuggiga partier och öppna, blåsiga sträckor är också typiska ställen för svartis. Varningsmärket <strong>slirig väg</strong> anger en sträcka som kan vara hal. På snö och is blir bromssträckan många gånger längre, så håll ett mycket längre avstånd.</p>' +
         '<p>Innan du kör ska du göra rent <strong>alla rutor, speglar, lyktor och registreringsskyltar</strong>, och taket. En motorvärmare skonar motorn vid kallstart och ger snabbare en klar vindruta.</p>',
     },
     {
@@ -32,8 +33,8 @@ SV.lessons.conditions = {
     },
     {
       h: 'Vilt',
-      body: '<p>Älg och rådjur är mest aktiva i <strong>gryning och skymning</strong>. När ett djur korsar vägen kan <strong>fler följa efter</strong>. Om ett djur dyker upp framför dig: <strong>bromsa kraftigt</strong> och behåll kontrollen; en tvär gir ut i mötande trafik eller i diket är ofta värre.</p>' +
-        '<p>Efter en viltolycka med till exempel <strong>älg, rådjur, hjort, vildsvin, björn, varg eller lodjur</strong> måste du <strong>märka ut platsen</strong> och <strong>anmäla det till polisen</strong> (112), även om djuret sprang iväg.</p>',
+      body: '<p>Älg och rådjur är mest aktiva i <strong>gryning och skymning</strong>. Varningsmärket <strong>älg</strong> anger sträckor där vilt ofta korsar vägen: sänk farten där och håll uppsikt över vägkanterna och skogsbrynet. När ett djur korsar vägen kan <strong>fler följa efter</strong>, till exempel en kalv efter sin mamma. Om ett djur dyker upp framför dig: <strong>bromsa kraftigt</strong> och behåll kontrollen; en tvär gir ut i mötande trafik eller i diket är ofta värre.</p>' +
+        '<p>Efter en viltolycka med till exempel <strong>älg, rådjur, hjort, vildsvin, björn, varg eller lodjur</strong> måste du <strong>märka ut platsen</strong> och <strong>anmäla det till polisen</strong> (112), även om djuret sprang iväg. Skyldigheten gäller inte små djur som hare, räv eller grävling.</p>',
     },
   ],
   keyFacts: [

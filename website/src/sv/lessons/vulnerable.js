@@ -8,19 +8,22 @@ SV.lessons.vulnerable = {
       body: '<p>Vid ett <strong>obevakat</strong> övergångsställe (utan trafiksignaler eller polis) måste du <strong>släppa fram fotgängare som är på övergångsstället eller just ska gå ut på det</strong>, från båda sidor av vägen. Anpassa farten i god tid så att du kan stanna.</p>' +
         '<ul><li>Du får <strong>inte köra om</strong> omedelbart före eller på ett obevakat övergångsställe.</li>' +
         '<li>Om bilen framför eller bredvid dig saktar in före ett övergångsställe, räkna med att någon som du inte kan se går över framför den.</li>' +
-        '<li>Vid ett övergångsställe med trafiksignaler är det signalerna som gäller; men kör aldrig på någon som fortfarande går över när du får grönt.</li></ul>',
+        '<li>Vid ett övergångsställe med trafiksignaler är det signalerna som gäller; men kör aldrig på någon som fortfarande går över när du får grönt.</li></ul>' +
+        '<p>Vägmärket <strong>övergångsställe</strong> märker ut själva övergångsstället.</p>',
     },
     {
       h: 'Sväng, cyklister och mopeder',
       body: '<p>När du <strong>svänger</strong> i en korsning måste du släppa fram <strong>gående som korsar vägen du svänger in på</strong>, och cyklister och förare av moped klass II som är på eller just ska köra ut på en <strong>cykelöverfart</strong> där. När du svänger vänster är en cyklist som kommer emot dig mötande trafik: väj.</p>' +
+        '<p>Vägmärket <strong>cykelöverfart</strong> anger en cykelöverfart: en plats där cyklister och mopedförare får korsa vägen. Anpassa hastigheten så att du inte utsätter någon på eller nära överfarten för fara.</p>' +
         '<p>När du kör förbi en cyklist ska du hålla <strong>stort avstånd</strong>. Om mötande trafik hindrar dig från det, stanna kvar bakom. Räkna med att en cyklist svänger ut runt en parkerad bil eller ett hål i vägen.</p>' +
         '<ul><li>Moped klass I: konstruerad för högst <strong>45 km/h</strong>, körs på körbanan.</li><li>Moped klass II: konstruerad för högst <strong>25 km/h</strong>, använder ofta cykelbanan.</li></ul>',
     },
     {
       h: 'Barn, äldre och andra',
       body: '<p><strong>Barn</strong> är små, handlar impulsivt och kan inte bedöma fart och avstånd. En <strong>boll</strong> på vägen betyder att ett barn kan komma efter. Personer som kliver av en <strong>buss</strong> går ofta över framför den.</p>' +
+        '<p>Varningsmärket <strong>barn</strong> (en triangel med barn) varnar för barn nära vägen. När du ser ett barn vid vägen ska du sakta in och vara beredd att stanna. Tuta inte: det kan skrämma barnet så att det springer ut på vägen.</p>' +
         '<p><strong>Äldre</strong> kan gå långsamt och se eller höra sämre. En <strong>vit käpp</strong> betyder att personen är blind eller synskadad.</p>' +
-        '<p>Kör förbi <strong>ryttare</strong> långsamt och med gott om utrymme, utan att tuta.</p>',
+        '<p>Kör förbi <strong>ryttare</strong> långsamt och med gott om utrymme, utan att tuta eller rusa motorn. Hästar kan bli skrämda av ljud och snabba fordon.</p>',
     },
     {
       h: 'Bussar som lämnar en hållplats',
