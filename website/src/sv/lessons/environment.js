@@ -6,12 +6,12 @@ SV.lessons.environment = {
     {
       h: 'Kör mjukt och planera framåt',
       body: '<ul><li><strong>Titta långt fram</strong> och håll bra avstånd, så att du kan anpassa farten mjukt i stället för att bromsa och gasa.</li>' +
-        '<li><strong>Växla upp tidigt</strong> och kör på den högsta växel som passar farten: låga varvtal ger lägre förbrukning och mindre buller.</li>' +
+        '<li><strong>Växla upp tidigt</strong> och kör på den högsta växel som passar farten: låga varvtal ger lägre förbrukning och mindre buller. <strong>Kraftig acceleration på höga varvtal</strong> ger mest motorbuller, och trafikbuller påverkar hälsan, särskilt i tättbebyggt område.</li>' +
         '<li>Släpp gasen tidigt före rött ljus, kö eller korsning och låt bilen rulla <strong>med växeln i</strong>.</li></ul>',
     },
     {
       h: 'Motorbroms, fart och tomgång',
-      body: '<p>När du <strong>motorbromsar</strong> med en växel i förbrukar en modern motor <strong>inget bränsle</strong>. I friläge går det åt bränsle för tomgången, och du förlorar motorbromsen.</p>' +
+      body: '<p>När du <strong>motorbromsar</strong> med en växel i förbrukar en modern motor <strong>inget bränsle</strong>. I friläge går det åt bränsle för tomgången, och du förlorar motorbromsen, så att bromsarna måste arbeta hårdare. <strong>Stäng aldrig av motorn under körning</strong>: styrning och bromsar blir mycket tyngre.</p>' +
         '<p><strong>Fart kostar bränsle</strong>: luftmotståndet ökar kraftigt när farten ökar, så lite lägre fart på långa resor sparar mycket.</p>' +
         '<p><strong>Kör inte på tomgång</strong>: stäng av motorn när du måste vänta. Tomgångskörning slösar bränsle och förorenar, och många kommuner har lokala regler mot det.</p>',
     },
@@ -24,14 +24,14 @@ SV.lessons.environment = {
       h: 'Själva bilen',
       body: '<ul><li>Håll <strong>rätt däcktryck</strong>: för lågt tryck ökar rullmotståndet, förbrukningen och slitaget. Kontrollera trycket när däcken är kalla.</li>' +
         '<li><strong>Ta av takboxen</strong> eller takräcket när du inte behöver det: det ökar luftmotståndet.</li>' +
-        '<li>Kör inte med <strong>onödig vikt</strong>.</li><li>Luftkonditionering ökar förbrukningen.</li></ul>',
+        '<li>Kör inte med <strong>onödig vikt</strong>: varje extra kilo måste accelereras varje gång du ökar farten, så det kostar mest i stadskörning med många stopp och starter.</li><li>Luftkonditionering ökar förbrukningen.</li></ul>',
     },
     {
       h: 'Utsläpp och bränslen',
       body: '<ul><li><strong>Koldioxid (CO2)</strong> från fossila bränslen driver på klimatförändringarna. Mängden beror direkt på hur mycket bränsle du förbränner; en katalysator minskar <strong>inte</strong> koldioxidutsläppen.</li>' +
         '<li>Katalysatorn minskar utsläppen av kolmonoxid, kolväten och kväveoxider.</li>' +
         '<li><strong>Dubbdäck</strong> sliter upp vägbanan till små partiklar som är skadliga att andas in, och de bullrar.</li>' +
-        '<li><strong>Elbilar</strong> har inga avgasutsläpp under körning, men däck och bromsar ger ändå partiklar. Hybrider och elbilar återvinner energi när de saktar in (regenerativ bromsning).</li>' +
+        '<li><strong>Elbilar</strong> har inga avgasutsläpp under körning, men däck och bromsar ger ändå partiklar. Hybrider och elbilar återvinner energi när de saktar in (regenerativ bromsning): elmotorn fungerar som generator och laddar batteriet. Om du saktar in mjukt och tidigt kan mer energi återvinnas.</li>' +
         '<li><strong>Förnybara bränslen</strong> (biogas, etanol, HVO) kommer från biologiskt material och tillför mycket mindre ny koldioxid än bensin och diesel.</li></ul>',
     },
   ],

@@ -1,6 +1,7 @@
 LESSONS.turning = {
   title: 'Turning, lanes & roundabouts',
   minutes: 25,
+  updated: '2026-10-22',
   intro: 'Most junction crashes happen when someone turns or changes lanes. Show what you plan to do in good time, put the car in the right place on the road, and give way to everyone whose path you cross.',
   sections: [
     {
@@ -34,8 +35,8 @@ LESSONS.turning = {
       h: 'Choosing your lane',
       body: '<ul><li>Choose the right <strong>lane</strong> (körfält) <strong>in good time</strong> before the junction: as a rule, the right-hand lane to turn right and the left-hand lane to turn left.</li>' +
         '<li><strong>Arrows painted in the lane</strong> show which way you must drive from that lane. If you find yourself in the wrong lane, <strong>follow the arrow</strong> and find another way. Do not turn from the wrong lane or stop to wait for a gap.</li>' +
-        '<li>Blue round signs are <strong>mandatory</strong>: A means you must turn right, B means you must drive straight on (so no left turn and no U-turn). Red-bordered signs forbid: C means no left turn.</li></ul>',
-      pics: [{ signs: ['mandatory-right', 'mandatory-straight', 'no-left-turn'], labels: ['A', 'B', 'C'] }],
+        '<li>Blue round signs are <strong>mandatory</strong>: A means you must turn right, B means you must drive straight on (so no left turn and no U-turn). Red-bordered signs forbid: C means no left turn and D means no right turn (go straight on or turn left instead).</li></ul>',
+      pics: [{ signs: ['mandatory-right', 'mandatory-straight', 'no-left-turn', 'no-right-turn'], labels: ['A', 'B', 'C', 'D'] }],
     },
     {
       h: 'Changing lanes and zip merging',
@@ -54,7 +55,7 @@ LESSONS.turning = {
         '<ul><li>Roundabouts in Sweden normally have a <strong>give-way sign</strong> at every entry. You then give way to traffic <strong>already in the roundabout</strong>. You do not have to wait for cars at other entries, and once you are in the roundabout, cars at the entries must give way to you.</li>' +
         '<li>The blue roundabout sign only tells you to drive round anticlockwise. It does not by itself give anyone priority: look for the give-way sign.</li>' +
         '<li>Choose your lane before you enter and follow the lane markings. Moving from the inner to the outer lane is a <strong>lane change</strong>, so you must give way to traffic in the outer lane.</li>' +
-        '<li>Indicate <strong>right</strong> when you have <strong>passed the exit before the one you want</strong>. If you leave at the first exit, indicate right already as you approach.</li>' +
+        '<li>Indicate <strong>right</strong> when you have <strong>passed the exit before the one you want</strong>. If you indicate earlier, drivers waiting at the earlier entries and exits think you are leaving there. If you leave at the first exit, indicate right already as you approach.</li>' +
         '<li><strong>Long vehicles</strong> such as buses and lorries may need more than one lane to get round. Keep back, and do not drive alongside them in the roundabout.</li></ul>',
       pics: [{ roundabout: { you: { arm: 'S', exit: 'W' }, vehicles: [{ ring: 145, label: 'B', color: 'red' }], signs: { S: 'yield', E: 'yield', N: 'yield', W: 'yield' } } }],
     },

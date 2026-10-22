@@ -1,6 +1,7 @@
 LESSONS.priority = {
   title: 'Right of way at junctions',
   minutes: 25,
+  updated: '2026-10-22',
   intro: 'Many serious crashes happen at junctions, when two drivers both think they may go first. Learn the order: police signals, then traffic lights, then signs, then the general rules such as the right-hand rule. Right of way is never something you take: even when you have it, watch that the other driver really gives way.',
   sections: [
     {
@@ -42,7 +43,8 @@ LESSONS.priority = {
     {
       h: 'Turning left and turning across people',
       body: '<p>When you <strong>turn left</strong> you must give way to <strong>oncoming</strong> traffic that goes straight ahead or turns right. This applies at unmarked junctions, on a priority road and at green traffic lights alike. Indicating early never gives you priority.</p>' +
-        '<ul><li>If the oncoming car turns left across <em>your</em> path while you go straight, it is the other driver who must give way.</li>' +
+        '<ul><li>At a green light you may drive forward into the junction and wait there, then turn when the oncoming traffic has passed. Do not stand in its way.</li>' +
+        '<li>If the oncoming car turns left across <em>your</em> path while you go straight, it is the other driver who must give way.</li>' +
         '<li>In a junction with give-way signs for two side roads facing each other, both give way to the priority road first. Between the two of them, the one turning left gives way to the one going straight.</li>' +
         '<li>When you turn (left or right), you must give way to <strong>pedestrians</strong> crossing the road you turn into. They can have green at the same time as you.</li></ul>',
       pics: [

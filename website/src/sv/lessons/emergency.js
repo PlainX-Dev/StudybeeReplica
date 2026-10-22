@@ -16,8 +16,8 @@ SV.lessons.emergency = {
     },
     {
       h: 'L-ABC',
-      body: '<ul><li><strong>L – Livsfarligt läge</strong>: flytta bara den skadade om hen är i fara, till exempel på grund av trafik eller brand.</li>' +
-        '<li><strong>A – Andning</strong>: skapa fri luftväg. Medvetslös men andas normalt → <strong>stabilt sidoläge</strong>. Andas inte normalt → <strong>HLR, 30 kompressioner : 2 inblåsningar</strong>, och använd en hjärtstartare (AED) om en sådan kommer.</li>' +
+      body: '<ul><li><strong>L – Livsfarligt läge</strong>: flytta bara den skadade om hen är i fara, till exempel på grund av trafik eller brand, eller om du annars inte kan ge livräddande första hjälpen. Att flytta en skadad person kan förvärra skadorna, särskilt i nacke och rygg.</li>' +
+        '<li><strong>A – Andning</strong>: skapa fri luftväg. Medvetslös men andas normalt → <strong>stabilt sidoläge</strong>. Andas inte normalt → <strong>HLR, 30 kompressioner : 2 inblåsningar</strong>, och använd en hjärtstartare (AED) om en sådan kommer. En publik hjärtstartare är gjord för att <strong>vem som helst</strong> ska kunna använda den: slå på den och följ de talade instruktionerna. Den ger bara en strömstöt om det behövs, och du fortsätter med HLR när den säger till.</li>' +
         '<li><strong>B – Blödning</strong>: tryck hårt direkt på såret, håll den skadade kroppsdelen högt och lägg ett tryckförband.</li>' +
         '<li><strong>C – Cirkulation/chock</strong>: blek, kall, svettig, snabb och svag puls. Låt personen ligga ner, håll hen varm och lugn och ge inget att äta eller dricka.</li></ul>' +
         '<p>Låt en motorcyklists <strong>hjälm sitta kvar</strong> om du inte måste ta av den för att hålla luftvägen fri eller ge HLR.</p>',
@@ -28,7 +28,7 @@ SV.lessons.emergency = {
     },
     {
       h: 'Motorstopp',
-      body: '<ul><li>Använd bilens fart för att rulla så långt ut från körfältet som möjligt, och slå på varningsblinkersen.</li>' +
+      body: '<ul><li>Om motorn stannar, använd bilens fart för att rulla så långt ut från körfältet som möjligt, och slå på varningsblinkersen. Styrningen och bromsarna blir tyngre när motorn inte går.</li>' +
         '<li>På <strong>motorväg</strong>: försök nå en avfart eller vägrenen. Låt alla gå ut på sidan bort från trafiken och vänta <strong>bakom vägräcket</strong>, en bra bit från bilen. Stå aldrig bakom eller framför den.</li></ul>',
     },
     {

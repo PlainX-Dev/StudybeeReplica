@@ -29,7 +29,8 @@ SV.lessons.priority = {
     {
       h: 'Vänstersväng och sväng över gående',
       body: '<p>När du <strong>svänger vänster</strong> ska du lämna företräde åt <strong>mötande</strong> trafik som kör rakt fram eller svänger höger. Det gäller i en omärkt korsning, på huvudled och vid grönt ljus. Att blinka tidigt ger dig aldrig företräde.</p>' +
-        '<ul><li>Om den mötande bilen svänger vänster över <em>din</em> väg medan du kör rakt fram, är det den andra föraren som ska lämna företräde.</li>' +
+        '<ul><li>Vid grönt ljus får du köra fram i korsningen och vänta där, och sedan svänga när den mötande trafiken har passerat. Stå inte i vägen för den.</li>' +
+        '<li>Om den mötande bilen svänger vänster över <em>din</em> väg medan du kör rakt fram, är det den andra föraren som ska lämna företräde.</li>' +
         '<li>I en korsning där två sidovägar mitt emot varandra har väjningsplikt väjer båda först för huvudleden. Mellan de två väjer den som svänger vänster för den som kör rakt fram.</li>' +
         '<li>När du svänger (vänster eller höger) ska du lämna företräde åt <strong>gående</strong> som korsar vägen du svänger in på. De kan ha grönt samtidigt som du.</li></ul>',
     },

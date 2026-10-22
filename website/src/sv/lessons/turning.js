@@ -28,7 +28,7 @@ SV.lessons.turning = {
       h: 'Välj rätt körfält',
       body: '<ul><li>Välj rätt <strong>körfält</strong> <strong>i god tid</strong> före korsningen: som regel högra körfältet för att svänga höger och vänstra körfältet för att svänga vänster.</li>' +
         '<li><strong>Pilar i körfältet</strong> visar åt vilket håll du ska köra från det körfältet. Om du har hamnat i fel körfält, <strong>följ pilen</strong> och hitta en annan väg. Sväng inte från fel körfält och stanna inte för att vänta på en lucka.</li>' +
-        '<li>Blå runda märken är <strong>påbud</strong>: A betyder att du ska svänga höger, B att du ska köra rakt fram (alltså ingen vänstersväng och ingen U-sväng). Märken med röd kant är förbud: C betyder förbud mot vänstersväng.</li></ul>',
+        '<li>Blå runda märken är <strong>påbud</strong>: A betyder att du ska svänga höger, B att du ska köra rakt fram (alltså ingen vänstersväng och ingen U-sväng). Märken med röd kant är förbud: C betyder förbud mot vänstersväng och D förbud mot högersväng (kör rakt fram eller sväng vänster i stället).</li></ul>',
     },
     {
       h: 'Körfältsbyte och blixtlåsprincipen',
@@ -43,7 +43,7 @@ SV.lessons.turning = {
         '<ul><li>Cirkulationsplatser i Sverige har normalt <strong>väjningsplikt</strong> vid varje infart. Du lämnar då företräde åt trafik som <strong>redan är i cirkulationsplatsen</strong>. Du behöver inte vänta på bilar vid andra infarter, och när du väl är inne i cirkulationsplatsen ska bilarna vid infarterna lämna företräde åt dig.</li>' +
         '<li>Det blå märket för cirkulationsplats talar bara om att du ska köra moturs. Det ger i sig ingen företräde: titta efter märket för väjningsplikt.</li>' +
         '<li>Välj körfält innan du kör in och följ körfältsmarkeringarna. Att byta från det inre till det yttre körfältet är ett <strong>körfältsbyte</strong>, så du ska lämna företräde åt trafiken i det yttre körfältet.</li>' +
-        '<li>Ge tecken <strong>höger</strong> när du har <strong>passerat utfarten före den du ska ta</strong>. Om du ska ta första utfarten ger du tecken höger redan när du närmar dig.</li>' +
+        '<li>Ge tecken <strong>höger</strong> när du har <strong>passerat utfarten före den du ska ta</strong>. Om du blinkar tidigare tror förare som väntar vid de tidigare in- och utfarterna att du ska köra ut där. Om du ska ta första utfarten ger du tecken höger redan när du närmar dig.</li>' +
         '<li><strong>Långa fordon</strong> som bussar och lastbilar kan behöva mer än ett körfält för att komma runt. Håll avstånd och kör inte bredvid dem i cirkulationsplatsen.</li></ul>',
     },
     {
