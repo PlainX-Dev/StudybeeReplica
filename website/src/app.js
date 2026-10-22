@@ -231,6 +231,23 @@
   }
   let celebrate = null;
 
+  // ------------------------------------------------------------- lesson updates
+  // A lesson with `updated` (an ISO time) got new theory then. Reading it before that no longer
+  // counts: it shows as unread, and plan tasks ticked before then reopen so you can finish them again.
+  const lessonUpdated = (id) => { const u = LESSONS[id] && LESSONS[id].updated; return u ? Date.parse(u) : 0; };
+  const lessonRead = (id) => !!S.lessons[id] && S.lessons[id] >= lessonUpdated(id);
+  const lessonStale = (id) => !!S.lessons[id] && !lessonRead(id);
+  function reopenUpdated() {
+    const factsAt = Math.max(0, ...TOPICS.map((t) => lessonUpdated(t.id)));
+    let changed = false;
+    PLAN.forEach((d) => d.tasks.forEach((t, i) => {
+      const key = `${d.day}-${i}`;
+      const at = t.type === 'lesson' && t.topic !== 'weak' ? lessonUpdated(t.topic) : t.type === 'facts' ? factsAt : 0;
+      if (at && S.done[key] && (S.doneT[key] || 0) < at) { S.done[key] = false; S.doneT[key] = Date.now(); changed = true; }
+    }));
+    return changed;
+  }
+
   // ------------------------------------------------------------- session
   let session = null;
   let timer = null;
@@ -323,6 +340,7 @@
 
   function render() {
     if (route !== 'quiz') clearInterval(timer);
+    if (reopenUpdated()) saveLocal();
     const active = activeSection();
     const mc = mistakes().length;
     const st = streak(); const lv = level();
@@ -470,7 +488,8 @@
     m.start = newer.start || a.start || b.start; m.testDate = newer.testDate ?? a.testDate; m.setAt = Math.max(a.setAt || 0, b.setAt || 0);
     m.q = { ...a.q };
     for (const [id, s] of Object.entries(b.q || {})) { const o = m.q[id]; if (!o || s.seen > o.seen || (s.seen === o.seen && s.last > o.last)) m.q[id] = s; }
-    m.lessons = { ...b.lessons, ...a.lessons };
+    m.lessons = { ...a.lessons };
+    for (const [id, t] of Object.entries(b.lessons || {})) m.lessons[id] = Math.max(m.lessons[id] || 0, t);
     m.done = {}; m.doneT = {};
     for (const k of new Set([...Object.keys(a.done || {}), ...Object.keys(b.done || {})])) {
       const ta = (a.doneT || {})[k] || 0, tb = (b.doneT || {})[k] || 0;
@@ -647,6 +666,7 @@
     const testIn = S.testDate ? Math.round((parse(S.testDate) - today()) / DAY_MS) : null;
     const nt = nextTask();
     const weak = weakTopics(3);
+    const stale = TOPICS.filter((t) => lessonStale(t.id));
     const tomorrow = PLAN[n];
     const earned = BADGES.filter((b) => S.badges[b.id]).sort((a, b) => S.badges[b.id] - S.badges[a.id]);
     return `
@@ -677,6 +697,7 @@
         <section class="stack">
           <div class="section-head"><h2>${T('today.tasksTitle')}</h2><span class="muted">${T('common.goal', { goal: esc(day.goal) })}</span></div>
           ${taskList(n)}
+          ${stale.length ? `<p class="note">${icon('lessons')} <span>${T('today.updatedHtml', { lessons: stale.map((t) => `<a href="#lesson-${t.id}">${esc(t.name)}</a>`).join(', ') })}</span></p>` : ''}
           ${behind.length ? `<p class="note">${icon('mistakes')} <span>${T('today.unfinishedHtml', { days: behind.map((d) => `<a href="#day-${d}">${T('plan.dayLower', { n: d })}</a>`).join(', ') })}</span></p>` : ''}
           ${tomorrow ? `<a class="card teaser" href="#day-${tomorrow.day}"><span class="eyebrow">${T('today.tomorrowDay', { n: tomorrow.day })}</span><b>${esc(tomorrow.title)}</b><span class="muted">${esc(tomorrow.focus)}</span>${tomorrow.tasks.some((t) => t.type === 'mock') ? `<span class="tag">${T('session.mock')}</span>` : ''}</a>` : ''}
         </section>
@@ -740,14 +761,14 @@
   }
 
   function viewLessons() {
-    const read = Object.keys(S.lessons).length;
+    const read = TOPICS.filter((t) => lessonRead(t.id)).length;
     return `<header class="pagehead"><p class="eyebrow">${T('lessons.read', { n: read })}</p><h1 class="large-title">${T('nav.lessons')}</h1><p class="lede">${T('lessons.lede')}</p></header>
       <a class="card feature" href="#facts"><span class="tile" style="--tile:#34c759;--s:44px"><span style="color:#fff">${icon('lessons')}</span></span><div><b>${T('task.factsSheet')}</b><span class="muted">${T('lessons.factsSub')}</span></div>${icon('chevron', 'chev')}</a>
       <ul class="group">${TOPICS.map((t) => {
-        const l = LESSONS[t.id]; const st = topicStats(t.id); const done = S.lessons[t.id];
+        const l = LESSONS[t.id]; const st = topicStats(t.id); const done = lessonRead(t.id);
         return `<li class="row"><a class="rowlink" href="#lesson-${t.id}">${topicTile(t.id)}
           <span class="grow"><span class="rtitle">${esc(t.name)}</span><span class="rsub">${l ? `${l.minutes || 15} min` : T('lessons.soon')} · ${T('common.questions', { n: st.total })} · ${T('lessons.mastered', { n: Math.round(st.mastery * 100) })}</span></span>
-          ${done ? `<span class="okdot" aria-label="${T('lessons.readAria')}">${icon('check')}</span>` : ''}${icon('chevron', 'chev')}</a></li>`;
+          ${done ? `<span class="okdot" aria-label="${T('lessons.readAria')}">${icon('check')}</span>` : lessonStale(t.id) ? `<span class="tag">${T('lessons.updated')}</span>` : ''}${icon('chevron', 'chev')}</a></li>`;
       }).join('')}</ul>`;
   }
 
@@ -758,11 +779,12 @@
     const idx = TOPICS.indexOf(t);
     return `<article class="lesson">
       <header class="pagehead lesson-head">${topicTile(id, 56)}<p class="eyebrow"><a href="#lessons">${T('nav.lessons')}</a> · ${T('lesson.topicOf', { n: idx + 1 })} · ${l.minutes || 15} min</p><h1 class="large-title">${esc(l.title)}</h1>${l.intro ? `<p class="lede">${esc(l.intro)}</p>` : ''}</header>
+      ${lessonStale(id) ? `<p class="note">${icon('lessons')} <span>${T('lesson.updatedNote')}</span></p>` : ''}
       ${l.sections.map((s) => `<section class="lsec"><h2>${esc(s.h)}</h2><div class="prose">${s.body}</div>
         ${(s.pics || []).length ? `<div class="pics">${s.pics.map((p) => `<figure class="pic">${Scene.render(p)}${p.caption ? `<figcaption>${esc(p.caption)}</figcaption>` : ''}</figure>`).join('')}</div>` : ''}</section>`).join('')}
       <section class="card keyfacts"><h2>${T('lesson.keyFacts')}</h2><ul>${l.keyFacts.map((k) => `<li>${esc(k)}</li>`).join('')}</ul></section>
       <div class="actions">
-        <button class="btn filled large" data-act="lessonDone" data-topic="${id}">${S.lessons[id] ? T('lesson.practiseThis') : T('lesson.markRead')}</button>
+        <button class="btn filled large" data-act="lessonDone" data-topic="${id}">${lessonRead(id) ? T('lesson.practiseThis') : T('lesson.markRead')}</button>
         ${TOPICS[idx + 1] ? `<a class="btn plain" href="#lesson-${TOPICS[idx + 1].id}">${T('lesson.next', { topic: esc(TOPICS[idx + 1].short) })}</a>` : ''}
       </div></article>`;
   }
@@ -1019,6 +1041,8 @@
       const topic = b.dataset.topic; const first = !S.lessons[topic]; S.lessons[topic] = Date.now(); if (first) addXP(30);
       if (pendingTask && pendingTask.topic === topic) { markDone(pendingTask.key); pendingTask = null; }
       else { const k = findTask('lesson', topic); if (k) markDone(k); }
+      // Earlier plan days whose task for this lesson reopened after an update count as done again.
+      PLAN.slice(0, planDay() - 1).forEach((d) => d.tasks.forEach((t, i) => { if (t.type === 'lesson' && t.topic === topic && !S.done[`${d.day}-${i}`]) markDone(`${d.day}-${i}`); }));
       newBadges = []; checkBadges(); save();
       startSession({ mode: 'practice', title: T('session.practiceTopics', { topics: TOPIC[topic].short }), items: pickPractice([topic], 10) });
     }
