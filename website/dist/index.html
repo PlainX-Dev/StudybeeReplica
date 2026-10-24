@@ -469,8 +469,9 @@ label.chip input:focus-visible + span, .seg input:focus-visible + span { outline
 .badge-item b { font-size: 14px; }
 .badge-item span { font-size: 12px; color: var(--label-2); line-height: 1.35; }
 .badge-item:not(.on) b { color: var(--label-2); }
-.mbar { display: block; height: 5px; border-radius: 99px; background: var(--fill); overflow: hidden; margin-top: 6px; max-width: 320px; }
-.mbar i { display: block; height: 100%; background: var(--green-bright); border-radius: 99px; }
+.mbar { display: flex; height: 5px; border-radius: 99px; background: var(--fill); overflow: hidden; margin-top: 6px; max-width: 320px; }
+.mbar i { display: block; height: 100%; background: var(--green-bright); }
+.mbar i.once { background: var(--yellow); }
 .mock-card { align-items: flex-start; }
 .mock-dial { position: relative; display: grid; place-items: center; }
 .mock-dial > span { position: absolute; display: flex; flex-direction: column; align-items: center; font-size: 12px; color: var(--label-2); font-weight: 600; }
@@ -9619,7 +9620,7 @@ window.STRINGS = {
   'lessons.lede': { en: 'One lesson per topic, with pictures and a key-facts box at the end. Read one, then practise it straight away.', sv: 'En lektion per område, med bilder och en faktaruta i slutet. Läs en och öva på den direkt.' },
   'lessons.factsSub': { en: 'Every rule and number on one page. Read it on days 21, 24 and 30.', sv: 'Alla regler och siffror på en sida. Läs den dag 21, 24 och 30.' },
   'lessons.soon': { en: 'Coming soon', sv: 'Kommer snart' },
-  'lessons.mastered': { en: '{n}% mastered', sv: '{n} % kan du' },
+  'lessons.mastered': { en: '{n}% right last time', sv: '{n} % rätt senast' },
   'lessons.updated': { en: 'Updated', sv: 'Uppdaterad' },
   'lessons.readAria': { en: 'Read', sv: 'Läst' },
   'lesson.notWritten': { en: 'This lesson is not written yet. You can still practise the topic.', sv: 'Den här lektionen är inte skriven än. Du kan ändå öva på området.' },
@@ -9688,8 +9689,8 @@ window.STRINGS = {
   'progress.answersRight': { en: 'of {n} answers right', sv: 'av {n} svar rätt' },
   'progress.seen': { en: 'questions seen', sv: 'frågor sedda' },
   'progress.topics': { en: 'Topics', sv: 'Områden' },
-  'progress.barsNote': { en: 'The bar and its percentage show how much of the topic you have mastered: a question is mastered after two right answers in a row. The line under each topic shows how often you answer right.', sv: 'Stapeln och procenttalet visar hur stor del av området du kan: en fråga sitter efter två rätta svar i rad. Raden under varje område visar hur ofta du svarar rätt.' },
-  'progress.topicAcc': { en: '{acc}% right · {seen} of {n} questions tried', sv: '{acc} % rätt · {seen} av {n} frågor provade' },
+  'progress.barsNote': { en: 'The percentage is how many of the topic\'s questions you got right the last time you answered them. On the bar, green is mastered (right twice in a row) and yellow is right once so far. The line under each topic shows how often you answer right.', sv: 'Procenttalet visar hur många av områdets frågor du svarade rätt på senast. På stapeln är grönt frågor som sitter (rätt två gånger i rad) och gult frågor du har klarat en gång. Raden under varje område visar hur ofta du svarar rätt.' },
+  'progress.topicAcc': { en: '{acc}% right · {seen} of {n} tried · {m} mastered', sv: '{acc} % rätt · {seen} av {n} provade · {m} sitter' },
   'progress.topicNew': { en: 'Not started · {n} questions', sv: 'Inte påbörjat · {n} frågor' },
   'settings.title': { en: 'Settings', sv: 'Inställningar' },
   'settings.day1': { en: 'Day 1 of the plan', sv: 'Dag 1 i planen' },
@@ -9866,13 +9867,14 @@ window.STRINGS = {
   }
   function topicStats(topicId) {
     const list = REAL.filter((q) => q.topic === topicId).concat(topicId === 'signs' ? SIGN_Q : []);
-    let seen = 0, right = 0, tries = 0, mastered = 0;
+    let seen = 0, right = 0, tries = 0, mastered = 0, known = 0;
     for (const q of list) {
       const s = S.q[q.id];
       if (!s || !s.seen) continue;
-      seen++; right += s.right; tries += s.seen; if (s.box >= 2) mastered++;
+      seen++; right += s.right; tries += s.seen; if (s.box >= 2) mastered++; if (s.box >= 1) known++;
     }
-    return { total: list.length, seen, acc: tries ? right / tries : null, mastery: list.length ? mastered / list.length : 0 };
+    // known: right the last time you answered; mastered: right at least twice in a row
+    return { total: list.length, seen, acc: tries ? right / tries : null, known: list.length ? known / list.length : 0, mastered, mastery: list.length ? mastered / list.length : 0 };
   }
   function weakTopics(k = 2) {
     return TOPICS.map((t) => ({ id: t.id, st: topicStats(t.id) }))
@@ -10518,7 +10520,7 @@ window.STRINGS = {
       <ul class="group">${TOPICS.map((t) => {
         const l = LESSONS[t.id]; const st = topicStats(t.id); const done = lessonRead(t.id);
         return `<li class="row"><a class="rowlink" href="#lesson-${t.id}">${topicTile(t.id)}
-          <span class="grow"><span class="rtitle">${esc(t.name)}</span><span class="rsub">${l ? `${l.minutes || 15} min` : T('lessons.soon')} · ${T('common.questions', { n: st.total })} · ${T('lessons.mastered', { n: Math.round(st.mastery * 100) })}</span></span>
+          <span class="grow"><span class="rtitle">${esc(t.name)}</span><span class="rsub">${l ? `${l.minutes || 15} min` : T('lessons.soon')} · ${T('common.questions', { n: st.total })} · ${T('lessons.mastered', { n: Math.round(st.known * 100) })}</span></span>
           ${done ? `<span class="okdot" aria-label="${T('lessons.readAria')}">${icon('check')}</span>` : lessonStale(t.id) ? `<span class="tag">${T('lessons.updated')}</span>` : ''}${icon('chevron', 'chev')}</a></li>`;
       }).join('')}</ul>`;
   }
@@ -10623,7 +10625,7 @@ window.STRINGS = {
       <section class="card"><div class="row-between"><h2>${T('badge.title')}</h2><span class="muted">${T('common.ofN', { n: Object.keys(S.badges).length, m: BADGES.length })}</span></div>
         <div class="badges">${BADGES.map((b) => `<div class="badge-item ${S.badges[b.id] ? 'on' : ''}">${badgeIcon(b, !!S.badges[b.id])}<b>${esc(b.name)}</b><span>${esc(b.desc)}</span></div>`).join('')}</div></section>
       <section class="card"><h2>${T('progress.topics')}</h2><ul class="group plain">
-        ${TOPICS.map((t) => { const s = topicStats(t.id); return `<li class="row"><a class="rowlink" href="#lesson-${t.id}">${topicTile(t.id, 30)}<span class="grow"><span class="rtitle">${esc(t.name)}</span><span class="rsub">${s.acc === null ? T('progress.topicNew', { n: s.total }) : T('progress.topicAcc', { acc: Math.round(s.acc * 100), seen: s.seen, n: s.total })}</span><span class="mbar"><i style="width:${s.mastery * 100}%"></i></span></span><span class="muted small num">${s.seen ? Math.round(s.mastery * 100) + '%' : '–'}</span></a></li>`; }).join('')}
+        ${TOPICS.map((t) => { const s = topicStats(t.id); return `<li class="row"><a class="rowlink" href="#lesson-${t.id}">${topicTile(t.id, 30)}<span class="grow"><span class="rtitle">${esc(t.name)}</span><span class="rsub">${s.acc === null ? T('progress.topicNew', { n: s.total }) : T('progress.topicAcc', { acc: Math.round(s.acc * 100), seen: s.seen, n: s.total, m: s.mastered })}</span><span class="mbar"><i style="width:${s.mastery * 100}%"></i><i class="once" style="width:${(s.known - s.mastery) * 100}%"></i></span></span><span class="muted small num">${s.seen ? Math.round(s.known * 100) + '%' : '–'}</span></a></li>`; }).join('')}
       </ul><p class="muted small">${T('progress.barsNote')}</p></section>
       ${S.mocks.length ? `<section class="card"><h2>${T('mock.chartTitle')}</h2>${mockChart()}${mockTable()}</section>` : ''}
       <section class="card"><h2>${T('settings.title')}</h2>

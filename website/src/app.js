@@ -115,13 +115,14 @@
   }
   function topicStats(topicId) {
     const list = REAL.filter((q) => q.topic === topicId).concat(topicId === 'signs' ? SIGN_Q : []);
-    let seen = 0, right = 0, tries = 0, mastered = 0;
+    let seen = 0, right = 0, tries = 0, mastered = 0, known = 0;
     for (const q of list) {
       const s = S.q[q.id];
       if (!s || !s.seen) continue;
-      seen++; right += s.right; tries += s.seen; if (s.box >= 2) mastered++;
+      seen++; right += s.right; tries += s.seen; if (s.box >= 2) mastered++; if (s.box >= 1) known++;
     }
-    return { total: list.length, seen, acc: tries ? right / tries : null, mastery: list.length ? mastered / list.length : 0 };
+    // known: right the last time you answered; mastered: right at least twice in a row
+    return { total: list.length, seen, acc: tries ? right / tries : null, known: list.length ? known / list.length : 0, mastered, mastery: list.length ? mastered / list.length : 0 };
   }
   function weakTopics(k = 2) {
     return TOPICS.map((t) => ({ id: t.id, st: topicStats(t.id) }))
@@ -767,7 +768,7 @@
       <ul class="group">${TOPICS.map((t) => {
         const l = LESSONS[t.id]; const st = topicStats(t.id); const done = lessonRead(t.id);
         return `<li class="row"><a class="rowlink" href="#lesson-${t.id}">${topicTile(t.id)}
-          <span class="grow"><span class="rtitle">${esc(t.name)}</span><span class="rsub">${l ? `${l.minutes || 15} min` : T('lessons.soon')} · ${T('common.questions', { n: st.total })} · ${T('lessons.mastered', { n: Math.round(st.mastery * 100) })}</span></span>
+          <span class="grow"><span class="rtitle">${esc(t.name)}</span><span class="rsub">${l ? `${l.minutes || 15} min` : T('lessons.soon')} · ${T('common.questions', { n: st.total })} · ${T('lessons.mastered', { n: Math.round(st.known * 100) })}</span></span>
           ${done ? `<span class="okdot" aria-label="${T('lessons.readAria')}">${icon('check')}</span>` : lessonStale(t.id) ? `<span class="tag">${T('lessons.updated')}</span>` : ''}${icon('chevron', 'chev')}</a></li>`;
       }).join('')}</ul>`;
   }
@@ -872,7 +873,7 @@
       <section class="card"><div class="row-between"><h2>${T('badge.title')}</h2><span class="muted">${T('common.ofN', { n: Object.keys(S.badges).length, m: BADGES.length })}</span></div>
         <div class="badges">${BADGES.map((b) => `<div class="badge-item ${S.badges[b.id] ? 'on' : ''}">${badgeIcon(b, !!S.badges[b.id])}<b>${esc(b.name)}</b><span>${esc(b.desc)}</span></div>`).join('')}</div></section>
       <section class="card"><h2>${T('progress.topics')}</h2><ul class="group plain">
-        ${TOPICS.map((t) => { const s = topicStats(t.id); return `<li class="row"><a class="rowlink" href="#lesson-${t.id}">${topicTile(t.id, 30)}<span class="grow"><span class="rtitle">${esc(t.name)}</span><span class="rsub">${s.acc === null ? T('progress.topicNew', { n: s.total }) : T('progress.topicAcc', { acc: Math.round(s.acc * 100), seen: s.seen, n: s.total })}</span><span class="mbar"><i style="width:${s.mastery * 100}%"></i></span></span><span class="muted small num">${s.seen ? Math.round(s.mastery * 100) + '%' : '–'}</span></a></li>`; }).join('')}
+        ${TOPICS.map((t) => { const s = topicStats(t.id); return `<li class="row"><a class="rowlink" href="#lesson-${t.id}">${topicTile(t.id, 30)}<span class="grow"><span class="rtitle">${esc(t.name)}</span><span class="rsub">${s.acc === null ? T('progress.topicNew', { n: s.total }) : T('progress.topicAcc', { acc: Math.round(s.acc * 100), seen: s.seen, n: s.total, m: s.mastered })}</span><span class="mbar"><i style="width:${s.mastery * 100}%"></i><i class="once" style="width:${(s.known - s.mastery) * 100}%"></i></span></span><span class="muted small num">${s.seen ? Math.round(s.known * 100) + '%' : '–'}</span></a></li>`; }).join('')}
       </ul><p class="muted small">${T('progress.barsNote')}</p></section>
       ${S.mocks.length ? `<section class="card"><h2>${T('mock.chartTitle')}</h2>${mockChart()}${mockTable()}</section>` : ''}
       <section class="card"><h2>${T('settings.title')}</h2>
