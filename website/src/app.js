@@ -872,7 +872,7 @@
       <section class="card"><div class="row-between"><h2>${T('badge.title')}</h2><span class="muted">${T('common.ofN', { n: Object.keys(S.badges).length, m: BADGES.length })}</span></div>
         <div class="badges">${BADGES.map((b) => `<div class="badge-item ${S.badges[b.id] ? 'on' : ''}">${badgeIcon(b, !!S.badges[b.id])}<b>${esc(b.name)}</b><span>${esc(b.desc)}</span></div>`).join('')}</div></section>
       <section class="card"><h2>${T('progress.topics')}</h2><ul class="group plain">
-        ${TOPICS.map((t) => { const s = topicStats(t.id); return `<li class="row"><a class="rowlink" href="#lesson-${t.id}">${topicTile(t.id, 30)}<span class="grow"><span class="rtitle">${esc(t.name)}</span><span class="mbar"><i style="width:${s.mastery * 100}%"></i></span></span><span class="muted small num">${s.acc === null ? '–' : Math.round(s.acc * 100) + '%'}</span></a></li>`; }).join('')}
+        ${TOPICS.map((t) => { const s = topicStats(t.id); return `<li class="row"><a class="rowlink" href="#lesson-${t.id}">${topicTile(t.id, 30)}<span class="grow"><span class="rtitle">${esc(t.name)}</span><span class="rsub">${s.acc === null ? T('progress.topicNew', { n: s.total }) : T('progress.topicAcc', { acc: Math.round(s.acc * 100), seen: s.seen, n: s.total })}</span><span class="mbar"><i style="width:${s.mastery * 100}%"></i></span></span><span class="muted small num">${s.seen ? Math.round(s.mastery * 100) + '%' : '–'}</span></a></li>`; }).join('')}
       </ul><p class="muted small">${T('progress.barsNote')}</p></section>
       ${S.mocks.length ? `<section class="card"><h2>${T('mock.chartTitle')}</h2>${mockChart()}${mockTable()}</section>` : ''}
       <section class="card"><h2>${T('settings.title')}</h2>
