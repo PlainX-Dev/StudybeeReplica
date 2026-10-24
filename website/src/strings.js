@@ -205,6 +205,7 @@ window.STRINGS = {
   'rem.isOn': { en: 'Daily reminder is on.', sv: 'Daglig påminnelse är på.' },
   'rem.turnedOff': { en: 'Reminder turned off on this device.', sv: 'Påminnelsen är avstängd på den här enheten.' },
   'rem.noDevice': { en: 'No device received it. Turn the reminder off and on again.', sv: 'Ingen enhet tog emot den. Stäng av påminnelsen och slå på den igen.' },
+  'rem.pushRefused': { en: 'The notification service refused it ({error}). Turn the reminder off and on again; if this stays, the server keys need checking.', sv: 'Aviseringstjänsten nekade den ({error}). Stäng av påminnelsen och slå på den igen; om felet står kvar behöver nycklarna på servern kontrolleras.' },
   'rem.testSent': { en: 'Test sent. It should arrive in a few seconds.', sv: 'Testet är skickat. Det bör komma inom några sekunder.' },
   'promo.title': { en: 'Never miss a day', sv: 'Missa aldrig en dag' },
   'promo.body': { en: 'Get a short evening reminder on your phone, and share progress with your PC.', sv: 'Få en kort påminnelse i mobilen på kvällen och dela framstegen med datorn.' },

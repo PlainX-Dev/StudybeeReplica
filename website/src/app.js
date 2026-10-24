@@ -1071,7 +1071,7 @@
     else if (act === 'unlinkDo') { unlink(); render(); toast(T('sync.unlinked')); }
     else if (act === 'pushOn') { cloudAction(enableReminders, T('rem.isOn')); }
     else if (act === 'pushOff') { cloudAction(disableReminders, T('rem.turnedOff')); }
-    else if (act === 'pushTest') { cloudAction(async () => { const r = await api('push', { method: 'POST', body: JSON.stringify({ action: 'test', id: syncId, lang: LANG }) }); if (!r.sent) throw new Error(T('rem.noDevice')); }, T('rem.testSent')); }
+    else if (act === 'pushTest') { cloudAction(async () => { const r = await api('push', { method: 'POST', body: JSON.stringify({ action: 'test', id: syncId, lang: LANG }) }); if (!r.sent) throw new Error(r.errors && r.errors.length ? T('rem.pushRefused', { error: r.errors[0] }) : T('rem.noDevice')); }, T('rem.testSent')); }
     else if (act === 'lang') I18N.set(b.dataset.lang);
     else if (act === 'noPromo') { try { localStorage.setItem('korkort30.nopromo', '1'); } catch (e2) { /* ignore */ } render(); }
   });

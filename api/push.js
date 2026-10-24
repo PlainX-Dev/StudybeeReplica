@@ -7,6 +7,11 @@ export function vapid() {
   return webpush;
 }
 
+/** A short, readable reason a push service refused a message, e.g. "403 BadJwtToken". */
+export function pushError(e) {
+  return `${e.statusCode || ''} ${String(e.body || e.message || '').replace(/\s+/g, ' ').slice(0, 160)}`.trim();
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return send(res, 405, { error: 'Method not allowed.' }); }
   const store = db();
@@ -28,14 +33,17 @@ export default async function handler(req, res) {
     const subs = (await store.hgetall(`subs:${id}`)) || {};
     const raw = await store.get(`state:${id}`);
     const state = raw ? JSON.parse(raw) : null;
-    let sent = 0;
+    let sent = 0; const errors = []; const devices = Object.keys(subs).length;
     for (const [ep, v] of Object.entries(subs)) {
       const { subscription, tz: subTz, lang: subLang } = JSON.parse(v);
       const msg = reminderFor(state, subTz, subLang) || safeToday(subLang);
       try { await vapid().sendNotification(subscription, JSON.stringify({ ...msg, url: '/#today', tag: 'test' })); sent++; }
-      catch (e) { if (e.statusCode === 404 || e.statusCode === 410) await store.hdel(`subs:${id}`, ep); }
+      catch (e) {
+        if (e.statusCode === 404 || e.statusCode === 410) await store.hdel(`subs:${id}`, ep);
+        errors.push(pushError(e));
+      }
     }
-    return send(res, 200, { ok: true, sent });
+    return send(res, 200, { ok: true, sent, devices, errors });
   }
   return send(res, 400, { error: 'Unknown action.' });
 }
