@@ -1,6 +1,6 @@
 // POST /api/push { action: 'subscribe' | 'unsubscribe' | 'test', id, subscription?, endpoint?, tz?, lang? }
 import webpush from 'web-push';
-import { db, pushReady, validId, send, body, reminderFor, langOf, safeToday } from './_lib.js';
+import { db, pushReady, subsOf, validId, send, body, reminderFor, langOf, safeToday } from './_lib.js';
 
 export function vapid() {
   webpush.setVapidDetails(process.env.VAPID_SUBJECT || 'mailto:noreply@example.com', process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     return send(res, 200, { ok: true });
   }
   if (action === 'test') {
-    const subs = (await store.hgetall(`subs:${id}`)) || {};
+    const subs = await subsOf(store, id);
     const raw = await store.get(`state:${id}`);
     const state = raw ? JSON.parse(raw) : null;
     let sent = 0; const errors = []; const devices = Object.keys(subs).length;

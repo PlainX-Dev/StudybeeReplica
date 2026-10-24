@@ -1,6 +1,6 @@
 // Daily reminder, run by Vercel Cron (see vercel.json). Sends a push to every learner who has
 // not yet studied today; skips learners whose streak is already safe.
-import { db, pushReady, send, reminderFor } from './_lib.js';
+import { db, pushReady, subsOf, send, reminderFor } from './_lib.js';
 import { vapid, pushError } from './push.js';
 
 export default async function handler(req, res) {
@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   const wp = vapid();
   let sent = 0, skipped = 0, removed = 0, failed = 0;
   for (const id of await store.smembers('subs:ids')) {
-    const subs = (await store.hgetall(`subs:${id}`)) || {};
+    const subs = await subsOf(store, id);
     const entries = Object.entries(subs);
     if (!entries.length) { await store.srem('subs:ids', id); continue; }
     const raw = await store.get(`state:${id}`);

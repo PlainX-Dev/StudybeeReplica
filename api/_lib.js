@@ -20,12 +20,22 @@ function memoryStore() {
     set: async (k, v) => { m.set(k, v); return 'OK'; },
     del: async (k) => { m.delete(k); return 1; },
     hset: async (k, o) => { m.set(k, Object.assign(m.get(k) || {}, o)); return 1; },
-    hgetall: async (k) => m.get(k) || null,
+    // Like Upstash with automaticDeserialization off: a flat [field, value, ...] list.
+    hgetall: async (k) => (m.get(k) ? Object.entries(m.get(k)).flat() : []),
     hdel: async (k, f) => { const h = m.get(k); if (h) delete h[f]; return 1; },
     sadd: async (k, v) => { const s = m.get(k) || new Set(); s.add(v); m.set(k, s); return 1; },
     srem: async (k, v) => { const s = m.get(k); if (s) s.delete(v); return 1; },
     smembers: async (k) => [...(m.get(k) || [])],
   };
+}
+
+/** One learner's push subscriptions as { endpoint: json }. Upstash returns hashes as a flat list. */
+export async function subsOf(store, id) {
+  const r = await store.hgetall(`subs:${id}`);
+  if (!Array.isArray(r)) return r || {};
+  const out = {};
+  for (let i = 0; i < r.length; i += 2) out[r[i]] = r[i + 1];
+  return out;
 }
 
 export const pushReady = () => !!(process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY);
