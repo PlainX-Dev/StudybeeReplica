@@ -26,13 +26,13 @@ def fragment():
     return shell.replace('/*STYLE*/', (SRC / 'styles.css').read_text(encoding='utf-8')).replace('<!--SCRIPTS-->', scripts())
 
 def plan_titles():
-    """Day titles from src/plan.js and src/sv/plan.js, for the server's reminder messages."""
+    """Day titles and task counts from src/plan.js and src/sv/plan.js, for the server's reminder messages."""
     js = ("const vm=require('vm'),fs=require('fs');const c={SV:{plan:{}}};c.window=c;vm.createContext(c);"
           "for(const f of process.argv.slice(1))vm.runInContext(fs.readFileSync(f,'utf8'),c);"
-          "console.log(JSON.stringify({en:c.PLAN.map(d=>d.title),sv:c.PLAN.map(d=>(c.SV.plan[d.day]||{}).title||d.title)}))")
+          "console.log(JSON.stringify({en:c.PLAN.map(d=>d.title),sv:c.PLAN.map(d=>(c.SV.plan[d.day]||{}).title||d.title),tasks:c.PLAN.map(d=>d.tasks.length)}))")
     out = subprocess.run(['node', '-e', js, str(SRC / 'plan.js'), str(SRC / 'sv' / 'plan.js')], capture_output=True, text=True, encoding='utf-8', check=True).stdout
     titles = json.loads(out)
-    assert len(titles['en']) == 30 and len(titles['sv']) == 30, 'expected 30 plan days'
+    assert len(titles['en']) == 30 and len(titles['sv']) == 30 and len(titles['tasks']) == 30, 'expected 30 plan days'
     return titles
 
 def page():

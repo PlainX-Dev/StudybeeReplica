@@ -18,7 +18,7 @@
 
   // ------------------------------------------------------------- storage
   const KEY = 'korkort30.v1';
-  const fresh = () => ({ start: null, testDate: null, setAt: 0, q: {}, lessons: {}, done: {}, doneT: {}, mocks: [], log: [], days: {}, xp: 0, badges: {}, best: 0, epoch: Math.random().toString(36).slice(2), epochAt: 0 });
+  const fresh = () => ({ start: null, testDate: null, dates: null, setAt: 0, q: {}, lessons: {}, done: {}, doneT: {}, mocks: [], log: [], days: {}, xp: 0, badges: {}, best: 0, epoch: Math.random().toString(36).slice(2), epochAt: 0 });
   let S = fresh();
   try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(fresh(), JSON.parse(raw)); } catch (e) { /* storage blocked: run in memory */ }
   let storageOk = true;
@@ -33,12 +33,52 @@
   const parse = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
   const fmt = (d) => d.toLocaleDateString(I18N.locale, { weekday: 'short', day: 'numeric', month: 'short' });
   const fmtLong = (d) => d.toLocaleDateString(I18N.locale, { weekday: 'long', day: 'numeric', month: 'long' });
+  // Calendar arithmetic on local dates, so a daylight-saving change never shifts a day.
+  const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+  const daysBetween = (a, b) => Math.round((b - a) / DAY_MS);
+
+  // The schedule: S.dates holds the ISO date of each of the 30 plan days. With no test date the plan runs one day
+  // after another from day 1. With a test date, fitPlan() spreads whatever is left across the time before it.
+  const calendarDates = () => { const s0 = parse(S.start || iso(today())); return PLAN.map((d) => iso(addDays(s0, d.day - 1))); };
+  const schedule = () => (S.dates && S.dates.length === PLAN.length ? S.dates : calendarDates());
+  const dateOfDay = (n) => parse(schedule()[n - 1]);
+  const dayGap = (n) => daysBetween(today(), dateOfDay(n));
+  /** The plan day to work on now: the last one whose date has come. When days share a date (a squeezed plan), the first unfinished of them. */
   function planDay() {
     if (!S.start) return 1;
-    const n = Math.floor((today() - parse(S.start)) / DAY_MS) + 1;
-    return Math.max(1, Math.min(30, n));
+    const dates = schedule(); const t = iso(today());
+    let last = -1; dates.forEach((d, i) => { if (d <= t) last = i; });
+    if (last < 0) return 1;
+    let first = last; while (first > 0 && dates[first - 1] === dates[last]) first--;
+    for (let i = first; i < last; i++) if (!dayDone(i + 1)) return i + 1;
+    return last + 1;
   }
-  const dateOfDay = (n) => new Date(parse(S.start || iso(today())).getTime() + (n - 1) * DAY_MS);
+  /**
+   * Fit the plan to the test date. Finished days keep their dates. Every day from the first unfinished one onwards is
+   * spread evenly from today (or the day after the last finished day) to the day before the test, so day 30 lands there.
+   * More time than days leaves rest days between them. Less time puts several days on one date.
+   * Without a test date, or with one that has passed, the plan simply runs one day at a time from the start date.
+   */
+  function fitPlan() {
+    const base = calendarDates();
+    if (!S.start || !S.testDate || parse(S.testDate) <= today()) return base;
+    let k = 1; while (k <= PLAN.length && dayDone(k)) k++;       // first unfinished day
+    const kept = (S.dates && S.dates.length === PLAN.length ? S.dates : base).slice(0, k - 1);
+    if (k > PLAN.length) return kept;
+    const from = k === 1 ? new Date(Math.max(+parse(S.start), +today())) : new Date(Math.max(+today(), +addDays(parse(kept[k - 2]), 1)));
+    const end = new Date(Math.max(+from, +addDays(parse(S.testDate), -1)));
+    const left = PLAN.length - k + 1; const span = daysBetween(from, end) + 1;
+    for (let j = 0; j < left; j++) kept.push(iso(addDays(from, left === 1 ? span - 1 : Math.round((j * (span - 1)) / (left - 1)))));
+    return kept;
+  }
+  /** Save new start and test dates, refitting the plan when either one changed (or the plan was never fitted). */
+  function setDates(start, testDate, force) {
+    const changed = force || start !== S.start || (testDate || null) !== (S.testDate || null);
+    S.start = start; S.testDate = testDate || null; S.setAt = Date.now();
+    if (changed) S.dates = fitPlan();
+  }
+  /** When plan day n comes round, as a key suffix for the "up next" texts. */
+  const whenKey = (n) => { const g = dayGap(n); return g <= 0 ? 'upNext' : g === 1 ? 'tomorrow' : 'onDate'; };
   const greeting = () => { const h = new Date().getHours(); return T(h < 5 ? 'greet.late' : h < 12 ? 'greet.morning' : h < 18 ? 'greet.afternoon' : 'greet.evening'); };
 
   // ------------------------------------------------------------- icons (SF Symbols-style line icons)
@@ -227,7 +267,7 @@
     if (on && !was) {
       dayRec().t++; addXP(40);
       const n = +key.split('-')[0];
-      if (dayDone(n)) { addXP(100); celebrate = { title: T('celebrate.title', { n }), body: n < 30 ? T('celebrate.tomorrow', { title: PLAN[n].title }) : T('celebrate.planDone') }; }
+      if (dayDone(n)) { addXP(100); celebrate = { title: T('celebrate.title', { n }), body: n < 30 ? T(`celebrate.${whenKey(n + 1)}`, { title: PLAN[n].title, date: fmt(dateOfDay(n + 1)) }) : T('celebrate.planDone') }; }
     }
   }
   let celebrate = null;
@@ -486,7 +526,7 @@
     if ((a.epoch || '') !== (b.epoch || '') && (a.epochAt || 0) !== (b.epochAt || 0)) return (a.epochAt || 0) > (b.epochAt || 0) ? a : Object.assign(fresh(), b);
     const m = Object.assign(fresh(), a);
     const newer = (b.setAt || 0) > (a.setAt || 0) ? b : a;
-    m.start = newer.start || a.start || b.start; m.testDate = newer.testDate ?? a.testDate; m.setAt = Math.max(a.setAt || 0, b.setAt || 0);
+    m.start = newer.start || a.start || b.start; m.testDate = newer.testDate ?? a.testDate; m.dates = newer.dates || a.dates || b.dates || null; m.setAt = Math.max(a.setAt || 0, b.setAt || 0);
     m.q = { ...a.q };
     for (const [id, s] of Object.entries(b.q || {})) { const o = m.q[id]; if (!o || s.seen > o.seen || (s.seen === o.seen && s.last > o.last)) m.q[id] = s; }
     m.lessons = { ...a.lessons };
@@ -688,7 +728,7 @@
             <li style="--c:${RING.acc}"><b>${R.a ? Math.round(R.acc * 100) + '%' : '–'}</b><span>${T('today.accuracy')}</span></li>
           </ul>
           ${nt ? `<button class="btn filled large hero-cta" data-act="task" data-day="${nt.n}" data-i="${nt.i}">${T('today.cta', { verb: S.done[`${nt.n}-0`] || nt.i > 0 ? T('common.continue') : T('common.start'), label: esc(nt.t.type === 'todo' ? T('task.todoLower') : taskLabel(nt.t, nt.n)) })} ${icon('chevron')}</button>`
-            : `<div class="hero-done">${icon('check')} ${T('today.planDone')}${tomorrow ? ` ${T('today.tomorrowHtml', { title: esc(tomorrow.title) })}` : ''} <button class="btn tinted small" data-act="quick" data-topics="all" data-n="20">${T('today.bonus')}</button></div>`}
+            : `<div class="hero-done">${icon('check')} ${T('today.planDone')}${tomorrow ? ` ${T(`today.${whenKey(tomorrow.day)}Html`, { title: esc(tomorrow.title), date: fmt(dateOfDay(tomorrow.day)) })}` : ''} <button class="btn tinted small" data-act="quick" data-topics="all" data-n="20">${T('today.bonus')}</button></div>`}
         </div>
       </section>
 
@@ -700,7 +740,7 @@
           ${taskList(n)}
           ${stale.length ? `<p class="note">${icon('lessons')} <span>${T('today.updatedHtml', { lessons: stale.map((t) => `<a href="#lesson-${t.id}">${esc(t.name)}</a>`).join(', ') })}</span></p>` : ''}
           ${behind.length ? `<p class="note">${icon('mistakes')} <span>${T('today.unfinishedHtml', { days: behind.map((d) => `<a href="#day-${d}">${T('plan.dayLower', { n: d })}</a>`).join(', ') })}</span></p>` : ''}
-          ${tomorrow ? `<a class="card teaser" href="#day-${tomorrow.day}"><span class="eyebrow">${T('today.tomorrowDay', { n: tomorrow.day })}</span><b>${esc(tomorrow.title)}</b><span class="muted">${esc(tomorrow.focus)}</span>${tomorrow.tasks.some((t) => t.type === 'mock') ? `<span class="tag">${T('session.mock')}</span>` : ''}</a>` : ''}
+          ${tomorrow ? `<a class="card teaser" href="#day-${tomorrow.day}"><span class="eyebrow">${T(`today.${whenKey(tomorrow.day)}Day`, { n: tomorrow.day, date: fmt(dateOfDay(tomorrow.day)) })}</span><b>${esc(tomorrow.title)}</b><span class="muted">${esc(tomorrow.focus)}</span>${tomorrow.tasks.some((t) => t.type === 'mock') ? `<span class="tag">${T('session.mock')}</span>` : ''}</a>` : ''}
         </section>
         <aside class="stack">
           <section class="card streak-card">
@@ -1095,14 +1135,14 @@
   document.addEventListener('submit', (e) => {
     e.preventDefault();
     if (e.target.id === 'startForm') {
-      S.start = $('#startDate').value || iso(today()); S.testDate = $('#testDate').value || null; S.setAt = Date.now(); save(); go('today');
+      setDates($('#startDate').value || iso(today()), $('#testDate').value || null, true); save(); go('today');
     } else if (e.target.id === 'practiceForm') {
       const topics = [...e.target.querySelectorAll('input[name=topic]:checked')].map((x) => x.value);
       const n = +(e.target.querySelector('input[name=n]:checked') || {}).value || 20;
       if (!topics.length) { $('#practiceMsg').textContent = T('practice.pickTopic'); return; }
       startSession({ mode: 'practice', title: topics.length === 1 ? T('session.practiceTopics', { topics: TOPIC[topics[0]].short }) : T('session.custom'), items: pickPractice(topics, n) });
     } else if (e.target.id === 'settingsForm') {
-      S.start = $('#setStart').value || S.start; S.testDate = $('#setTest').value || null; S.setAt = Date.now(); save(); toast(T('settings.saved')); render();
+      setDates($('#setStart').value || S.start, $('#setTest').value || null); save(); toast(T('settings.saved')); render();
     } else if (e.target.id === 'linkForm') {
       const code = cleanCode($('#linkCode').value);
       if (code.length !== 20) { toast(T('sync.codeLength'), 'close'); return; }

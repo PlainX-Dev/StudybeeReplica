@@ -80,6 +80,22 @@ const TEXT = {
 export const langOf = (l) => (l === 'en' ? 'en' : 'sv');
 export const safeToday = (lang) => TEXT[langOf(lang)].safe;
 
+/**
+ * The plan day to work on at `today` (an ISO date). The app stores the schedule in state.dates, fitted to the test date;
+ * without it the plan runs one day after another from the start date. When several days share a date, the first
+ * unfinished one counts, as in the app.
+ */
+function planDayOn(state, today) {
+  const dates = Array.isArray(state.dates) && state.dates.length === PLAN_TITLES.tasks.length ? state.dates : null;
+  if (!dates) return Math.max(1, Math.min(30, Math.round((new Date(today + 'T12:00:00Z') - new Date(state.start + 'T12:00:00Z')) / 86400000) + 1));
+  let last = -1; dates.forEach((d, i) => { if (d <= today) last = i; });
+  if (last < 0) return 1;
+  let first = last; while (first > 0 && dates[first - 1] === dates[last]) first--;
+  const done = state.done || {};
+  for (let i = first; i < last; i++) if (!Array.from({ length: PLAN_TITLES.tasks[i] }, (_, k) => done[`${i + 1}-${k}`]).every(Boolean)) return i + 1;
+  return last + 1;
+}
+
 /** The reminder for one learner, or null when they have already studied today. */
 export function reminderFor(state, tz = 'Europe/Stockholm', lang = 'sv') {
   const t = TEXT[langOf(lang)];
@@ -90,7 +106,7 @@ export function reminderFor(state, tz = 'Europe/Stockholm', lang = 'sv') {
   if (active(today)) return null;
   let streak = 0; let d = shift(today, -1);
   while (active(d)) { streak++; d = shift(d, -1); }
-  const dayN = Math.max(1, Math.min(30, Math.round((new Date(today + 'T12:00:00Z') - new Date(state.start + 'T12:00:00Z')) / 86400000) + 1));
+  const dayN = planDayOn(state, today);
   const title = PLAN_TITLES[langOf(lang)][dayN - 1] || t.plan;
   const test = state.testDate ? Math.round((new Date(state.testDate + 'T12:00:00Z') - new Date(today + 'T12:00:00Z')) / 86400000) : null;
   const when = test !== null && test >= 0 ? t.test(test) : '';
