@@ -9836,6 +9836,19 @@ window.STRINGS = {
     S.start = start; S.testDate = testDate || null; S.setAt = Date.now();
     if (changed) S.dates = fitPlan();
   }
+  /**
+   * With a test date ahead, keep the unfinished days fitted to the time left: when the plan was never fitted (dates saved
+   * before this existed) or the first unfinished day has slipped into the past, spread what remains again from today.
+   * Returns true when the schedule changed.
+   */
+  function refitIfNeeded() {
+    if (!S.start || !S.testDate || parse(S.testDate) <= today()) return false;
+    let k = 1; while (k <= PLAN.length && dayDone(k)) k++;
+    if (k > PLAN.length) return false;
+    const stale = !S.dates || S.dates.length !== PLAN.length || S.dates[k - 1] < iso(today());
+    if (!stale) return false;
+    S.dates = fitPlan(); save(); return true;
+  }
   /** When plan day n comes round, as a key suffix for the "up next" texts. */
   const whenKey = (n) => { const g = dayGap(n); return g <= 0 ? 'upNext' : g === 1 ? 'tomorrow' : 'onDate'; };
   const greeting = () => { const h = new Date().getHours(); return T(h < 5 ? 'greet.late' : h < 12 ? 'greet.morning' : h < 18 ? 'greet.afternoon' : 'greet.evening'); };
@@ -10389,6 +10402,7 @@ window.STRINGS = {
     render();
   }
   document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && refitIfNeeded()) render();
     if (!syncId || !cloud.sync) return;
     if (document.visibilityState === 'hidden' && dirty) { clearTimeout(pushT); syncNow({ quiet: true }); }
     if (document.visibilityState === 'visible' && Date.now() - cloud.last > 15000) syncNow();
@@ -10914,6 +10928,7 @@ window.STRINGS = {
     render();
   }
 
+  refitIfNeeded();
   checkBadges(); newBadges = [];
   render();
   cloudInit();
